@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/fragment_padding"
+    tools:context=".ui.home.HomeFragment">
+
+    <Button
+        android:id="@+id/button_start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_start"
+        app:icon="@drawable/ic_button_start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingBottom="@dimen/fragment_padding"
+        app:layout_constraintBottom_toTopOf="@id/button_start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintVertical_chainStyle="spread">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:isScrollContainer="true"
+            android:orientation="vertical">
+
+            <Spinner
+                android:id="@+id/spinnerMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/seekbar_height" />
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TableRow android:id="@+id/tableRowBreathDuration">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_breath_duration" />
+
+                    <SeekBar
+                        android:id="@+id/seekBarBreathDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:max="255" />
+
+                    <TextView
+                        android:id="@+id/textViewBreathDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
+
+                </TableRow>
+
+                <TableRow android:id="@+id/tableRowInOutRelation">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_in_out_relation" />
+
+                    <SeekBar
+                        android:id="@+id/seek_bar_in_out_relation"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:max="100" />
+
+                    <TextView
+                        android:id="@+id/textViewInOutRelation"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
+
+                </TableRow>
+
+                <TableRow android:id="@+id/tableRowRepetitions">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_repetitions" />
+
+                    <SeekBar
+                        android:id="@+id/seekBarRepetitions"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:max="1000" />
+
+                    <TextView
+                        android:id="@+id/textViewRepetitions"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRowBreathEndDuration"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_breath_end_duration" />
+
+                    <SeekBar
+                        android:id="@+id/seekBarBreathEndDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:max="255" />
+
+                    <TextView
+                        android:id="@+id/textViewBreathEndDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRowHoldStartDuration"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_hold_start_duration" />
+
+                    <SeekBar
+                        android:id="@+id/seekBarHoldStartDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:max="255"
+                        android:progress="1000" />
+
+                    <TextView
+                        android:id="@+id/textViewHoldStartDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
+
+                </TableRow>
+
+
+                <TableRow
+                    android:id="@+id/tableRowHoldEndDuration"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_hold_end_duration" />
+
+                    <SeekBar
+                        android:id="@+id/seekBarHoldEndDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:max="255"
+                        android:progress="50" />
+
+                    <TextView
+                        android:id="@+id/textViewHoldEndDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRowHoldPosition"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_hold_position" />
+
+                    <Spinner
+                        android:id="@+id/spinnerHoldPosition"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_spinner_width" />
+                </TableRow>
+
+
+                <TableRow
+                    android:id="@+id/tableRowHoldVariation"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_hold_variation" />
+
+                    <SeekBar
+                        android:id="@+id/seekBarHoldVariation"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:max="50" />
+
+                    <TextView
+                        android:id="@+id/textViewHoldVariation"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
+
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

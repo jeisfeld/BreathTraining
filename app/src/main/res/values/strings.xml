@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">Breath Control</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_measure">Measure</string>
+
+    <string name="button_start">Start</string>
+    <string name="button_stop">Stop</string>
+    <string name="button_pause">Pause</string>
+    <string name="button_ok">OK</string>
+
+    <string name="button_breathe_in">Breathe In …</string>
+    <string name="button_breathe_out">Breathe Out …</string>
+
+    <string name="title_dialog_confirmation">Confirmation</string>
+
+    <string name="text_breath_duration">Breath Duration:</string>
+    <string name="text_in_out_relation">In/Out Relation:</string>
+    <string name="text_repetitions">Repetitions:</string>
+    <string name="text_breath_end_duration">Breath End Dur:</string>
+    <string name="text_hold_start_duration">Hold Start Dur:</string>
+    <string name="text_hold_end_duration">Hold End Dur:</string>
+    <string name="text_hold_position">Hold Position:</string>
+    <string name="text_hold_variation">Hold Variation:</string>
+
+    <string name="message_measure">Press “Start” after breathing out to start the measurement of breath duration.\n\nThen press the big full-screen button whenever changing between breathing in and breathing out.</string>
+    <string name="message_measurement_too_short">Measurement was too short.\n\nBreathe in and out at least one time before stopping the measurement.</string>
+    <string name="message_measurement_result">Last measurement result:\n\nAverage breath duration: %1$.1fs\n\nIn-out relation: %2$.0f%%\n\nFor another meaturement, press “Start” after breathing out.\n\nThen press the big full-screen button whenever changing between breathing in and breathing out.</string>
+
+    <string-array name="values_mode">
+        <item>Simple</item>
+        <item>Hold</item>
+    </string-array>
+    <string-array name="values_hold_position">
+        <item>In</item>
+        <item>Out</item>
+        <item>Both</item>
+    </string-array>
+</resources>
