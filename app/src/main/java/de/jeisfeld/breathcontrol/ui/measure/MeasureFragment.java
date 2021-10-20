@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -48,12 +47,12 @@ public class MeasureFragment extends Fragment {
 		mMeasureViewModel.getSoundType().observe(getViewLifecycleOwner(), soundType -> spinnerSoundType.setSelection(soundType.ordinal()));
 		spinnerSoundType.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
 				mMeasureViewModel.updateSoundType(SoundType.values()[position]);
 			}
 
 			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
+			public void onNothingSelected(final AdapterView<?> parent) {
 				// do nothing
 			}
 		});

@@ -34,7 +34,12 @@
     <string name="message_measurement_too_short">Measurement was too short.\n\nInhale and exhale at least once before stopping the measurement.</string>
     <string name="message_measurement_result">Last measurement result:\n\nAverage breath duration: %1$.1fs\n\nIn-out relation: %2$.0f%%\n\nFor another measurement, press “Start” after breathing out.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
 
-    <string-array name="values_mode">
+    <string name="notification_channel">Breath Control</string>
+    <string name="notification_title_exercise">Breath Control</string>
+    <string name="notification_text_exercise_running">Exercise Running</string>
+
+
+    <string-array name="values_exercise_type">
         <item>Simple</item>
         <item>Hold</item>
     </string-array>

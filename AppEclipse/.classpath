@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="databinding"/>
 	<classpathentry excluding="de/jeisfeld/randomimagelib/R.java" kind="src" path="gen">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="out">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>

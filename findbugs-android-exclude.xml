@@ -5,6 +5,7 @@
         <Or>
             <Class name="~.*\.R\$.*"/>
             <Class name="~.*\.Manifest\$.*"/>
+            <Class name="~databinding.*"/>
         </Or>
     </Match>
 </FindBugsFilter>

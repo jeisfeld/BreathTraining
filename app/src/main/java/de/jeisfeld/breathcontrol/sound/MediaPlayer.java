@@ -1,13 +1,12 @@
 package de.jeisfeld.breathcontrol.sound;
 
+import java.io.IOException;
+
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
-
-import java.io.IOException;
-
 import de.jeisfeld.breathcontrol.Application;
-import de.jeisfeld.breathcontrol.util.Logger;
+import de.jeisfeld.breathcontrol.exercise.StepType;
 
 /**
  * A singleton media player used by the app.
@@ -17,6 +16,10 @@ public class MediaPlayer extends android.media.MediaPlayer {
 	 * The media player instance.
 	 */
 	private static MediaPlayer mInstance = null;
+	/**
+	 * The triggerer of the media play.
+	 */
+	private MediaTrigger mTrigger;
 
 	/**
 	 * Get the media player singleton.
@@ -32,12 +35,26 @@ public class MediaPlayer extends android.media.MediaPlayer {
 
 	/**
 	 * Release the media player instance.
+	 *
+	 * @param trigger The triggerer of the media play.
 	 */
-	public static synchronized void releaseInstance() {
-		if (mInstance != null) {
+	public static synchronized void releaseInstance(final MediaTrigger trigger) {
+		if (mInstance != null && (trigger == null || trigger == mInstance.mTrigger)) {
 			mInstance.release();
 			mInstance = null;
 		}
+	}
+
+	/**
+	 * Play the sound for a certain step.
+	 *
+	 * @param context The context.
+	 * @param trigger The triggerer of the media play.
+	 * @param soundType The sound type.
+	 * @param stepType The step type.
+	 */
+	public void play(final Context context, final MediaTrigger trigger, final SoundType soundType, final StepType stepType) {
+		play(context, trigger, soundType.getSoundResource(stepType));
 	}
 
 	/**
@@ -45,8 +62,10 @@ public class MediaPlayer extends android.media.MediaPlayer {
 	 *
 	 * @param context The context.
 	 * @param resourceId The sound resource.
+	 * @param trigger The trigger of the audio playing.
 	 */
-	public void play(final Context context, final int resourceId) {
+	public synchronized void play(final Context context, final MediaTrigger trigger, final int resourceId) {
+		mTrigger = trigger;
 		stop();
 		reset();
 		if (context == null || resourceId == 0) {
@@ -73,6 +92,7 @@ public class MediaPlayer extends android.media.MediaPlayer {
 	/**
 	 * Stop the player.
 	 */
+	@Override
 	public void stop() {
 		if (isPlaying()) {
 			super.stop();

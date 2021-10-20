@@ -10,7 +10,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import de.jeisfeld.breathcontrol.R;
+import de.jeisfeld.breathcontrol.exercise.StepType;
 import de.jeisfeld.breathcontrol.sound.MediaPlayer;
+import de.jeisfeld.breathcontrol.sound.MediaTrigger;
 import de.jeisfeld.breathcontrol.sound.SoundType;
 import de.jeisfeld.breathcontrol.ui.home.HomeViewModel;
 
@@ -101,7 +103,7 @@ public class MeasureViewModel extends ViewModel {
 
 		SoundType soundType = mSoundType.getValue();
 		if (soundType != null) {
-			MediaPlayer.getInstance().play(context, soundType.getInhaleResource());
+			MediaPlayer.getInstance().play(context, MediaTrigger.ACTIVITY, soundType, StepType.INHALE);
 		}
 	}
 
@@ -201,8 +203,8 @@ public class MeasureViewModel extends ViewModel {
 
 		SoundType soundType = mSoundType.getValue();
 		if (soundType != null) {
-			MediaPlayer.getInstance().play(context,
-					Boolean.TRUE.equals(mIsBreathingOut.getValue()) ? soundType.getExhaleResource() : soundType.getInhaleResource());
+			MediaPlayer.getInstance().play(context, MediaTrigger.ACTIVITY, soundType,
+					Boolean.TRUE.equals(mIsBreathingOut.getValue()) ? StepType.EXHALE : StepType.INHALE);
 		}
 	}
 

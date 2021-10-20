@@ -49,6 +49,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Android/app/src/main/AndroidManifest.xml</locationURI>
 		</link>
 		<link>
+			<name>databinding</name>
+			<type>2</type>
+			<locationURI>PARENT-1-PROJECT_LOC/app/build/generated/data_binding_base_class_source_out/debug/out</locationURI>
+		</link>
+		<link>
 			<name>libs</name>
 			<type>2</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Android/app/libs</locationURI>

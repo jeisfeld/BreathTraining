@@ -35,7 +35,7 @@
             android:orientation="vertical">
 
             <Spinner
-                android:id="@+id/spinnerMode"
+                android:id="@+id/spinner_exercise_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -255,7 +255,7 @@
                         android:layout_height="@dimen/seekbar_height"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="@integer/selector_seekbar_width"
-                        android:max="50" />
+                        android:max="90" />
 
                     <TextView
                         android:id="@+id/textViewHoldVariation"

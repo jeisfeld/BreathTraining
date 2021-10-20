@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
@@ -18,8 +19,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.jeisfeld.breathcontrol.R;
 import de.jeisfeld.breathcontrol.databinding.FragmentHomeBinding;
+import de.jeisfeld.breathcontrol.exercise.ExerciseService;
+import de.jeisfeld.breathcontrol.exercise.ExerciseType;
+import de.jeisfeld.breathcontrol.exercise.HoldPosition;
 import de.jeisfeld.breathcontrol.sound.SoundType;
-import de.jeisfeld.breathcontrol.ui.home.HomeViewModel.Mode;
 
 /**
  * The fragment for managing basic breath control page.
@@ -49,15 +52,27 @@ public class HomeFragment extends Fragment {
 		mBinding = FragmentHomeBinding.inflate(inflater, container, false);
 		View root = mBinding.getRoot();
 
-		final Spinner spinnerMode = mBinding.spinnerMode;
-		spinnerMode.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_mode, getResources().getStringArray(R.array.values_mode)));
-		mHomeViewModel.getMode().observe(getViewLifecycleOwner(), mode -> spinnerMode.setSelection(mode.ordinal()));
-		spinnerMode.setOnItemSelectedListener(getOnModeSelectedListener(root, mHomeViewModel));
+		final Spinner spinnerExerciseType = mBinding.spinnerExerciseType;
+		spinnerExerciseType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_exercise_type,
+				getResources().getStringArray(R.array.values_exercise_type)));
+		mHomeViewModel.getExerciseType().observe(getViewLifecycleOwner(), exerciseType -> spinnerExerciseType.setSelection(exerciseType.ordinal()));
+		spinnerExerciseType.setOnItemSelectedListener(getOnExerciseTypeSelectedListener(root, mHomeViewModel));
 
 		final Spinner spinnerHoldPosition = mBinding.spinnerHoldPosition;
 		spinnerHoldPosition.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
 				getResources().getStringArray(R.array.values_hold_position)));
 		mHomeViewModel.getHoldPosition().observe(getViewLifecycleOwner(), holdPosition -> spinnerHoldPosition.setSelection(holdPosition.ordinal()));
+		spinnerHoldPosition.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				mHomeViewModel.updateHoldPosition(HoldPosition.values()[position]);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// do nothing
+			}
+		});
 
 		final Spinner spinnerSoundType = mBinding.spinnerSoundType;
 		spinnerSoundType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
@@ -65,12 +80,12 @@ public class HomeFragment extends Fragment {
 		mHomeViewModel.getSoundType().observe(getViewLifecycleOwner(), soundType -> spinnerSoundType.setSelection(soundType.ordinal()));
 		spinnerSoundType.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
 				mHomeViewModel.updateSoundType(SoundType.values()[position]);
 			}
 
 			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
+			public void onNothingSelected(final AdapterView<?> parent) {
 				// do nothing
 			}
 		});
@@ -82,6 +97,9 @@ public class HomeFragment extends Fragment {
 		prepareSeekbarHoldEndDuration(root);
 		prepareSeekbarInOutRelation(root);
 		prepareSeekbarHoldVariation(root);
+
+		final Button buttonStart = mBinding.buttonStart;
+		buttonStart.setOnClickListener(v -> ExerciseService.triggerAnimationService(getContext(), mHomeViewModel.getExerciseData()));
 
 		return root;
 	}
@@ -105,8 +123,8 @@ public class HomeFragment extends Fragment {
 			mBinding.seekBarRepetitions.setProgress(seekBarValue);
 			mBinding.textViewRepetitions.setText(String.format(Locale.getDefault(), "%d", value));
 		});
-		mBinding.seekBarRepetitions.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress ->
-						mHomeViewModel.updateRepetitions(HomeViewModel.repetitionsSeekbarToValue(progress)));
+		mBinding.seekBarRepetitions.setOnSeekBarChangeListener(
+				(OnSeekBarProgressChangedListener) progress -> mHomeViewModel.updateRepetitions(HomeViewModel.repetitionsSeekbarToValue(progress)));
 	}
 
 	/**
@@ -132,8 +150,8 @@ public class HomeFragment extends Fragment {
 				mBinding.textViewBreathDuration.setText(String.format(Locale.getDefault(), "%.1fs", duration / MILLIS_PER_SECOND));
 			}
 		});
-		mBinding.seekBarBreathDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress ->
-						mHomeViewModel.updateBreathDuration(HomeViewModel.durationSeekbarToValue(progress, false)));
+		mBinding.seekBarBreathDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mHomeViewModel
+				.updateBreathDuration(HomeViewModel.durationSeekbarToValue(progress, false)));
 	}
 
 	/**
@@ -159,8 +177,8 @@ public class HomeFragment extends Fragment {
 				mBinding.textViewBreathEndDuration.setText(String.format(Locale.getDefault(), "%.1fs", duration / MILLIS_PER_SECOND));
 			}
 		});
-		mBinding.seekBarBreathEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress ->
-						mHomeViewModel.updateBreathEndDuration(HomeViewModel.durationSeekbarToValue(progress, false)));
+		mBinding.seekBarBreathEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mHomeViewModel
+				.updateBreathEndDuration(HomeViewModel.durationSeekbarToValue(progress, false)));
 	}
 
 	/**
@@ -186,8 +204,8 @@ public class HomeFragment extends Fragment {
 				mBinding.textViewHoldStartDuration.setText(String.format(Locale.getDefault(), "%.1fs", duration / MILLIS_PER_SECOND));
 			}
 		});
-		mBinding.seekBarHoldStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress ->
-						mHomeViewModel.updateHoldStartDuration(HomeViewModel.durationSeekbarToValue(progress, true)));
+		mBinding.seekBarHoldStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mHomeViewModel
+				.updateHoldStartDuration(HomeViewModel.durationSeekbarToValue(progress, true)));
 	}
 
 	/**
@@ -213,8 +231,8 @@ public class HomeFragment extends Fragment {
 				mBinding.textViewHoldEndDuration.setText(String.format(Locale.getDefault(), "%.1fs", duration / MILLIS_PER_SECOND));
 			}
 		});
-		mBinding.seekBarHoldEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress ->
-						mHomeViewModel.updateHoldEndDuration(HomeViewModel.durationSeekbarToValue(progress, true)));
+		mBinding.seekBarHoldEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mHomeViewModel
+				.updateHoldEndDuration(HomeViewModel.durationSeekbarToValue(progress, true)));
 	}
 
 	/**
@@ -254,18 +272,18 @@ public class HomeFragment extends Fragment {
 	}
 
 	/**
-	 * Get the listener on mode change.
+	 * Get the listener on exercise type change.
 	 *
 	 * @param parentView The parent view.
 	 * @param viewModel The view model.
 	 * @return The listener.
 	 */
-	protected final OnItemSelectedListener getOnModeSelectedListener(final View parentView, final HomeViewModel viewModel) {
+	protected final OnItemSelectedListener getOnExerciseTypeSelectedListener(final View parentView, final HomeViewModel viewModel) {
 		return new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
-				Mode mode = Mode.values()[position];
-				switch (mode) {
+				ExerciseType exerciseType = ExerciseType.values()[position];
+				switch (exerciseType) {
 				case SIMPLE:
 					mBinding.tableRowBreathEndDuration.setVisibility(View.VISIBLE);
 					mBinding.tableRowHoldStartDuration.setVisibility(View.GONE);
@@ -283,7 +301,7 @@ public class HomeFragment extends Fragment {
 				default:
 					break;
 				}
-				viewModel.updateMode(mode);
+				viewModel.updateExerciseType(exerciseType);
 			}
 
 			@Override

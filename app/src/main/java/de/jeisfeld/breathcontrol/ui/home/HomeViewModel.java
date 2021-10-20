@@ -3,6 +3,11 @@ package de.jeisfeld.breathcontrol.ui.home;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import de.jeisfeld.breathcontrol.exercise.ExerciseData;
+import de.jeisfeld.breathcontrol.exercise.ExerciseType;
+import de.jeisfeld.breathcontrol.exercise.HoldExerciseData;
+import de.jeisfeld.breathcontrol.exercise.HoldPosition;
+import de.jeisfeld.breathcontrol.exercise.SimpleExerciseData;
 import de.jeisfeld.breathcontrol.sound.SoundType;
 
 /**
@@ -10,9 +15,9 @@ import de.jeisfeld.breathcontrol.sound.SoundType;
  */
 public class HomeViewModel extends ViewModel {
 	/**
-	 * The mode.
+	 * The exercise type.
 	 */
-	private final MutableLiveData<Mode> mMode = new MutableLiveData<>(Mode.SIMPLE);
+	private final MutableLiveData<ExerciseType> mExerciseType = new MutableLiveData<>(ExerciseType.SIMPLE);
 
 	/**
 	 * The number of repetitions.
@@ -60,21 +65,21 @@ public class HomeViewModel extends ViewModel {
 	private final MutableLiveData<SoundType> mSoundType = new MutableLiveData<>(SoundType.WORDS);
 
 	/**
-	 * Get the mode.
+	 * Get the exercise type.
 	 *
-	 * @return The mode.
+	 * @return The exercise type.
 	 */
-	protected LiveData<Mode> getMode() {
-		return mMode;
+	protected LiveData<ExerciseType> getExerciseType() {
+		return mExerciseType;
 	}
 
 	/**
-	 * Set the mode.
+	 * Set the exercise type.
 	 *
-	 * @param mode The new mode.
+	 * @param exerciseType The new exercise type.
 	 */
-	protected void updateMode(final Mode mode) {
-		mMode.setValue(mode);
+	protected void updateExerciseType(final ExerciseType exerciseType) {
+		mExerciseType.setValue(exerciseType);
 	}
 
 	/**
@@ -213,6 +218,15 @@ public class HomeViewModel extends ViewModel {
 	}
 
 	/**
+	 * Update the hold position.
+	 *
+	 * @param holdPosition The new hold position
+	 */
+	protected void updateHoldPosition(final HoldPosition holdPosition) {
+		mHoldPosition.setValue(holdPosition);
+	}
+
+	/**
 	 * Get the sound type.
 	 *
 	 * @return The sound type.
@@ -226,7 +240,7 @@ public class HomeViewModel extends ViewModel {
 	 *
 	 * @param soundType The new sound type.
 	 */
-	protected void updateSoundType (final SoundType soundType) {
+	protected void updateSoundType(final SoundType soundType) {
 		mSoundType.setValue(soundType);
 	}
 
@@ -234,7 +248,7 @@ public class HomeViewModel extends ViewModel {
 	 * Convert seekbar value to value in ms for duration.
 	 *
 	 * @param seekbarValue the seekbar value
-	 * @param allowZero    flag indicating if value 0 is allowed
+	 * @param allowZero flag indicating if value 0 is allowed
 	 * @return The value
 	 */
 	protected static long durationSeekbarToValue(final int seekbarValue, final boolean allowZero) {
@@ -288,34 +302,62 @@ public class HomeViewModel extends ViewModel {
 	}
 
 	/**
-	 * Enumeration for mode values.
+	 * Get the exercise data.
+	 *
+	 * @return the exercise data.
 	 */
-	public enum Mode {
-		/**
-		 * Simple breathing mode.
-		 */
-		SIMPLE,
-		/**
-		 * Mode with holding breath.
-		 */
-		HOLD
+	public ExerciseData getExerciseData() {
+		ExerciseType exerciseType = mExerciseType.getValue();
+		if (exerciseType == null) {
+			return null;
+		}
+		switch (exerciseType) {
+		case SIMPLE:
+			return new SimpleExerciseData(mRepetitions.getValue(), mBreathDuration.getValue(), mBreathEndDuration.getValue(),
+					mInOutRelation.getValue(),
+					mSoundType.getValue());
+		case HOLD:
+			return new HoldExerciseData(mRepetitions.getValue(), mBreathDuration.getValue(), mInOutRelation.getValue(), mHoldStartDuration.getValue(),
+					mHoldEndDuration.getValue(), mHoldPosition.getValue(), mHoldVariation.getValue(), mSoundType.getValue());
+		default:
+			return null;
+		}
 	}
 
 	/**
-	 * Enumeration for hold position values.
+	 * Update the model from exercise data.
+	 *
+	 * @param exerciseData The exercise data.
 	 */
-	public enum HoldPosition {
-		/**
-		 * After breathing in.
-		 */
-		IN,
-		/**
-		 * After breating out.
-		 */
-		OUT,
-		/**
-		 * Both.
-		 */
-		BOTH
+	public void updateFromExerciseData(final ExerciseData exerciseData) {
+		if (exerciseData == null) {
+			return;
+		}
+		ExerciseType exerciseType = exerciseData.getType();
+		if (exerciseType == null) {
+			return;
+		}
+		mExerciseType.setValue(exerciseType);
+
+		mRepetitions.setValue(exerciseData.getRepetitions());
+		mBreathDuration.setValue(exerciseData.getBreathDuration());
+		mInOutRelation.setValue(exerciseData.getInOutRelation());
+		mSoundType.setValue(exerciseData.getSoundType());
+
+		switch (exerciseType) {
+		case SIMPLE:
+			mBreathEndDuration.setValue(((SimpleExerciseData) exerciseData).getBreathEndDuration());
+			break;
+		case HOLD:
+			HoldExerciseData holdData = (HoldExerciseData) exerciseData;
+			mHoldStartDuration.setValue(holdData.getHoldStartDuration());
+			mHoldEndDuration.setValue(holdData.getHoldEndDuration());
+			mHoldPosition.setValue(holdData.getHoldPosition());
+			mHoldVariation.setValue(holdData.getHoldVariation());
+			break;
+		default:
+			// do nothing
+		}
 	}
+
 }
