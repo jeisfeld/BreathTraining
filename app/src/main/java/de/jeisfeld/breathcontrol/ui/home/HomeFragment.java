@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.jeisfeld.breathcontrol.R;
 import de.jeisfeld.breathcontrol.databinding.FragmentHomeBinding;
+import de.jeisfeld.breathcontrol.sound.SoundType;
 import de.jeisfeld.breathcontrol.ui.home.HomeViewModel.Mode;
 
 /**
@@ -49,13 +50,30 @@ public class HomeFragment extends Fragment {
 		View root = mBinding.getRoot();
 
 		final Spinner spinnerMode = mBinding.spinnerMode;
-		spinnerMode.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_mode, getModeSpinnerValues()));
+		spinnerMode.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_mode, getResources().getStringArray(R.array.values_mode)));
 		mHomeViewModel.getMode().observe(getViewLifecycleOwner(), mode -> spinnerMode.setSelection(mode.ordinal()));
 		spinnerMode.setOnItemSelectedListener(getOnModeSelectedListener(root, mHomeViewModel));
 
 		final Spinner spinnerHoldPosition = mBinding.spinnerHoldPosition;
-		spinnerHoldPosition.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_hold_position, getHoldPositionSpinnerValues()));
+		spinnerHoldPosition.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
+				getResources().getStringArray(R.array.values_hold_position)));
 		mHomeViewModel.getHoldPosition().observe(getViewLifecycleOwner(), holdPosition -> spinnerHoldPosition.setSelection(holdPosition.ordinal()));
+
+		final Spinner spinnerSoundType = mBinding.spinnerSoundType;
+		spinnerSoundType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
+				getResources().getStringArray(R.array.values_sound_type)));
+		mHomeViewModel.getSoundType().observe(getViewLifecycleOwner(), soundType -> spinnerSoundType.setSelection(soundType.ordinal()));
+		spinnerSoundType.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				mHomeViewModel.updateSoundType(SoundType.values()[position]);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// do nothing
+			}
+		});
 
 		prepareSeekbarRepetitions(root);
 		prepareSeekbarBreathDuration(root);
@@ -233,24 +251,6 @@ public class HomeFragment extends Fragment {
 				(OnSeekBarProgressChangedListener) progress -> {
 					mHomeViewModel.updateHoldVariation(progress / 100.0); // MAGIC_NUMBER
 				});
-	}
-
-	/**
-	 * Get values of the mode spinner.
-	 *
-	 * @return The values of the mode spinner.
-	 */
-	private String[] getModeSpinnerValues() {
-		return getResources().getStringArray(R.array.values_mode);
-	}
-
-	/**
-	 * Get values of the hold position spinner.
-	 *
-	 * @return The values of the hold position spinner.
-	 */
-	private String[] getHoldPositionSpinnerValues() {
-		return getResources().getStringArray(R.array.values_hold_position);
 	}
 
 	/**

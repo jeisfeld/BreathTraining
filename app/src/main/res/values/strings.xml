@@ -15,8 +15,8 @@
     <string name="button_pause">Pause</string>
     <string name="button_ok">OK</string>
 
-    <string name="button_breathe_in">Breathe In …</string>
-    <string name="button_breathe_out">Breathe Out …</string>
+    <string name="button_inhale">Inhale …</string>
+    <string name="button_exhale">Exhale …</string>
 
     <string name="title_dialog_confirmation">Confirmation</string>
 
@@ -28,10 +28,11 @@
     <string name="text_hold_end_duration">Hold End Dur:</string>
     <string name="text_hold_position">Hold Position:</string>
     <string name="text_hold_variation">Hold Variation:</string>
+    <string name="text_sound_type">Sound:</string>
 
-    <string name="message_measure">Press “Start” after breathing out to start the measurement of breath duration.\n\nThen press the big full-screen button whenever changing between breathing in and breathing out.</string>
-    <string name="message_measurement_too_short">Measurement was too short.\n\nBreathe in and out at least one time before stopping the measurement.</string>
-    <string name="message_measurement_result">Last measurement result:\n\nAverage breath duration: %1$.1fs\n\nIn-out relation: %2$.0f%%\n\nFor another meaturement, press “Start” after breathing out.\n\nThen press the big full-screen button whenever changing between breathing in and breathing out.</string>
+    <string name="message_measure">Press “Start” after exhaling to start the measurement of breath duration.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
+    <string name="message_measurement_too_short">Measurement was too short.\n\nInhale and exhale at least once before stopping the measurement.</string>
+    <string name="message_measurement_result">Last measurement result:\n\nAverage breath duration: %1$.1fs\n\nIn-out relation: %2$.0f%%\n\nFor another measurement, press “Start” after breathing out.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
 
     <string-array name="values_mode">
         <item>Simple</item>
@@ -41,5 +42,10 @@
         <item>In</item>
         <item>Out</item>
         <item>Both</item>
+    </string-array>
+    <string-array name="values_sound_type">
+        <item>None</item>
+        <item>Text</item>
+        <item>Breath</item>
     </string-array>
 </resources>

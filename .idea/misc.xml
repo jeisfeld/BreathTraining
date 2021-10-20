@@ -11,8 +11,10 @@
         <entry key="..\:/Git/BreathControl/app/src/main/res/layout/fragment_home.xml" value="0.253125" />
         <entry key="..\:/Git/BreathControl/app/src/main/res/layout/fragment_measure.xml" value="0.253125" />
         <entry key="..\:/Git/BreathControl/app/src/main/res/layout/nav_header_main.xml" value="0.253125" />
+        <entry key="..\:/Git/BreathControl/app/src/main/res/layout/spinner_item_bigtext.xml" value="0.253125" />
         <entry key="..\:/Git/BreathControl/app/src/main/res/layout/spinner_item_hold_position.xml" value="0.253125" />
         <entry key="..\:/Git/BreathControl/app/src/main/res/layout/spinner_item_mode.xml" value="0.253125" />
+        <entry key="..\:/Git/BreathControl/app/src/main/res/layout/spinner_item_standard.xml" value="0.253125" />
         <entry key="..\:/Git/BreathControl/app/src/main/res/menu/activity_main_drawer.xml" value="0.253125" />
       </map>
     </option>

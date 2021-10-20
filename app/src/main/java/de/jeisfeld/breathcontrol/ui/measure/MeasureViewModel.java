@@ -1,5 +1,7 @@
 package de.jeisfeld.breathcontrol.ui.measure;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -7,8 +9,9 @@ import java.util.concurrent.TimeUnit;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import de.jeisfeld.breathcontrol.Application;
 import de.jeisfeld.breathcontrol.R;
+import de.jeisfeld.breathcontrol.sound.MediaPlayer;
+import de.jeisfeld.breathcontrol.sound.SoundType;
 import de.jeisfeld.breathcontrol.ui.home.HomeViewModel;
 
 /**
@@ -27,6 +30,10 @@ public class MeasureViewModel extends ViewModel {
 	 * Flag indicating if the current phase is breathing out.
 	 */
 	private final MutableLiveData<Boolean> mIsBreathingOut = new MutableLiveData<>(true);
+	/**
+	 * The flag indicating what sound should be played.
+	 */
+	private final MutableLiveData<SoundType> mSoundType = new MutableLiveData<>(SoundType.WORDS);
 	/**
 	 * The breathe in durations.
 	 */
@@ -59,28 +66,61 @@ public class MeasureViewModel extends ViewModel {
 	}
 
 	/**
-	 * Start the measurement.
+	 * Get the sound type.
+	 *
+	 * @return The sound type.
 	 */
-	protected void startMeasurement() {
+	protected MutableLiveData<SoundType> getSoundType() {
+		return mSoundType;
+	}
+
+	/**
+	 * Update the sound type.
+	 *
+	 * @param soundType The new sound type.
+	 */
+	protected void updateSoundType(final SoundType soundType) {
+		mSoundType.setValue(soundType);
+	}
+
+	/**
+	 * Start the measurement.
+	 *
+	 * @param context the context.
+	 */
+	protected void startMeasurement(final Context context) {
+		if (context == null) {
+			return;
+		}
 		mIsBreathingOut.setValue(false);
 		mBreatheInDurations.clear();
 		mBreatheOutDurations.clear();
 		mMeasurementTimes.clear();
 		mMeasurementTimes.add(System.currentTimeMillis());
-		mText.setValue(Application.getAppContext().getString(R.string.message_measure));
+		mText.setValue(context.getString(R.string.message_measure));
+
+		SoundType soundType = mSoundType.getValue();
+		if (soundType != null) {
+			MediaPlayer.getInstance().play(context, soundType.getInhaleResource());
+		}
 	}
 
 	/**
 	 * Stop the measurement.
 	 *
 	 * @param homeViewModel The view model of the home view.
+	 * @param context       the context.
 	 * @return true if measurement was successful.
 	 */
-	protected boolean stopMeasurement(final HomeViewModel homeViewModel) {
-		changeBreath();
+	protected boolean stopMeasurement(final Context context, final HomeViewModel homeViewModel) {
+		if (context == null) {
+			return false;
+		}
+		doChangeBreathCalculations();
+		MediaPlayer.getInstance().stop();
 
 		if (mBreatheInDurations.size() < 1 || mBreatheOutDurations.size() < 1) {
-			mText.setValue(Application.getResourceString(R.string.message_measurement_too_short));
+			mText.setValue(context.getString(R.string.message_measurement_too_short));
 			return false;
 		}
 
@@ -119,7 +159,7 @@ public class MeasureViewModel extends ViewModel {
 		double averageDurationSeconds = averageDuration / (double) TimeUnit.SECONDS.toMillis(1);
 		double inOutRatio = (double) averageInDuration / averageDuration;
 
-		mText.setValue(Application.getResourceString(R.string.message_measurement_result, averageDurationSeconds, inOutRatio * 100)); // MAGIC_NUMBER
+		mText.setValue(context.getString(R.string.message_measurement_result, averageDurationSeconds, inOutRatio * 100)); // MAGIC_NUMBER
 
 		if (homeViewModel != null) {
 			homeViewModel.updateBreathDuration(averageDuration);
@@ -131,9 +171,9 @@ public class MeasureViewModel extends ViewModel {
 	}
 
 	/**
-	 * Change the breath direction.
+	 * Do the calculations after changing Breath.
 	 */
-	protected void changeBreath() {
+	private void doChangeBreathCalculations() {
 		mIsBreathingOut.setValue(Boolean.FALSE.equals(mIsBreathingOut.getValue()));
 		mMeasurementTimes.add(System.currentTimeMillis());
 		if (mMeasurementTimes.size() >= 2) {
@@ -144,6 +184,25 @@ public class MeasureViewModel extends ViewModel {
 			else {
 				mBreatheInDurations.add(lastDuration);
 			}
+		}
+	}
+
+	/**
+	 * Change the breath direction.
+	 *
+	 * @param context the context.
+	 */
+	protected void changeBreath(final Context context) {
+		if (context == null) {
+			return;
+		}
+
+		doChangeBreathCalculations();
+
+		SoundType soundType = mSoundType.getValue();
+		if (soundType != null) {
+			MediaPlayer.getInstance().play(context,
+					Boolean.TRUE.equals(mIsBreathingOut.getValue()) ? soundType.getExhaleResource() : soundType.getInhaleResource());
 		}
 	}
 

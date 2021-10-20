@@ -4,14 +4,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import de.jeisfeld.breathcontrol.R;
 import de.jeisfeld.breathcontrol.databinding.FragmentMeasureBinding;
+import de.jeisfeld.breathcontrol.sound.SoundType;
 import de.jeisfeld.breathcontrol.ui.home.HomeViewModel;
 
 /**
@@ -29,31 +35,46 @@ public class MeasureFragment extends Fragment {
 
 	@Override
 	public final View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		mMeasureViewModel =
-				new ViewModelProvider(requireActivity()).get(MeasureViewModel.class);
+		mMeasureViewModel = new ViewModelProvider(requireActivity()).get(MeasureViewModel.class);
 
 		mBinding = FragmentMeasureBinding.inflate(inflater, container, false);
 
 		final TextView textView = mBinding.textMeasurement;
 		mMeasureViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
+		final Spinner spinnerSoundType = mBinding.spinnerSoundType;
+		spinnerSoundType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_bigtext,
+				getResources().getStringArray(R.array.values_sound_type)));
+		mMeasureViewModel.getSoundType().observe(getViewLifecycleOwner(), soundType -> spinnerSoundType.setSelection(soundType.ordinal()));
+		spinnerSoundType.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				mMeasureViewModel.updateSoundType(SoundType.values()[position]);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// do nothing
+			}
+		});
+
 		final Button buttonStart = mBinding.buttonStart;
 		final Button buttonStop = mBinding.buttonStop;
 		final Button buttonBreathe = mBinding.buttonBreathe;
 
 		mMeasureViewModel.isBreathingOut().observe(getViewLifecycleOwner(),
-				isBreathingOut -> buttonBreathe.setText(isBreathingOut ? R.string.button_breathe_out : R.string.button_breathe_in));
+				isBreathingOut -> buttonBreathe.setText(isBreathingOut ? R.string.button_exhale : R.string.button_inhale));
 
 		buttonStart.setOnClickListener(v -> {
 			buttonStart.setVisibility(View.INVISIBLE);
 			buttonStop.setVisibility(View.VISIBLE);
 			buttonBreathe.setVisibility(View.VISIBLE);
-			mMeasureViewModel.startMeasurement();
+			mMeasureViewModel.startMeasurement(getContext());
 		});
 
 		buttonStop.setOnClickListener(v -> {
 			HomeViewModel homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-			boolean success = mMeasureViewModel.stopMeasurement(homeViewModel);
+			boolean success = mMeasureViewModel.stopMeasurement(getContext(), homeViewModel);
 			if (success) {
 				Navigation.findNavController(v).navigate(R.id.nav_home);
 			}
@@ -62,7 +83,7 @@ public class MeasureFragment extends Fragment {
 			buttonBreathe.setVisibility(View.INVISIBLE);
 		});
 
-		buttonBreathe.setOnClickListener(v -> mMeasureViewModel.changeBreath());
+		buttonBreathe.setOnClickListener(v -> mMeasureViewModel.changeBreath(getContext()));
 
 		return mBinding.getRoot();
 	}

@@ -11,6 +11,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import de.jeisfeld.breathcontrol.databinding.ActivityMainBinding;
+import de.jeisfeld.breathcontrol.sound.MediaPlayer;
 
 /**
  * Main activity of the app.
@@ -58,5 +59,11 @@ public class MainActivity extends AppCompatActivity {
 		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 		return NavigationUI.navigateUp(navController, mAppBarConfiguration)
 				|| super.onSupportNavigateUp();
+	}
+
+	@Override
+	public final void onDestroy() {
+		super.onDestroy();
+		MediaPlayer.releaseInstance();
 	}
 }

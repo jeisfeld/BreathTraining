@@ -130,7 +130,7 @@
 
                 <TableRow
                     android:id="@+id/tableRowBreathEndDuration"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="0dp"
@@ -159,7 +159,7 @@
 
                 <TableRow
                     android:id="@+id/tableRowHoldStartDuration"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="0dp"
@@ -190,7 +190,7 @@
 
                 <TableRow
                     android:id="@+id/tableRowHoldEndDuration"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="0dp"
@@ -220,7 +220,7 @@
 
                 <TableRow
                     android:id="@+id/tableRowHoldPosition"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="0dp"
@@ -240,7 +240,7 @@
 
                 <TableRow
                     android:id="@+id/tableRowHoldVariation"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="0dp"
@@ -267,8 +267,28 @@
 
                 </TableRow>
 
-            </TableLayout>
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/seekbar_height" />
 
+                <TableRow android:id="@+id/tableRowSoundType">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_sound_type" />
+
+                    <Spinner
+                        android:id="@+id/spinnerSoundType"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_spinner_width" />
+                </TableRow>
+
+            </TableLayout>
         </LinearLayout>
     </ScrollView>
 

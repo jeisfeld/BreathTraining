@@ -3,6 +3,7 @@ package de.jeisfeld.breathcontrol.ui.home;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import de.jeisfeld.breathcontrol.sound.SoundType;
 
 /**
  * The view model for the fragment.
@@ -52,6 +53,11 @@ public class HomeViewModel extends ViewModel {
 	 * The hold position.
 	 */
 	private final MutableLiveData<HoldPosition> mHoldPosition = new MutableLiveData<>(HoldPosition.OUT);
+
+	/**
+	 * The flag indicating what sound should be played.
+	 */
+	private final MutableLiveData<SoundType> mSoundType = new MutableLiveData<>(SoundType.WORDS);
 
 	/**
 	 * Get the mode.
@@ -207,10 +213,28 @@ public class HomeViewModel extends ViewModel {
 	}
 
 	/**
+	 * Get the sound type.
+	 *
+	 * @return The sound type.
+	 */
+	protected MutableLiveData<SoundType> getSoundType() {
+		return mSoundType;
+	}
+
+	/**
+	 * Update the sound type.
+	 *
+	 * @param soundType The new sound type.
+	 */
+	protected void updateSoundType (final SoundType soundType) {
+		mSoundType.setValue(soundType);
+	}
+
+	/**
 	 * Convert seekbar value to value in ms for duration.
 	 *
 	 * @param seekbarValue the seekbar value
-	 * @param allowZero flag indicating if value 0 is allowed
+	 * @param allowZero    flag indicating if value 0 is allowed
 	 * @return The value
 	 */
 	protected static long durationSeekbarToValue(final int seekbarValue, final boolean allowZero) {
