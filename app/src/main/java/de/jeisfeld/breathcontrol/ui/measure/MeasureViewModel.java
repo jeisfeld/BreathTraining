@@ -103,7 +103,7 @@ public class MeasureViewModel extends ViewModel {
 
 		SoundType soundType = mSoundType.getValue();
 		if (soundType != null) {
-			MediaPlayer.getInstance().play(context, MediaTrigger.ACTIVITY, soundType, StepType.INHALE);
+			MediaPlayer.getInstance().play(context, MediaTrigger.ACTIVITY, soundType, StepType.INHALE, 0);
 		}
 	}
 
@@ -204,7 +204,7 @@ public class MeasureViewModel extends ViewModel {
 		SoundType soundType = mSoundType.getValue();
 		if (soundType != null) {
 			MediaPlayer.getInstance().play(context, MediaTrigger.ACTIVITY, soundType,
-					Boolean.TRUE.equals(mIsBreathingOut.getValue()) ? StepType.EXHALE : StepType.INHALE);
+					Boolean.TRUE.equals(mIsBreathingOut.getValue()) ? StepType.EXHALE : StepType.INHALE, 0);
 		}
 	}
 

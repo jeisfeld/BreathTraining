@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="de.jeisfeld.breathcontrol">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="de.jeisfeld.breathcontrol">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -29,6 +30,14 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
+
+        <receiver
+            android:name="de.jeisfeld.breathcontrol.ui.home.ServiceReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="de.jeisfeld.breathcontrol.SERVICE_RECEIVER" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

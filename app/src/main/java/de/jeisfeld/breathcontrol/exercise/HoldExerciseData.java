@@ -1,13 +1,10 @@
 package de.jeisfeld.breathcontrol.exercise;
 
-import android.content.Intent;
-
 import java.util.Iterator;
 import java.util.Random;
-import java.util.stream.DoubleStream;
 
+import android.content.Intent;
 import de.jeisfeld.breathcontrol.sound.SoundType;
-import de.jeisfeld.breathcontrol.util.Logger;
 
 /**
  * Exercise data for hold exercise.
@@ -36,24 +33,25 @@ public class HoldExerciseData extends ExerciseData {
 	/**
 	 * A random stream of doubles.
 	 */
-	private final Iterator<Double> mDoubleIterator = new Random().doubles().iterator();
+	private final transient Iterator<Double> mDoubleIterator = new Random().doubles().iterator();
 
 	/**
 	 * Constructor.
 	 *
-	 * @param repetitions       The number of repetitions
-	 * @param breathDuration    The breath duration
-	 * @param inOutRelation     The in/out relation
+	 * @param repetitions The number of repetitions
+	 * @param breathDuration The breath duration
+	 * @param inOutRelation The in/out relation
 	 * @param holdStartDuration The hold start duration
-	 * @param holdEndDuration   The hold end duration
-	 * @param holdPosition      The hold position
-	 * @param holdVariation     The hold variation
-	 * @param soundType         The sound type
+	 * @param holdEndDuration The hold end duration
+	 * @param holdPosition The hold position
+	 * @param holdVariation The hold variation
+	 * @param soundType The sound type
+	 * @param playStatus The playing status
 	 */
 	public HoldExerciseData(final Integer repetitions, final Long breathDuration, final Double inOutRelation, // SUPPRESS_CHECKSTYLE
-							final Long holdStartDuration, final Long holdEndDuration, final HoldPosition holdPosition, final Double holdVariation,
-							final SoundType soundType) {
-		super(repetitions, breathDuration, inOutRelation, soundType);
+			final Long holdStartDuration, final Long holdEndDuration, final HoldPosition holdPosition, final Double holdVariation,
+			final SoundType soundType, final PlayStatus playStatus) {
+		super(repetitions, breathDuration, inOutRelation, soundType, playStatus);
 		mHoldStartDuration = holdStartDuration;
 		mHoldEndDuration = holdEndDuration;
 		mHoldPosition = holdPosition;
@@ -112,6 +110,7 @@ public class HoldExerciseData extends ExerciseData {
 
 	/**
 	 * Get the hold duration for a certain repetition.
+	 *
 	 * @param repetition The repetition
 	 * @return The hold duration
 	 */
@@ -124,22 +123,22 @@ public class HoldExerciseData extends ExerciseData {
 	}
 
 	@Override
-	protected ExerciseStep[] getStepsForRepetition(int repetition) {
+	protected final ExerciseStep[] getStepsForRepetition(final int repetition) {
 		switch (mHoldPosition) {
 		case IN:
-			return new ExerciseStep[]{
+			return new ExerciseStep[] {
 					new ExerciseStep(StepType.INHALE, (long) (getBreathDuration() * getInOutRelation())),
 					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition)),
 					new ExerciseStep(StepType.EXHALE, (long) (getBreathDuration() * (1 - getInOutRelation())))
 			};
 		case OUT:
-			return new ExerciseStep[]{
+			return new ExerciseStep[] {
 					new ExerciseStep(StepType.INHALE, (long) (getBreathDuration() * getInOutRelation())),
 					new ExerciseStep(StepType.EXHALE, (long) (getBreathDuration() * (1 - getInOutRelation()))),
 					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition))
 			};
 		case BOTH:
-			return new ExerciseStep[]{
+			return new ExerciseStep[] {
 					new ExerciseStep(StepType.INHALE, (long) (getBreathDuration() * getInOutRelation())),
 					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition) / 2),
 					new ExerciseStep(StepType.EXHALE, (long) (getBreathDuration() * (1 - getInOutRelation()))),

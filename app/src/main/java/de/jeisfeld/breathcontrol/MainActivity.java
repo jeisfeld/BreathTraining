@@ -2,7 +2,9 @@ package de.jeisfeld.breathcontrol;
 
 import com.google.android.material.navigation.NavigationView;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -13,9 +15,11 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import de.jeisfeld.breathcontrol.databinding.ActivityMainBinding;
 import de.jeisfeld.breathcontrol.exercise.ExerciseData;
+import de.jeisfeld.breathcontrol.exercise.ExerciseStep;
 import de.jeisfeld.breathcontrol.sound.MediaPlayer;
 import de.jeisfeld.breathcontrol.sound.MediaTrigger;
 import de.jeisfeld.breathcontrol.ui.home.HomeViewModel;
+import de.jeisfeld.breathcontrol.ui.home.ServiceReceiver;
 
 /**
  * Main activity of the app.
@@ -29,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
 	 * The activity binding.
 	 */
 	private ActivityMainBinding mBinding;
+	/**
+	 * The service receiver.
+	 */
+	private ServiceReceiver mServiceReceiver;
 
 	@Override
 	protected final void onCreate(final Bundle savedInstanceState) {
@@ -50,10 +58,15 @@ public class MainActivity extends AppCompatActivity {
 		NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 		NavigationUI.setupWithNavController(navigationView, navController);
 
+		HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+
+		mServiceReceiver = new ServiceReceiver(new Handler(), homeViewModel);
+		registerReceiver(mServiceReceiver, new IntentFilter(ServiceReceiver.RECEIVER_ACTION));
+
 		ExerciseData exerciseData = ExerciseData.fromIntent(getIntent());
 		if (exerciseData != null) {
-			HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-			homeViewModel.updateFromExerciseData(exerciseData);
+			ExerciseStep exerciseStep = (ExerciseStep) getIntent().getSerializableExtra(ServiceReceiver.EXTRA_EXERCISE_STEP);
+			homeViewModel.updateFromExerciseData(exerciseData, exerciseStep);
 			navController.navigate(R.id.nav_home);
 		}
 	}
@@ -77,4 +90,5 @@ public class MainActivity extends AppCompatActivity {
 		super.onDestroy();
 		MediaPlayer.releaseInstance(MediaTrigger.ACTIVITY);
 	}
+
 }

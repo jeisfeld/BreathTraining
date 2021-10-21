@@ -52,9 +52,10 @@ public class MediaPlayer extends android.media.MediaPlayer {
 	 * @param trigger The triggerer of the media play.
 	 * @param soundType The sound type.
 	 * @param stepType The step type.
+	 * @param delay A delay in ms.
 	 */
-	public void play(final Context context, final MediaTrigger trigger, final SoundType soundType, final StepType stepType) {
-		play(context, trigger, soundType.getSoundResource(stepType));
+	public void play(final Context context, final MediaTrigger trigger, final SoundType soundType, final StepType stepType, final long delay) {
+		play(context, trigger, soundType.getSoundResource(stepType), delay);
 	}
 
 	/**
@@ -63,8 +64,10 @@ public class MediaPlayer extends android.media.MediaPlayer {
 	 * @param context The context.
 	 * @param resourceId The sound resource.
 	 * @param trigger The trigger of the audio playing.
+	 * @param delay A delay in ms.
 	 */
-	public synchronized void play(final Context context, final MediaTrigger trigger, final int resourceId) {
+	public synchronized void play(final Context context, final MediaTrigger trigger, final int resourceId, final long delay) {
+		final long startTimeStamp = System.currentTimeMillis();
 		mTrigger = trigger;
 		stop();
 		reset();
@@ -85,7 +88,15 @@ public class MediaPlayer extends android.media.MediaPlayer {
 			Log.e(Application.TAG, "Failed to open sound resource", ex);
 			return;
 		}
-
+		long passedTime = System.currentTimeMillis() - startTimeStamp;
+		if (passedTime < delay) {
+			try {
+				Thread.sleep(delay - passedTime);
+			}
+			catch (InterruptedException e) {
+				// ignore
+			}
+		}
 		start();
 	}
 

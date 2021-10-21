@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
@@ -19,7 +18,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.jeisfeld.breathcontrol.R;
 import de.jeisfeld.breathcontrol.databinding.FragmentHomeBinding;
-import de.jeisfeld.breathcontrol.exercise.ExerciseService;
 import de.jeisfeld.breathcontrol.exercise.ExerciseType;
 import de.jeisfeld.breathcontrol.exercise.HoldPosition;
 import de.jeisfeld.breathcontrol.sound.SoundType;
@@ -64,12 +62,12 @@ public class HomeFragment extends Fragment {
 		mHomeViewModel.getHoldPosition().observe(getViewLifecycleOwner(), holdPosition -> spinnerHoldPosition.setSelection(holdPosition.ordinal()));
 		spinnerHoldPosition.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
 				mHomeViewModel.updateHoldPosition(HoldPosition.values()[position]);
 			}
 
 			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
+			public void onNothingSelected(final AdapterView<?> parent) {
 				// do nothing
 			}
 		});
@@ -97,9 +95,7 @@ public class HomeFragment extends Fragment {
 		prepareSeekbarHoldEndDuration(root);
 		prepareSeekbarInOutRelation(root);
 		prepareSeekbarHoldVariation(root);
-
-		final Button buttonStart = mBinding.buttonStart;
-		buttonStart.setOnClickListener(v -> ExerciseService.triggerAnimationService(getContext(), mHomeViewModel.getExerciseData()));
+		prepareButtons();
 
 		return root;
 	}
@@ -108,6 +104,51 @@ public class HomeFragment extends Fragment {
 	public final void onDestroyView() {
 		super.onDestroyView();
 		mBinding = null;
+	}
+
+	/**
+	 * Prepare the buttons.
+	 */
+	private void prepareButtons() {
+		mHomeViewModel.getPlayStatus().observe(getViewLifecycleOwner(), playStatus -> {
+			switch (playStatus) {
+			case STOPPED:
+				mBinding.buttonStart.setVisibility(View.VISIBLE);
+				mBinding.buttonStop.setVisibility(View.INVISIBLE);
+				mBinding.buttonPause.setVisibility(View.INVISIBLE);
+				mBinding.buttonResume.setVisibility(View.INVISIBLE);
+				mBinding.buttonBreathe.setVisibility(View.INVISIBLE);
+				break;
+			case PLAYING:
+				mBinding.buttonStart.setVisibility(View.INVISIBLE);
+				mBinding.buttonStop.setVisibility(View.VISIBLE);
+				mBinding.buttonPause.setVisibility(View.VISIBLE);
+				mBinding.buttonResume.setVisibility(View.INVISIBLE);
+				mBinding.buttonBreathe.setVisibility(View.VISIBLE);
+				break;
+			case PAUSED:
+				mBinding.buttonStart.setVisibility(View.INVISIBLE);
+				mBinding.buttonStop.setVisibility(View.VISIBLE);
+				mBinding.buttonPause.setVisibility(View.INVISIBLE);
+				mBinding.buttonResume.setVisibility(View.VISIBLE);
+				mBinding.buttonBreathe.setVisibility(View.INVISIBLE);
+				break;
+			default:
+				break;
+			}
+		});
+
+		mHomeViewModel.getExerciseStep().observe(getViewLifecycleOwner(), exerciseStep -> {
+			if (exerciseStep != null && exerciseStep.getStepType() != null) {
+				mBinding.buttonBreathe.setText(exerciseStep.getStepType().getDisplayResource());
+			}
+		});
+
+		mBinding.buttonStart.setOnClickListener(v -> mHomeViewModel.play(getContext()));
+		mBinding.buttonStop.setOnClickListener(v -> mHomeViewModel.stop(getContext()));
+		mBinding.buttonPause.setOnClickListener(v -> mHomeViewModel.pause(getContext()));
+		mBinding.buttonResume.setOnClickListener(v -> mHomeViewModel.resume(getContext()));
+		mBinding.buttonBreathe.setOnClickListener(v -> mHomeViewModel.next(getContext()));
 	}
 
 	/**

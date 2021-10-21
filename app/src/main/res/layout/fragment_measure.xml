@@ -32,7 +32,7 @@
         android:id="@+id/button_breathe"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:text="@string/button_inhale"
+        android:text="@string/text_inhale"
         android:textSize="36sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/button_start"

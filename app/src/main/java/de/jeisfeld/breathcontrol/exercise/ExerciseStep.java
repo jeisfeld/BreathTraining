@@ -1,9 +1,15 @@
 package de.jeisfeld.breathcontrol.exercise;
 
+import java.io.Serializable;
+
 /**
  * An exercise step.
  */
-public class ExerciseStep {
+public class ExerciseStep implements Serializable {
+	/**
+	 * The serial version UID.
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * The step type.
 	 */

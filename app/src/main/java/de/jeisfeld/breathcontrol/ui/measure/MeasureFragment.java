@@ -62,7 +62,7 @@ public class MeasureFragment extends Fragment {
 		final Button buttonBreathe = mBinding.buttonBreathe;
 
 		mMeasureViewModel.isBreathingOut().observe(getViewLifecycleOwner(),
-				isBreathingOut -> buttonBreathe.setText(isBreathingOut ? R.string.button_exhale : R.string.button_inhale));
+				isBreathingOut -> buttonBreathe.setText(isBreathingOut ? R.string.text_exhale : R.string.text_inhale));
 
 		buttonStart.setOnClickListener(v -> {
 			buttonStart.setVisibility(View.INVISIBLE);

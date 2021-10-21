@@ -13,10 +13,13 @@
     <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>
     <string name="button_pause">Pause</string>
+    <string name="button_resume">Resume</string>
     <string name="button_ok">OK</string>
 
-    <string name="button_inhale">Inhale …</string>
-    <string name="button_exhale">Exhale …</string>
+    <string name="text_inhale">Inhale …</string>
+    <string name="text_exhale">Exhale …</string>
+    <string name="text_hold">Hold …</string>
+    <string name="text_relax">Relax …</string>
 
     <string name="title_dialog_confirmation">Confirmation</string>
 
@@ -35,8 +38,8 @@
     <string name="message_measurement_result">Last measurement result:\n\nAverage breath duration: %1$.1fs\n\nIn-out relation: %2$.0f%%\n\nFor another measurement, press “Start” after breathing out.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
 
     <string name="notification_channel">Breath Control</string>
-    <string name="notification_title_exercise">Breath Control</string>
-    <string name="notification_text_exercise_running">Exercise Running</string>
+    <string name="notification_title_exercise">Breath Control Exercise</string>
+    <string name="notification_text_exercise_running">Exercise Started</string>
 
 
     <string-array name="values_exercise_type">

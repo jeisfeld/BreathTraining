@@ -25,10 +25,11 @@ public class SimpleExerciseData extends ExerciseData {
 	 * @param breathEndDuration The breath end duration.
 	 * @param inOutRelation     The in/out relation.
 	 * @param soundType         The sound type.
+	 * @param playStatus The playing status.
 	 */
 	public SimpleExerciseData(final Integer repetitions, final Long breathDuration, final Long breathEndDuration,
-							  final Double inOutRelation, final SoundType soundType) {
-		super(repetitions, breathDuration, inOutRelation, soundType);
+							  final Double inOutRelation, final SoundType soundType, final PlayStatus playStatus) {
+		super(repetitions, breathDuration, inOutRelation, soundType, playStatus);
 		mBreathEndDuration = breathEndDuration;
 	}
 

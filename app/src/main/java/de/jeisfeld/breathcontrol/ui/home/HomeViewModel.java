@@ -1,12 +1,18 @@
 package de.jeisfeld.breathcontrol.ui.home;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import de.jeisfeld.breathcontrol.exercise.ExerciseData;
+import de.jeisfeld.breathcontrol.exercise.ExerciseService;
+import de.jeisfeld.breathcontrol.exercise.ExerciseService.ServiceCommand;
+import de.jeisfeld.breathcontrol.exercise.ExerciseStep;
 import de.jeisfeld.breathcontrol.exercise.ExerciseType;
 import de.jeisfeld.breathcontrol.exercise.HoldExerciseData;
 import de.jeisfeld.breathcontrol.exercise.HoldPosition;
+import de.jeisfeld.breathcontrol.exercise.PlayStatus;
 import de.jeisfeld.breathcontrol.exercise.SimpleExerciseData;
 import de.jeisfeld.breathcontrol.sound.SoundType;
 
@@ -37,12 +43,12 @@ public class HomeViewModel extends ViewModel {
 	/**
 	 * The hold start duration.
 	 */
-	private final MutableLiveData<Long> mHoldStartDuration = new MutableLiveData<>(0L);
+	private final MutableLiveData<Long> mHoldStartDuration = new MutableLiveData<>(3000L);
 
 	/**
 	 * The hold end duration.
 	 */
-	private final MutableLiveData<Long> mHoldEndDuration = new MutableLiveData<>(0L);
+	private final MutableLiveData<Long> mHoldEndDuration = new MutableLiveData<>(6000L);
 
 	/**
 	 * The in out relation.
@@ -63,6 +69,16 @@ public class HomeViewModel extends ViewModel {
 	 * The flag indicating what sound should be played.
 	 */
 	private final MutableLiveData<SoundType> mSoundType = new MutableLiveData<>(SoundType.WORDS);
+
+	/**
+	 * The play status.
+	 */
+	private final MutableLiveData<PlayStatus> mPlayStatus = new MutableLiveData<>(PlayStatus.STOPPED);
+
+	/**
+	 * The current exercise step.
+	 */
+	private final MutableLiveData<ExerciseStep> mExerciseStep = new MutableLiveData<>(null);
 
 	/**
 	 * Get the exercise type.
@@ -245,10 +261,96 @@ public class HomeViewModel extends ViewModel {
 	}
 
 	/**
+	 * Get the play status.
+	 *
+	 * @return The play status.
+	 */
+	protected MutableLiveData<PlayStatus> getPlayStatus() {
+		return mPlayStatus;
+	}
+
+	/**
+	 * Update the play status.
+	 *
+	 * @param playStatus The play status.
+	 */
+	public void updatePlayStatus(final PlayStatus playStatus) {
+		mPlayStatus.postValue(playStatus);
+	}
+
+	/**
+	 * Get the current exercise step.
+	 *
+	 * @return the current exercise step.
+	 */
+	protected MutableLiveData<ExerciseStep> getExerciseStep() {
+		return mExerciseStep;
+	}
+
+	/**
+	 * Update the exercise step.
+	 *
+	 * @param exerciseStep The current exercise step.
+	 */
+	public void updateExerciseStep(final ExerciseStep exerciseStep) {
+		mExerciseStep.postValue(exerciseStep);
+	}
+
+	/**
+	 * Start playing.
+	 *
+	 * @param context The context.
+	 */
+	protected void play(final Context context) {
+		mPlayStatus.setValue(PlayStatus.PLAYING);
+		ExerciseService.triggerExerciseService(context, ServiceCommand.START, getExerciseData());
+	}
+
+	/**
+	 * Stop playing.
+	 *
+	 * @param context The context.
+	 */
+	protected void stop(final Context context) {
+		mPlayStatus.setValue(PlayStatus.STOPPED);
+		ExerciseService.triggerExerciseService(context, ServiceCommand.STOP, getExerciseData());
+	}
+
+	/**
+	 * Pause playing.
+	 *
+	 * @param context The context.
+	 */
+	protected void pause(final Context context) {
+		mPlayStatus.setValue(PlayStatus.PAUSED);
+		ExerciseService.triggerExerciseService(context, ServiceCommand.PAUSE, getExerciseData());
+	}
+
+	/**
+	 * Go to next breath.
+	 *
+	 * @param context The context.
+	 */
+	protected void next(final Context context) {
+		ExerciseService.triggerExerciseService(context, ServiceCommand.NEXT, getExerciseData());
+	}
+
+	/**
+	 * Resume playing.
+	 *
+	 * @param context The context.
+	 */
+	protected void resume(final Context context) {
+		mPlayStatus.setValue(PlayStatus.PLAYING);
+		ExerciseService.triggerExerciseService(context, ServiceCommand.RESUME, getExerciseData());
+	}
+
+
+	/**
 	 * Convert seekbar value to value in ms for duration.
 	 *
 	 * @param seekbarValue the seekbar value
-	 * @param allowZero flag indicating if value 0 is allowed
+	 * @param allowZero    flag indicating if value 0 is allowed
 	 * @return The value
 	 */
 	protected static long durationSeekbarToValue(final int seekbarValue, final boolean allowZero) {
@@ -314,11 +416,10 @@ public class HomeViewModel extends ViewModel {
 		switch (exerciseType) {
 		case SIMPLE:
 			return new SimpleExerciseData(mRepetitions.getValue(), mBreathDuration.getValue(), mBreathEndDuration.getValue(),
-					mInOutRelation.getValue(),
-					mSoundType.getValue());
+					mInOutRelation.getValue(), mSoundType.getValue(), mPlayStatus.getValue());
 		case HOLD:
 			return new HoldExerciseData(mRepetitions.getValue(), mBreathDuration.getValue(), mInOutRelation.getValue(), mHoldStartDuration.getValue(),
-					mHoldEndDuration.getValue(), mHoldPosition.getValue(), mHoldVariation.getValue(), mSoundType.getValue());
+					mHoldEndDuration.getValue(), mHoldPosition.getValue(), mHoldVariation.getValue(), mSoundType.getValue(), mPlayStatus.getValue());
 		default:
 			return null;
 		}
@@ -328,8 +429,9 @@ public class HomeViewModel extends ViewModel {
 	 * Update the model from exercise data.
 	 *
 	 * @param exerciseData The exercise data.
+	 * @param exerciseStep The exercise step.
 	 */
-	public void updateFromExerciseData(final ExerciseData exerciseData) {
+	public void updateFromExerciseData(final ExerciseData exerciseData, final ExerciseStep exerciseStep) {
 		if (exerciseData == null) {
 			return;
 		}
@@ -343,6 +445,7 @@ public class HomeViewModel extends ViewModel {
 		mBreathDuration.setValue(exerciseData.getBreathDuration());
 		mInOutRelation.setValue(exerciseData.getInOutRelation());
 		mSoundType.setValue(exerciseData.getSoundType());
+		mPlayStatus.setValue(exerciseData.getPlayStatus());
 
 		switch (exerciseType) {
 		case SIMPLE:
@@ -357,6 +460,10 @@ public class HomeViewModel extends ViewModel {
 			break;
 		default:
 			// do nothing
+		}
+
+		if (exerciseStep != null) {
+			updateExerciseStep(exerciseStep);
 		}
 	}
 
