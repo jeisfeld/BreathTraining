@@ -21,7 +21,7 @@ import de.jeisfeld.breathtraining.MainActivity;
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.sound.MediaPlayer;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
-import de.jeisfeld.breathtraining.ui.home.ServiceReceiver;
+import de.jeisfeld.breathtraining.ui.training.ServiceReceiver;
 
 /**
  * A service handling Exercises in the background.

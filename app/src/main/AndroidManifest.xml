@@ -32,7 +32,7 @@
             android:foregroundServiceType="mediaPlayback" />
 
         <receiver
-            android:name="de.jeisfeld.breathtraining.ui.home.ServiceReceiver"
+            android:name="de.jeisfeld.breathtraining.ui.training.ServiceReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="de.jeisfeld.breathtraining.SERVICE_RECEIVER" />

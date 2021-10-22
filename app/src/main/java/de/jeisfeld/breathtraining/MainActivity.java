@@ -18,8 +18,8 @@ import de.jeisfeld.breathtraining.exercise.ExerciseData;
 import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.sound.MediaPlayer;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
-import de.jeisfeld.breathtraining.ui.home.HomeViewModel;
-import de.jeisfeld.breathtraining.ui.home.ServiceReceiver;
+import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
+import de.jeisfeld.breathtraining.ui.training.ServiceReceiver;
 
 /**
  * Main activity of the app.
@@ -51,23 +51,23 @@ public class MainActivity extends AppCompatActivity {
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
 		mAppBarConfiguration = new AppBarConfiguration.Builder(
-				R.id.nav_home, R.id.nav_measure)
+				R.id.nav_training, R.id.nav_measure)
 						.setOpenableLayout(drawer)
 						.build();
 		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 		NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 		NavigationUI.setupWithNavController(navigationView, navController);
 
-		HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+		TrainingViewModel trainingViewModel = new ViewModelProvider(this).get(TrainingViewModel.class);
 
-		mServiceReceiver = new ServiceReceiver(new Handler(), homeViewModel);
+		mServiceReceiver = new ServiceReceiver(new Handler(), trainingViewModel);
 		registerReceiver(mServiceReceiver, new IntentFilter(ServiceReceiver.RECEIVER_ACTION));
 
 		ExerciseData exerciseData = ExerciseData.fromIntent(getIntent());
 		if (exerciseData != null) {
 			ExerciseStep exerciseStep = (ExerciseStep) getIntent().getSerializableExtra(ServiceReceiver.EXTRA_EXERCISE_STEP);
-			homeViewModel.updateFromExerciseData(exerciseData, exerciseStep);
-			navController.navigate(R.id.nav_home);
+			trainingViewModel.updateFromExerciseData(exerciseData, exerciseStep);
+			navController.navigate(R.id.nav_training);
 		}
 	}
 

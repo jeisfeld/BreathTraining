@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import android.content.Intent;
 import de.jeisfeld.breathtraining.sound.SoundType;
-import de.jeisfeld.breathtraining.ui.home.ServiceReceiver;
+import de.jeisfeld.breathtraining.ui.training.ServiceReceiver;
 
 /**
  * Class holding data representing an animation.

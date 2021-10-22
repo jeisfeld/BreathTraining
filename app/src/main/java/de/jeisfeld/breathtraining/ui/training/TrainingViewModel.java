@@ -1,4 +1,4 @@
-package de.jeisfeld.breathtraining.ui.home;
+package de.jeisfeld.breathtraining.ui.training;
 
 import android.content.Context;
 
@@ -19,7 +19,7 @@ import de.jeisfeld.breathtraining.sound.SoundType;
 /**
  * The view model for the fragment.
  */
-public class HomeViewModel extends ViewModel {
+public class TrainingViewModel extends ViewModel {
 	/**
 	 * The exercise type.
 	 */

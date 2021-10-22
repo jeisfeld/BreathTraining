@@ -14,7 +14,7 @@ import de.jeisfeld.breathtraining.exercise.StepType;
 import de.jeisfeld.breathtraining.sound.MediaPlayer;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
 import de.jeisfeld.breathtraining.sound.SoundType;
-import de.jeisfeld.breathtraining.ui.home.HomeViewModel;
+import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
 
 /**
  * The view model for the fragment.
@@ -110,11 +110,11 @@ public class MeasureViewModel extends ViewModel {
 	/**
 	 * Stop the measurement.
 	 *
-	 * @param homeViewModel The view model of the home view.
+	 * @param trainingViewModel The view model of the home view.
 	 * @param context       the context.
 	 * @return true if measurement was successful.
 	 */
-	protected boolean stopMeasurement(final Context context, final HomeViewModel homeViewModel) {
+	protected boolean stopMeasurement(final Context context, final TrainingViewModel trainingViewModel) {
 		if (context == null) {
 			return false;
 		}
@@ -163,10 +163,10 @@ public class MeasureViewModel extends ViewModel {
 
 		mText.setValue(context.getString(R.string.message_measurement_result, averageDurationSeconds, inOutRatio * 100)); // MAGIC_NUMBER
 
-		if (homeViewModel != null) {
-			homeViewModel.updateBreathDuration(averageDuration);
-			homeViewModel.updateBreathEndDuration((long) (BREATH_DURATION_PROLONGATION * averageDuration));
-			homeViewModel.updateInOutRelation(inOutRatio);
+		if (trainingViewModel != null) {
+			trainingViewModel.updateBreathDuration(averageDuration);
+			trainingViewModel.updateBreathEndDuration((long) (BREATH_DURATION_PROLONGATION * averageDuration));
+			trainingViewModel.updateInOutRelation(inOutRatio);
 			return true;
 		}
 		return false;

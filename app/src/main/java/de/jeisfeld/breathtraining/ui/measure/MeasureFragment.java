@@ -17,7 +17,7 @@ import androidx.navigation.Navigation;
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.databinding.FragmentMeasureBinding;
 import de.jeisfeld.breathtraining.sound.SoundType;
-import de.jeisfeld.breathtraining.ui.home.HomeViewModel;
+import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
 
 /**
  * The fragment for measuring breath duration.
@@ -72,10 +72,10 @@ public class MeasureFragment extends Fragment {
 		});
 
 		buttonStop.setOnClickListener(v -> {
-			HomeViewModel homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-			boolean success = mMeasureViewModel.stopMeasurement(getContext(), homeViewModel);
+			TrainingViewModel trainingViewModel = new ViewModelProvider(requireActivity()).get(TrainingViewModel.class);
+			boolean success = mMeasureViewModel.stopMeasurement(getContext(), trainingViewModel);
 			if (success) {
-				Navigation.findNavController(v).navigate(R.id.nav_home);
+				Navigation.findNavController(v).navigate(R.id.nav_training);
 			}
 			buttonStart.setVisibility(View.VISIBLE);
 			buttonStop.setVisibility(View.INVISIBLE);

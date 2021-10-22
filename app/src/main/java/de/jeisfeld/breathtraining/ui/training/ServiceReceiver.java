@@ -1,4 +1,4 @@
-package de.jeisfeld.breathtraining.ui.home;
+package de.jeisfeld.breathtraining.ui.training;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,7 +30,7 @@ public class ServiceReceiver extends BroadcastReceiver {
 	/**
 	 * The view model.
 	 */
-	private final HomeViewModel mHomeViewModel;
+	private final TrainingViewModel mTrainingViewModel;
 
 	/**
 	 * Create a broadcast intent to send the playStatus to this receiver.
@@ -61,34 +61,34 @@ public class ServiceReceiver extends BroadcastReceiver {
 	 */
 	public ServiceReceiver() {
 		mHandler = null;
-		mHomeViewModel = null;
+		mTrainingViewModel = null;
 	}
 
 	/**
 	 * Constructor.
 	 *
 	 * @param handler The handler.
-	 * @param homeViewModel The UI model.
+	 * @param trainingViewModel The UI model.
 	 */
-	public ServiceReceiver(final Handler handler, final HomeViewModel homeViewModel) {
+	public ServiceReceiver(final Handler handler, final TrainingViewModel trainingViewModel) {
 		mHandler = handler;
-		mHomeViewModel = homeViewModel;
+		mTrainingViewModel = trainingViewModel;
 	}
 
 	@Override
 	public final void onReceive(final Context context, final Intent intent) {
-		if (mHandler == null || mHomeViewModel == null) {
+		if (mHandler == null || mTrainingViewModel == null) {
 			return;
 		}
 
 		PlayStatus playStatus = (PlayStatus) intent.getSerializableExtra(EXTRA_PLAY_STATUS);
 		if (playStatus != null) {
-			mHandler.post(() -> mHomeViewModel.updatePlayStatus(playStatus));
+			mHandler.post(() -> mTrainingViewModel.updatePlayStatus(playStatus));
 		}
 
 		ExerciseStep exerciseStep = (ExerciseStep) intent.getSerializableExtra(EXTRA_EXERCISE_STEP);
 		if (exerciseStep != null) {
-			mHandler.post(() -> mHomeViewModel.updateExerciseStep(exerciseStep));
+			mHandler.post(() -> mTrainingViewModel.updateExerciseStep(exerciseStep));
 		}
 	}
 }

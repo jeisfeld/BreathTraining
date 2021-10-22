@@ -1,4 +1,4 @@
-package de.jeisfeld.breathtraining.ui.home;
+package de.jeisfeld.breathtraining.ui.training;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.jeisfeld.breathtraining.R;
-import de.jeisfeld.breathtraining.databinding.FragmentHomeBinding;
+import de.jeisfeld.breathtraining.databinding.FragmentTrainingBinding;
 import de.jeisfeld.breathtraining.exercise.ExerciseType;
 import de.jeisfeld.breathtraining.exercise.HoldPosition;
 import de.jeisfeld.breathtraining.sound.SoundType;
@@ -25,7 +25,7 @@ import de.jeisfeld.breathtraining.sound.SoundType;
 /**
  * The fragment for managing basic breath control page.
  */
-public class HomeFragment extends Fragment {
+public class TrainingFragment extends Fragment {
 	/**
 	 * The number of milliseconds per second.
 	 */
@@ -38,32 +38,32 @@ public class HomeFragment extends Fragment {
 	/**
 	 * The view model.
 	 */
-	private HomeViewModel mHomeViewModel;
+	private TrainingViewModel mTrainingViewModel;
 	/**
 	 * The fragment binding.
 	 */
-	private FragmentHomeBinding mBinding;
+	private FragmentTrainingBinding mBinding;
 
 	@Override
 	public final View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		mHomeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-		mBinding = FragmentHomeBinding.inflate(inflater, container, false);
+		mTrainingViewModel = new ViewModelProvider(requireActivity()).get(TrainingViewModel.class);
+		mBinding = FragmentTrainingBinding.inflate(inflater, container, false);
 		View root = mBinding.getRoot();
 
 		final Spinner spinnerExerciseType = mBinding.spinnerExerciseType;
 		spinnerExerciseType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_exercise_type,
 				getResources().getStringArray(R.array.values_exercise_type)));
-		mHomeViewModel.getExerciseType().observe(getViewLifecycleOwner(), exerciseType -> spinnerExerciseType.setSelection(exerciseType.ordinal()));
-		spinnerExerciseType.setOnItemSelectedListener(getOnExerciseTypeSelectedListener(root, mHomeViewModel));
+		mTrainingViewModel.getExerciseType().observe(getViewLifecycleOwner(), exerciseType -> spinnerExerciseType.setSelection(exerciseType.ordinal()));
+		spinnerExerciseType.setOnItemSelectedListener(getOnExerciseTypeSelectedListener(root, mTrainingViewModel));
 
 		final Spinner spinnerHoldPosition = mBinding.spinnerHoldPosition;
 		spinnerHoldPosition.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
 				getResources().getStringArray(R.array.values_hold_position)));
-		mHomeViewModel.getHoldPosition().observe(getViewLifecycleOwner(), holdPosition -> spinnerHoldPosition.setSelection(holdPosition.ordinal()));
+		mTrainingViewModel.getHoldPosition().observe(getViewLifecycleOwner(), holdPosition -> spinnerHoldPosition.setSelection(holdPosition.ordinal()));
 		spinnerHoldPosition.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
-				mHomeViewModel.updateHoldPosition(HoldPosition.values()[position]);
+				mTrainingViewModel.updateHoldPosition(HoldPosition.values()[position]);
 			}
 
 			@Override
@@ -75,11 +75,11 @@ public class HomeFragment extends Fragment {
 		final Spinner spinnerSoundType = mBinding.spinnerSoundType;
 		spinnerSoundType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
 				getResources().getStringArray(R.array.values_sound_type)));
-		mHomeViewModel.getSoundType().observe(getViewLifecycleOwner(), soundType -> spinnerSoundType.setSelection(soundType.ordinal()));
+		mTrainingViewModel.getSoundType().observe(getViewLifecycleOwner(), soundType -> spinnerSoundType.setSelection(soundType.ordinal()));
 		spinnerSoundType.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
-				mHomeViewModel.updateSoundType(SoundType.values()[position]);
+				mTrainingViewModel.updateSoundType(SoundType.values()[position]);
 			}
 
 			@Override
@@ -110,7 +110,7 @@ public class HomeFragment extends Fragment {
 	 * Prepare the buttons.
 	 */
 	private void prepareButtons() {
-		mHomeViewModel.getPlayStatus().observe(getViewLifecycleOwner(), playStatus -> {
+		mTrainingViewModel.getPlayStatus().observe(getViewLifecycleOwner(), playStatus -> {
 			switch (playStatus) {
 			case STOPPED:
 				mBinding.buttonStart.setVisibility(View.VISIBLE);
@@ -138,17 +138,17 @@ public class HomeFragment extends Fragment {
 			}
 		});
 
-		mHomeViewModel.getExerciseStep().observe(getViewLifecycleOwner(), exerciseStep -> {
+		mTrainingViewModel.getExerciseStep().observe(getViewLifecycleOwner(), exerciseStep -> {
 			if (exerciseStep != null && exerciseStep.getStepType() != null) {
 				mBinding.buttonBreathe.setText(exerciseStep.getStepType().getDisplayResource());
 			}
 		});
 
-		mBinding.buttonStart.setOnClickListener(v -> mHomeViewModel.play(getContext()));
-		mBinding.buttonStop.setOnClickListener(v -> mHomeViewModel.stop(getContext()));
-		mBinding.buttonPause.setOnClickListener(v -> mHomeViewModel.pause(getContext()));
-		mBinding.buttonResume.setOnClickListener(v -> mHomeViewModel.resume(getContext()));
-		mBinding.buttonBreathe.setOnClickListener(v -> mHomeViewModel.next(getContext()));
+		mBinding.buttonStart.setOnClickListener(v -> mTrainingViewModel.play(getContext()));
+		mBinding.buttonStop.setOnClickListener(v -> mTrainingViewModel.stop(getContext()));
+		mBinding.buttonPause.setOnClickListener(v -> mTrainingViewModel.pause(getContext()));
+		mBinding.buttonResume.setOnClickListener(v -> mTrainingViewModel.resume(getContext()));
+		mBinding.buttonBreathe.setOnClickListener(v -> mTrainingViewModel.next(getContext()));
 	}
 
 	/**
@@ -158,14 +158,14 @@ public class HomeFragment extends Fragment {
 	 */
 	private void prepareSeekbarRepetitions(final View root) {
 		mBinding.textViewRepetitions.setText(String.format(Locale.getDefault(), "%d",
-				HomeViewModel.repetitionsSeekbarToValue(mBinding.seekBarRepetitions.getProgress())));
-		mHomeViewModel.getRepetitions().observe(getViewLifecycleOwner(), value -> {
-			int seekBarValue = HomeViewModel.repetitionsValueToSeekbar(value);
+				TrainingViewModel.repetitionsSeekbarToValue(mBinding.seekBarRepetitions.getProgress())));
+		mTrainingViewModel.getRepetitions().observe(getViewLifecycleOwner(), value -> {
+			int seekBarValue = TrainingViewModel.repetitionsValueToSeekbar(value);
 			mBinding.seekBarRepetitions.setProgress(seekBarValue);
 			mBinding.textViewRepetitions.setText(String.format(Locale.getDefault(), "%d", value));
 		});
 		mBinding.seekBarRepetitions.setOnSeekBarChangeListener(
-				(OnSeekBarProgressChangedListener) progress -> mHomeViewModel.updateRepetitions(HomeViewModel.repetitionsSeekbarToValue(progress)));
+				(OnSeekBarProgressChangedListener) progress -> mTrainingViewModel.updateRepetitions(TrainingViewModel.repetitionsSeekbarToValue(progress)));
 	}
 
 	/**
@@ -174,15 +174,15 @@ public class HomeFragment extends Fragment {
 	 * @param root The parent view.
 	 */
 	private void prepareSeekbarBreathDuration(final View root) {
-		long breathDuration = HomeViewModel.durationSeekbarToValue(mBinding.seekBarBreathDuration.getProgress(), false);
+		long breathDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarBreathDuration.getProgress(), false);
 		if (breathDuration >= MAX_TWODIGIT_SECONDS) {
 			mBinding.textViewBreathDuration.setText(String.format(Locale.getDefault(), "%.0fs", breathDuration / MILLIS_PER_SECOND));
 		}
 		else {
 			mBinding.textViewBreathDuration.setText(String.format(Locale.getDefault(), "%.1fs", breathDuration / MILLIS_PER_SECOND));
 		}
-		mHomeViewModel.getBreathDuration().observe(getViewLifecycleOwner(), duration -> {
-			int seekbarValue = HomeViewModel.durationValueToSeekbar(duration);
+		mTrainingViewModel.getBreathDuration().observe(getViewLifecycleOwner(), duration -> {
+			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
 			mBinding.seekBarBreathDuration.setProgress(seekbarValue);
 			if (duration >= MAX_TWODIGIT_SECONDS) {
 				mBinding.textViewBreathDuration.setText(String.format(Locale.getDefault(), "%.0fs", duration / MILLIS_PER_SECOND));
@@ -191,8 +191,8 @@ public class HomeFragment extends Fragment {
 				mBinding.textViewBreathDuration.setText(String.format(Locale.getDefault(), "%.1fs", duration / MILLIS_PER_SECOND));
 			}
 		});
-		mBinding.seekBarBreathDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mHomeViewModel
-				.updateBreathDuration(HomeViewModel.durationSeekbarToValue(progress, false)));
+		mBinding.seekBarBreathDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
+				.updateBreathDuration(TrainingViewModel.durationSeekbarToValue(progress, false)));
 	}
 
 	/**
@@ -201,15 +201,15 @@ public class HomeFragment extends Fragment {
 	 * @param root The parent view.
 	 */
 	private void prepareSeekbarBreathEndDuration(final View root) {
-		long breathEndDuration = HomeViewModel.durationSeekbarToValue(mBinding.seekBarBreathEndDuration.getProgress(), false);
+		long breathEndDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarBreathEndDuration.getProgress(), false);
 		if (breathEndDuration >= MAX_TWODIGIT_SECONDS) {
 			mBinding.textViewBreathEndDuration.setText(String.format(Locale.getDefault(), "%.0fs", breathEndDuration / MILLIS_PER_SECOND));
 		}
 		else {
 			mBinding.textViewBreathEndDuration.setText(String.format(Locale.getDefault(), "%.1fs", breathEndDuration / MILLIS_PER_SECOND));
 		}
-		mHomeViewModel.getBreathEndDuration().observe(getViewLifecycleOwner(), duration -> {
-			int seekbarValue = HomeViewModel.durationValueToSeekbar(duration);
+		mTrainingViewModel.getBreathEndDuration().observe(getViewLifecycleOwner(), duration -> {
+			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
 			mBinding.seekBarBreathEndDuration.setProgress(seekbarValue);
 			if (duration >= MAX_TWODIGIT_SECONDS) {
 				mBinding.textViewBreathEndDuration.setText(String.format(Locale.getDefault(), "%.0fs", duration / MILLIS_PER_SECOND));
@@ -218,8 +218,8 @@ public class HomeFragment extends Fragment {
 				mBinding.textViewBreathEndDuration.setText(String.format(Locale.getDefault(), "%.1fs", duration / MILLIS_PER_SECOND));
 			}
 		});
-		mBinding.seekBarBreathEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mHomeViewModel
-				.updateBreathEndDuration(HomeViewModel.durationSeekbarToValue(progress, false)));
+		mBinding.seekBarBreathEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
+				.updateBreathEndDuration(TrainingViewModel.durationSeekbarToValue(progress, false)));
 	}
 
 	/**
@@ -228,15 +228,15 @@ public class HomeFragment extends Fragment {
 	 * @param root The parent view.
 	 */
 	private void prepareSeekbarHoldStartDuration(final View root) {
-		long holdStartDuration = HomeViewModel.durationSeekbarToValue(mBinding.seekBarHoldStartDuration.getProgress(), true);
+		long holdStartDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldStartDuration.getProgress(), true);
 		if (holdStartDuration >= MAX_TWODIGIT_SECONDS) {
 			mBinding.textViewHoldStartDuration.setText(String.format(Locale.getDefault(), "%.0fs", holdStartDuration / MILLIS_PER_SECOND));
 		}
 		else {
 			mBinding.textViewHoldStartDuration.setText(String.format(Locale.getDefault(), "%.1fs", holdStartDuration / MILLIS_PER_SECOND));
 		}
-		mHomeViewModel.getHoldStartDuration().observe(getViewLifecycleOwner(), duration -> {
-			int seekbarValue = HomeViewModel.durationValueToSeekbar(duration);
+		mTrainingViewModel.getHoldStartDuration().observe(getViewLifecycleOwner(), duration -> {
+			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
 			mBinding.seekBarHoldStartDuration.setProgress(seekbarValue);
 			if (duration >= MAX_TWODIGIT_SECONDS) {
 				mBinding.textViewHoldStartDuration.setText(String.format(Locale.getDefault(), "%.0fs", duration / MILLIS_PER_SECOND));
@@ -245,8 +245,8 @@ public class HomeFragment extends Fragment {
 				mBinding.textViewHoldStartDuration.setText(String.format(Locale.getDefault(), "%.1fs", duration / MILLIS_PER_SECOND));
 			}
 		});
-		mBinding.seekBarHoldStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mHomeViewModel
-				.updateHoldStartDuration(HomeViewModel.durationSeekbarToValue(progress, true)));
+		mBinding.seekBarHoldStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
+				.updateHoldStartDuration(TrainingViewModel.durationSeekbarToValue(progress, true)));
 	}
 
 	/**
@@ -255,15 +255,15 @@ public class HomeFragment extends Fragment {
 	 * @param root The parent view.
 	 */
 	private void prepareSeekbarHoldEndDuration(final View root) {
-		long holdEndDuration = HomeViewModel.durationSeekbarToValue(mBinding.seekBarHoldEndDuration.getProgress(), true);
+		long holdEndDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldEndDuration.getProgress(), true);
 		if (holdEndDuration >= MAX_TWODIGIT_SECONDS) {
 			mBinding.textViewHoldEndDuration.setText(String.format(Locale.getDefault(), "%.0fs", holdEndDuration / MILLIS_PER_SECOND));
 		}
 		else {
 			mBinding.textViewHoldEndDuration.setText(String.format(Locale.getDefault(), "%.1fs", holdEndDuration / MILLIS_PER_SECOND));
 		}
-		mHomeViewModel.getHoldEndDuration().observe(getViewLifecycleOwner(), duration -> {
-			int seekbarValue = HomeViewModel.durationValueToSeekbar(duration);
+		mTrainingViewModel.getHoldEndDuration().observe(getViewLifecycleOwner(), duration -> {
+			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
 			mBinding.seekBarHoldEndDuration.setProgress(seekbarValue);
 			if (duration >= MAX_TWODIGIT_SECONDS) {
 				mBinding.textViewHoldEndDuration.setText(String.format(Locale.getDefault(), "%.0fs", duration / MILLIS_PER_SECOND));
@@ -272,8 +272,8 @@ public class HomeFragment extends Fragment {
 				mBinding.textViewHoldEndDuration.setText(String.format(Locale.getDefault(), "%.1fs", duration / MILLIS_PER_SECOND));
 			}
 		});
-		mBinding.seekBarHoldEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mHomeViewModel
-				.updateHoldEndDuration(HomeViewModel.durationSeekbarToValue(progress, true)));
+		mBinding.seekBarHoldEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
+				.updateHoldEndDuration(TrainingViewModel.durationSeekbarToValue(progress, true)));
 	}
 
 	/**
@@ -283,14 +283,14 @@ public class HomeFragment extends Fragment {
 	 */
 	private void prepareSeekbarInOutRelation(final View root) {
 		mBinding.textViewInOutRelation.setText(String.format(Locale.getDefault(), "%d%%", mBinding.seekBarInOutRelation.getProgress()));
-		mHomeViewModel.getInOutRelation().observe(getViewLifecycleOwner(), value -> {
+		mTrainingViewModel.getInOutRelation().observe(getViewLifecycleOwner(), value -> {
 			int seekBarValue = (int) Math.round(value * 100); // MAGIC_NUMBER
 			mBinding.seekBarInOutRelation.setProgress(seekBarValue);
 			mBinding.textViewInOutRelation.setText(String.format(Locale.getDefault(), "%d%%", seekBarValue));
 		});
 		mBinding.seekBarInOutRelation.setOnSeekBarChangeListener(
 				(OnSeekBarProgressChangedListener) progress -> {
-					mHomeViewModel.updateInOutRelation(progress / 100.0); // MAGIC_NUMBER
+					mTrainingViewModel.updateInOutRelation(progress / 100.0); // MAGIC_NUMBER
 				});
 	}
 
@@ -301,14 +301,14 @@ public class HomeFragment extends Fragment {
 	 */
 	private void prepareSeekbarHoldVariation(final View root) {
 		mBinding.textViewHoldVariation.setText(String.format(Locale.getDefault(), "%d%%", mBinding.seekBarHoldVariation.getProgress()));
-		mHomeViewModel.getHoldVariation().observe(getViewLifecycleOwner(), value -> {
+		mTrainingViewModel.getHoldVariation().observe(getViewLifecycleOwner(), value -> {
 			int seekBarValue = (int) Math.round(value * 100); // MAGIC_NUMBER
 			mBinding.seekBarHoldVariation.setProgress(seekBarValue);
 			mBinding.textViewHoldVariation.setText(String.format(Locale.getDefault(), "%d%%", seekBarValue));
 		});
 		mBinding.seekBarHoldVariation.setOnSeekBarChangeListener(
 				(OnSeekBarProgressChangedListener) progress -> {
-					mHomeViewModel.updateHoldVariation(progress / 100.0); // MAGIC_NUMBER
+					mTrainingViewModel.updateHoldVariation(progress / 100.0); // MAGIC_NUMBER
 				});
 	}
 
@@ -319,7 +319,7 @@ public class HomeFragment extends Fragment {
 	 * @param viewModel The view model.
 	 * @return The listener.
 	 */
-	protected final OnItemSelectedListener getOnExerciseTypeSelectedListener(final View parentView, final HomeViewModel viewModel) {
+	protected final OnItemSelectedListener getOnExerciseTypeSelectedListener(final View parentView, final TrainingViewModel viewModel) {
 		return new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
