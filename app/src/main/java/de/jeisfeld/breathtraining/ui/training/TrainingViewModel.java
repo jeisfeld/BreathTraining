@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.exercise.ExerciseData;
 import de.jeisfeld.breathtraining.exercise.ExerciseService;
 import de.jeisfeld.breathtraining.exercise.ExerciseService.ServiceCommand;
@@ -15,6 +16,7 @@ import de.jeisfeld.breathtraining.exercise.HoldPosition;
 import de.jeisfeld.breathtraining.exercise.PlayStatus;
 import de.jeisfeld.breathtraining.exercise.SimpleExerciseData;
 import de.jeisfeld.breathtraining.sound.SoundType;
+import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
 /**
  * The view model for the fragment.
@@ -23,52 +25,61 @@ public class TrainingViewModel extends ViewModel {
 	/**
 	 * The exercise type.
 	 */
-	private final MutableLiveData<ExerciseType> mExerciseType = new MutableLiveData<>(ExerciseType.SIMPLE);
+	private final MutableLiveData<ExerciseType> mExerciseType = new MutableLiveData<>(
+			ExerciseType.values()[PreferenceUtil.getSharedPreferenceInt(R.string.key_exercise_type, ExerciseType.SIMPLE.ordinal())]);
 
 	/**
 	 * The number of repetitions.
 	 */
-	private final MutableLiveData<Integer> mRepetitions = new MutableLiveData<>(10);
+	private final MutableLiveData<Integer> mRepetitions = new MutableLiveData<>(PreferenceUtil.getSharedPreferenceInt(R.string.key_repetitions, 10));
 
 	/**
 	 * The breath duration.
 	 */
-	private final MutableLiveData<Long> mBreathDuration = new MutableLiveData<>(10000L);
+	private final MutableLiveData<Long> mBreathDuration = new MutableLiveData<>(
+			PreferenceUtil.getSharedPreferenceLong(R.string.key_breath_duration, 10000L));
 
 	/**
 	 * The breath end duration.
 	 */
-	private final MutableLiveData<Long> mBreathEndDuration = new MutableLiveData<>(10000L);
+	private final MutableLiveData<Long> mBreathEndDuration = new MutableLiveData<>(
+			PreferenceUtil.getSharedPreferenceLong(R.string.key_breath_end_duration, 10000L));
 
 	/**
 	 * The hold start duration.
 	 */
-	private final MutableLiveData<Long> mHoldStartDuration = new MutableLiveData<>(3000L);
+	private final MutableLiveData<Long> mHoldStartDuration = new MutableLiveData<>(
+			PreferenceUtil.getSharedPreferenceLong(R.string.key_hold_start_duration, 3000L));
 
 	/**
 	 * The hold end duration.
 	 */
-	private final MutableLiveData<Long> mHoldEndDuration = new MutableLiveData<>(6000L);
+	private final MutableLiveData<Long> mHoldEndDuration = new MutableLiveData<>(
+			PreferenceUtil.getSharedPreferenceLong(R.string.key_hold_end_duration, 6000L));
 
 	/**
 	 * The in out relation.
 	 */
-	private final MutableLiveData<Double> mInOutRelation = new MutableLiveData<>(0.5); // MAGIC_NUMBER
+	private final MutableLiveData<Double> mInOutRelation = new MutableLiveData<>(
+			PreferenceUtil.getSharedPreferenceDouble(R.string.key_in_out_relation, 0.5));
 
 	/**
 	 * The hold variation.
 	 */
-	private final MutableLiveData<Double> mHoldVariation = new MutableLiveData<>(0.0); // MAGIC_NUMBER
+	private final MutableLiveData<Double> mHoldVariation = new MutableLiveData<>(
+			PreferenceUtil.getSharedPreferenceDouble(R.string.key_hold_variation, 0));
 
 	/**
 	 * The hold position.
 	 */
-	private final MutableLiveData<HoldPosition> mHoldPosition = new MutableLiveData<>(HoldPosition.OUT);
+	private final MutableLiveData<HoldPosition> mHoldPosition = new MutableLiveData<>(
+			HoldPosition.values()[PreferenceUtil.getSharedPreferenceInt(R.string.key_hold_position, HoldPosition.OUT.ordinal())]);
 
 	/**
 	 * The flag indicating what sound should be played.
 	 */
-	private final MutableLiveData<SoundType> mSoundType = new MutableLiveData<>(SoundType.WORDS);
+	private final MutableLiveData<SoundType> mSoundType = new MutableLiveData<>(
+			SoundType.values()[PreferenceUtil.getSharedPreferenceInt(R.string.key_sound_type, SoundType.WORDS.ordinal())]);
 
 	/**
 	 * The play status.
@@ -96,6 +107,7 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	protected void updateExerciseType(final ExerciseType exerciseType) {
 		mExerciseType.setValue(exerciseType);
+		PreferenceUtil.setSharedPreferenceInt(R.string.key_exercise_type, exerciseType.ordinal());
 	}
 
 	/**
@@ -114,6 +126,7 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	protected void updateRepetitions(final int repetitions) {
 		mRepetitions.setValue(repetitions);
+		PreferenceUtil.setSharedPreferenceInt(R.string.key_repetitions, repetitions);
 	}
 
 	/**
@@ -132,6 +145,7 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	public void updateBreathDuration(final long breathDuration) {
 		mBreathDuration.setValue(breathDuration);
+		PreferenceUtil.setSharedPreferenceLong(R.string.key_breath_duration, breathDuration);
 	}
 
 	/**
@@ -150,6 +164,7 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	public void updateBreathEndDuration(final long breathEndDuration) {
 		mBreathEndDuration.setValue(breathEndDuration);
+		PreferenceUtil.setSharedPreferenceLong(R.string.key_breath_end_duration, breathEndDuration);
 	}
 
 	/**
@@ -168,6 +183,7 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	protected void updateHoldStartDuration(final long holdStartDuration) {
 		mHoldStartDuration.setValue(holdStartDuration);
+		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_start_duration, holdStartDuration);
 	}
 
 	/**
@@ -186,6 +202,7 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	protected void updateHoldEndDuration(final long holdEndDuration) {
 		mHoldEndDuration.setValue(holdEndDuration);
+		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_end_duration, holdEndDuration);
 	}
 
 	/**
@@ -204,6 +221,7 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	public void updateInOutRelation(final double inOutRelation) {
 		mInOutRelation.setValue(inOutRelation);
+		PreferenceUtil.setSharedPreferenceDouble(R.string.key_in_out_relation, inOutRelation);
 	}
 
 	/**
@@ -222,6 +240,7 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	protected void updateHoldVariation(final double holdVariation) {
 		mHoldVariation.setValue(holdVariation);
+		PreferenceUtil.setSharedPreferenceDouble(R.string.key_hold_variation, holdVariation);
 	}
 
 	/**
@@ -240,6 +259,7 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	protected void updateHoldPosition(final HoldPosition holdPosition) {
 		mHoldPosition.setValue(holdPosition);
+		PreferenceUtil.setSharedPreferenceInt(R.string.key_hold_position, holdPosition.ordinal());
 	}
 
 	/**
@@ -258,6 +278,7 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	protected void updateSoundType(final SoundType soundType) {
 		mSoundType.setValue(soundType);
+		PreferenceUtil.setSharedPreferenceInt(R.string.key_sound_type, soundType.ordinal());
 	}
 
 	/**

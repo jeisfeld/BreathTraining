@@ -38,6 +38,17 @@
     <string name="text_hold_variation">Hold Variation:</string>
     <string name="text_sound_type">Sound:</string>
 
+    <string name="key_exercise_type">exercise_type</string>
+    <string name="key_breath_duration">breath_duration</string>
+    <string name="key_breath_end_duration">breath_end_duration</string>
+    <string name="key_repetitions">repetitions</string>
+    <string name="key_in_out_relation">in_out_relation</string>
+    <string name="key_sound_type">sound_type</string>
+    <string name="key_hold_start_duration">hold_start_duration</string>
+    <string name="key_hold_end_duration">hold_end_duration</string>
+    <string name="key_hold_position">hold_position</string>
+    <string name="key_hold_variation">hold_variation</string>
+
     <string name="message_measure">Press “Start” after exhaling to start the measurement of breath duration.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
     <string name="message_measurement_too_short">Measurement was too short.\n\nInhale and exhale at least once before stopping the measurement.</string>
     <string name="message_measurement_result">Last measurement result:\n\nAverage breath duration: %1$.1fs\n\nIn-out relation: %2$.0f%%\n\nFor another measurement, press “Start” after breathing out.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
