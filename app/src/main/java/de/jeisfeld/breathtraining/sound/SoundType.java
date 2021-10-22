@@ -18,7 +18,7 @@ public enum SoundType {
 	/**
 	 * Breath.
 	 */
-	BREATH(R.raw.br_inhale, R.raw.br_exhale, 0, R.raw.a_relax);
+	BREATH(R.raw.br_inhale, R.raw.br_exhale, R.raw.br_hold, R.raw.a_relax);
 
 	/**
 	 * The sound resource for inhale.
