@@ -332,7 +332,7 @@ public class TrainingViewModel extends ViewModel {
 	 * @param context The context.
 	 */
 	protected void next(final Context context) {
-		ExerciseService.triggerExerciseService(context, ServiceCommand.NEXT, getExerciseData());
+		ExerciseService.triggerExerciseService(context, ServiceCommand.SKIP, getExerciseData());
 	}
 
 	/**

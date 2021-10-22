@@ -20,6 +20,11 @@
     <string name="text_exhale">Exhale …</string>
     <string name="text_hold">Hold …</string>
     <string name="text_relax">Relax …</string>
+    <string name="text_starting">Starting …</string>
+    <string name="text_stopping">Stopping …</string>
+    <string name="text_pausing">Pausing …</string>
+    <string name="text_resuming">Resuming …</string>
+    <string name="text_skipping">Skipping …</string>
 
     <string name="title_dialog_confirmation">Confirmation</string>
 

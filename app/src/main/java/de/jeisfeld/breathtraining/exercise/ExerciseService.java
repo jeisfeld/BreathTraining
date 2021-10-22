@@ -94,7 +94,7 @@ public class ExerciseService extends Service {
 		final ServiceCommand serviceCommand = (ServiceCommand) intent.getSerializableExtra(EXTRA_SERVICE_COMMAND);
 		final ExerciseData exerciseData = ExerciseData.fromIntent(intent);
 		assert exerciseData != null;
-		startNotification(exerciseData, null);
+		startNotification(exerciseData, null, serviceCommand);
 
 		switch (serviceCommand) {
 		case START:
@@ -133,7 +133,7 @@ public class ExerciseService extends Service {
 				mRunningThreads.notifyAll();
 			}
 			return START_STICKY;
-		case NEXT:
+		case SKIP:
 			synchronized (mRunningThreads) {
 				if (mRunningThreads.size() > 0) {
 					mIsSkipping = true;
@@ -177,7 +177,7 @@ public class ExerciseService extends Service {
 						MediaPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE,
 								exerciseData.getSoundType(), exerciseStep.getStepType(), nextDelay);
 						sendBroadcast(ServiceReceiver.createIntent(exerciseStep));
-						startNotification(exerciseData, exerciseStep);
+						startNotification(exerciseData, exerciseStep, null);
 						try {
 							if (exerciseStep.getDuration() > SOUND_PREPARE_DELAY) {
 								Thread.sleep(exerciseStep.getDuration() - SOUND_PREPARE_DELAY);
@@ -249,8 +249,9 @@ public class ExerciseService extends Service {
 	 *
 	 * @param exerciseData The exercise data.
 	 * @param exerciseStep The current exercise step.
+	 * @param serviceCommand The service command.
 	 */
-	private void startNotification(final ExerciseData exerciseData, final ExerciseStep exerciseStep) {
+	private void startNotification(final ExerciseData exerciseData, final ExerciseStep exerciseStep, final ServiceCommand serviceCommand) {
 		Intent notificationIntent = new Intent(this, MainActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		exerciseData.addToIntent(notificationIntent);
@@ -258,10 +259,17 @@ public class ExerciseService extends Service {
 		PendingIntent pendingIntent = PendingIntent.getActivity(this,
 				REQUEST_CODE_START_APP, notificationIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
 
+		int contentTextResource = R.string.notification_text_exercise_running;
+		if (exerciseStep != null) {
+			contentTextResource = exerciseStep.getStepType().getDisplayResource();
+		}
+		else if (serviceCommand != null) {
+			contentTextResource = serviceCommand.getDisplayResource();
+		}
+
 		Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
 				.setContentTitle(getString(R.string.notification_title_exercise))
-				.setContentText(getString(
-						exerciseStep == null ? R.string.notification_text_exercise_running : exerciseStep.getStepType().getDisplayResource()))
+				.setContentText(getString(contentTextResource))
 				.setContentIntent(pendingIntent)
 				.setSmallIcon(R.mipmap.ic_launcher)
 				.build();
@@ -296,22 +304,45 @@ public class ExerciseService extends Service {
 		/**
 		 * Start.
 		 */
-		START,
+		START(R.string.text_starting),
 		/**
 		 * Stop.
 		 */
-		STOP,
+		STOP(R.string.text_stopping),
 		/**
 		 * Pause.
 		 */
-		PAUSE,
+		PAUSE(R.string.text_pausing),
 		/**
 		 * Resume.
 		 */
-		RESUME,
+		RESUME(R.string.text_resuming),
 		/**
-		 * Next step.
+		 * Skip to next step.
 		 */
-		NEXT
+		SKIP(R.string.text_skipping);
+
+		/**
+		 * The text resource for displaying the service command.
+		 */
+		private final int mTextResource;
+
+		/**
+		 * Constructor.
+		 *
+		 * @param textResource The text resource for displaying the service command.
+		 */
+		ServiceCommand(final int textResource) {
+			mTextResource = textResource;
+		}
+
+		/**
+		 * Get the String resource for display.
+		 *
+		 * @return The string resource.
+		 */
+		public int getDisplayResource() {
+			return mTextResource;
+		}
 	}
 }
