@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Breath Control</string>
+    <string name="app_name">Breath Training</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Breath Control</string>
+    <string name="nav_header_title">Breath Training</string>
     <string name="nav_header_subtitle">googleplay@jeisfeld.de</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
@@ -37,8 +37,8 @@
     <string name="message_measurement_too_short">Measurement was too short.\n\nInhale and exhale at least once before stopping the measurement.</string>
     <string name="message_measurement_result">Last measurement result:\n\nAverage breath duration: %1$.1fs\n\nIn-out relation: %2$.0f%%\n\nFor another measurement, press “Start” after breathing out.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
 
-    <string name="notification_channel">Breath Control</string>
-    <string name="notification_title_exercise">Breath Control Exercise</string>
+    <string name="notification_channel">Breath Training</string>
+    <string name="notification_title_exercise">Breath Training Exercise</string>
     <string name="notification_text_exercise_running">Exercise Started</string>
 
 

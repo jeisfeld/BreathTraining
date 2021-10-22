@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>BreathControlAppEclipse</name>
+	<name>BreathTrainingAppEclipse</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -71,7 +71,7 @@
 		<link>
 			<name>src</name>
 			<type>2</type>
-			<location>D:/Git/BreathControl/app/src/main/java</location>
+			<location>D:/Git/BreathTraining/app/src/main/java</location>
 		</link>
 		<link>
 			<name>srcShared</name>

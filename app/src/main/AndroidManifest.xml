@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.jeisfeld.breathcontrol">
+    package="de.jeisfeld.breathtraining">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name="de.jeisfeld.breathcontrol.Application"
+        android:name="de.jeisfeld.breathtraining.Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BreathControl">
+        android:theme="@style/Theme.BreathTraining">
         <activity
-            android:name=".MainActivity"
+            android:name="de.jeisfeld.breathtraining.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.BreathControl.NoActionBar">
+            android:theme="@style/Theme.BreathTraining.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,16 +26,16 @@
         </activity>
 
         <service
-            android:name="de.jeisfeld.breathcontrol.exercise.ExerciseService"
+            android:name="de.jeisfeld.breathtraining.exercise.ExerciseService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
 
         <receiver
-            android:name="de.jeisfeld.breathcontrol.ui.home.ServiceReceiver"
+            android:name="de.jeisfeld.breathtraining.ui.home.ServiceReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="de.jeisfeld.breathcontrol.SERVICE_RECEIVER" />
+                <action android:name="de.jeisfeld.breathtraining.SERVICE_RECEIVER" />
             </intent-filter>
         </receiver>
     </application>
