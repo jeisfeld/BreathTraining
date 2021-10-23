@@ -41,7 +41,7 @@ public class MeasureFragment extends Fragment {
 		mMeasureViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
 		final Spinner spinnerSoundType = mBinding.spinnerSoundType;
-		spinnerSoundType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_bigtext,
+		spinnerSoundType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_largetext,
 				getResources().getStringArray(R.array.values_sound_type)));
 		mMeasureViewModel.getSoundType().observe(getViewLifecycleOwner(), soundType -> spinnerSoundType.setSelection(soundType.ordinal()));
 		spinnerSoundType.setOnItemSelectedListener(new OnItemSelectedListener() {

@@ -1,5 +1,9 @@
 package de.jeisfeld.breathtraining.exercise;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -16,11 +20,6 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.view.View;
 import android.widget.RemoteViews;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import de.jeisfeld.breathtraining.MainActivity;
@@ -42,15 +41,15 @@ public class ExerciseService extends Service {
 	 */
 	private static final int REQUEST_CODE_START_APP = 1;
 	/**
-	 * The request code for stopping the service
+	 * The request code for stopping the service.
 	 */
 	private static final int REQUEST_CODE_STOP = 2;
 	/**
-	 * The request code for pausing the service
+	 * The request code for pausing the service.
 	 */
 	private static final int REQUEST_CODE_PAUSE = 3;
 	/**
-	 * The request code for resuming the service
+	 * The request code for resuming the service.
 	 */
 	private static final int REQUEST_CODE_RESUME = 4;
 	/**
@@ -98,9 +97,9 @@ public class ExerciseService extends Service {
 	/**
 	 * Trigger the exercise service.
 	 *
-	 * @param context        The context.
+	 * @param context The context.
 	 * @param serviceCommand The service command.
-	 * @param exerciseData   The exercise data.
+	 * @param exerciseData The exercise data.
 	 */
 	public static void triggerExerciseService(final Context context, final ServiceCommand serviceCommand, final ExerciseData exerciseData) {
 		ContextCompat.startForegroundService(context, getTriggerIntent(context, serviceCommand, exerciseData));
@@ -108,9 +107,10 @@ public class ExerciseService extends Service {
 
 	/**
 	 * Get a service intent for triggering the exercise service.
-	 * @param context        The context.
+	 *
+	 * @param context The context.
 	 * @param serviceCommand The service command.
-	 * @param exerciseData   The exercise data.
+	 * @param exerciseData The exercise data.
 	 * @return The service intent.
 	 */
 	private static Intent getTriggerIntent(final Context context, final ServiceCommand serviceCommand, final ExerciseData exerciseData) {
@@ -240,8 +240,8 @@ public class ExerciseService extends Service {
 	/**
 	 * Start the notification.
 	 *
-	 * @param exerciseData   The exercise data.
-	 * @param exerciseStep   The current exercise step.
+	 * @param exerciseData The exercise data.
+	 * @param exerciseStep The current exercise step.
 	 * @param serviceCommand The service command.
 	 */
 	private void startNotification(final ExerciseData exerciseData, final ExerciseStep exerciseStep, final ServiceCommand serviceCommand) {
@@ -249,8 +249,6 @@ public class ExerciseService extends Service {
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		exerciseData.addToIntent(notificationIntent);
 		notificationIntent.putExtra(ServiceReceiver.EXTRA_EXERCISE_STEP, exerciseStep);
-		PendingIntent pendingIntent = PendingIntent.getActivity(this,
-				REQUEST_CODE_START_APP, notificationIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
 
 		int contentTextResource = R.string.notification_text_exercise_running;
 		if (exerciseStep != null) {
@@ -296,6 +294,8 @@ public class ExerciseService extends Service {
 		remoteViews.setOnClickPendingIntent(R.id.button_pause, pendingIntentPause);
 		remoteViews.setOnClickPendingIntent(R.id.button_resume, pendingIntentResume);
 
+		PendingIntent pendingIntent = PendingIntent.getActivity(this,
+				REQUEST_CODE_START_APP, notificationIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
 		Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
 				.setCustomContentView(remoteViews)
 				.setContentIntent(pendingIntent)
@@ -307,9 +307,9 @@ public class ExerciseService extends Service {
 	/**
 	 * Update the service after the exercise has ended.
 	 *
-	 * @param wakeLock      The wakelock.
+	 * @param wakeLock The wakelock.
 	 * @param animationData The instance of animationData which is ended.
-	 * @param thread        The thread which is ended.
+	 * @param thread The thread which is ended.
 	 */
 	private void updateOnEndExercise(final WakeLock wakeLock, final ExerciseData animationData, final Thread thread) {
 		if (wakeLock != null && wakeLock.isHeld()) {
@@ -474,7 +474,9 @@ public class ExerciseService extends Service {
 		 * The action triggering this receiver.
 		 */
 		public static final String RECEIVER_ACTION = "de.jeisfeld.breathtraining.SERVICE_QUERY_RECEIVER";
-
+		/**
+		 * A reference to the ExerciseService.
+		 */
 		private final WeakReference<ExerciseService> mExerciseService;
 
 		/**
