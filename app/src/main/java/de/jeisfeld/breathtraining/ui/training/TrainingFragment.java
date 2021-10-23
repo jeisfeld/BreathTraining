@@ -222,6 +222,10 @@ public class TrainingFragment extends Fragment {
 		});
 		mBinding.seekBarBreathEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
 				.updateBreathEndDuration(TrainingViewModel.durationSeekbarToValue(progress, false)));
+
+		//noinspection ConstantConditions
+		mBinding.textViewBreathEndDuration.setOnClickListener(v ->
+				mTrainingViewModel.updateBreathEndDuration(mTrainingViewModel.getBreathDuration().getValue()));
 	}
 
 	/**
@@ -272,6 +276,10 @@ public class TrainingFragment extends Fragment {
 		});
 		mBinding.seekBarHoldEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
 				.updateHoldEndDuration(TrainingViewModel.durationSeekbarToValue(progress, true)));
+
+		//noinspection ConstantConditions
+		mBinding.textViewHoldEndDuration.setOnClickListener(v ->
+				mTrainingViewModel.updateHoldEndDuration(mTrainingViewModel.getHoldStartDuration().getValue()));
 	}
 
 	/**

@@ -60,8 +60,8 @@
 
 
     <string-array name="values_exercise_type">
-        <item>Simple</item>
-        <item>Hold</item>
+        <item>Simple Training</item>
+        <item>Training with Hold</item>
     </string-array>
     <string-array name="values_hold_position">
         <item>In</item>
