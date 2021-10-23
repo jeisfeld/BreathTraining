@@ -38,6 +38,13 @@
                 <action android:name="de.jeisfeld.breathtraining.SERVICE_RECEIVER" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name="de.jeisfeld.breathtraining.exercise.ExerciseService$ServiceQueryReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="de.jeisfeld.breathtraining.SERVICE_QUERY_RECEIVER" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

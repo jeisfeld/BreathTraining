@@ -297,7 +297,7 @@ public class TrainingViewModel extends ViewModel {
 	 * @param playStatus The play status.
 	 */
 	public void updatePlayStatus(final PlayStatus playStatus) {
-		mPlayStatus.postValue(playStatus);
+		mPlayStatus.setValue(playStatus);
 		if (playStatus == PlayStatus.STOPPED) {
 			mExerciseStep.setValue(new ExerciseStep(null, 0, 0));
 		}
@@ -333,7 +333,7 @@ public class TrainingViewModel extends ViewModel {
 	 * @param exerciseStep The current exercise step.
 	 */
 	public void updateExerciseStep(final ExerciseStep exerciseStep) {
-		mExerciseStep.postValue(exerciseStep);
+		mExerciseStep.setValue(exerciseStep);
 	}
 
 	/**

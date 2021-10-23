@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+
+import de.jeisfeld.breathtraining.exercise.ExerciseData;
 import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.PlayStatus;
 
@@ -33,25 +35,15 @@ public class ServiceReceiver extends BroadcastReceiver {
 	private final TrainingViewModel mTrainingViewModel;
 
 	/**
-	 * Create a broadcast intent to send the playStatus to this receiver.
+	 * Create a broadcast intent to send the playStatus and exerciseStep to this receiver.
 	 *
 	 * @param playStatus The play status.
-	 * @return The intent.
-	 */
-	public static Intent createIntent(final PlayStatus playStatus) {
-		Intent intent = new Intent(RECEIVER_ACTION);
-		intent.putExtra(EXTRA_PLAY_STATUS, playStatus);
-		return intent;
-	}
-
-	/**
-	 * Create a broadcast intent to send the exercise step to this receiver.
-	 *
 	 * @param exerciseStep The exercise step.
 	 * @return The intent.
 	 */
-	public static Intent createIntent(final ExerciseStep exerciseStep) {
+	public static Intent createIntent(final PlayStatus playStatus, final ExerciseStep exerciseStep) {
 		Intent intent = new Intent(RECEIVER_ACTION);
+		intent.putExtra(EXTRA_PLAY_STATUS, playStatus);
 		intent.putExtra(EXTRA_EXERCISE_STEP, exerciseStep);
 		return intent;
 	}
@@ -67,7 +59,7 @@ public class ServiceReceiver extends BroadcastReceiver {
 	/**
 	 * Constructor.
 	 *
-	 * @param handler The handler.
+	 * @param handler           The handler.
 	 * @param trainingViewModel The UI model.
 	 */
 	public ServiceReceiver(final Handler handler, final TrainingViewModel trainingViewModel) {
@@ -86,8 +78,12 @@ public class ServiceReceiver extends BroadcastReceiver {
 			mHandler.post(() -> mTrainingViewModel.updatePlayStatus(playStatus));
 		}
 
+		ExerciseData exerciseData = ExerciseData.fromIntent(intent);
 		ExerciseStep exerciseStep = (ExerciseStep) intent.getSerializableExtra(EXTRA_EXERCISE_STEP);
-		if (exerciseStep != null) {
+		if (exerciseData != null) {
+			mHandler.post(() -> mTrainingViewModel.updateFromExerciseData(exerciseData, exerciseStep));
+		}
+		else if (exerciseStep != null) {
 			mHandler.post(() -> mTrainingViewModel.updateExerciseStep(exerciseStep));
 		}
 	}

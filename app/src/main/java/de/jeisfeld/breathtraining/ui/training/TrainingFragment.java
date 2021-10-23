@@ -314,7 +314,7 @@ public class TrainingFragment extends Fragment {
 			mBinding.seekBarCurrentRepetition.setMax(repetitions - 1);
 			ExerciseStep exerciseStep = mTrainingViewModel.getExerciseStep().getValue();
 			int currentRepetition = exerciseStep == null ? 0 : exerciseStep.getRepetition();
-			mBinding.seekBarCurrentRepetition.setProgress(Math.max(0, Math.min(currentRepetition, repetitions - 1)));
+			mBinding.seekBarCurrentRepetition.setProgress(Math.max(0, Math.min(currentRepetition - 1, repetitions - 1)));
 		});
 		mTrainingViewModel.getExerciseStep().observe(getViewLifecycleOwner(), exerciseStep -> {
 			mBinding.seekBarCurrentRepetition.setProgress(Math.max(0, exerciseStep.getRepetition() - 1));

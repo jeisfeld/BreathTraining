@@ -1,12 +1,14 @@
 package de.jeisfeld.breathtraining;
 
-import com.google.android.material.navigation.NavigationView;
-
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.google.android.material.navigation.NavigationView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,6 +18,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import de.jeisfeld.breathtraining.databinding.ActivityMainBinding;
 import de.jeisfeld.breathtraining.exercise.ExerciseData;
+import de.jeisfeld.breathtraining.exercise.ExerciseService.ServiceQueryReceiver;
 import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.PlayStatus;
 import de.jeisfeld.breathtraining.sound.MediaPlayer;
@@ -31,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
 	 * The navigation bar configuration.
 	 */
 	private AppBarConfiguration mAppBarConfiguration;
+	/**
+	 * The service receiver.
+	 */
+	private ServiceReceiver mServiceReceiver;
 
 	@Override
 	protected final void onCreate(final Bundle savedInstanceState) {
@@ -54,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
 		TrainingViewModel trainingViewModel = new ViewModelProvider(this).get(TrainingViewModel.class);
 
-		ServiceReceiver mServiceReceiver = new ServiceReceiver(new Handler(), trainingViewModel);
+		mServiceReceiver = new ServiceReceiver(new Handler(), trainingViewModel);
 		registerReceiver(mServiceReceiver, new IntentFilter(ServiceReceiver.RECEIVER_ACTION));
 
 		ExerciseData exerciseData = ExerciseData.fromIntent(getIntent());
@@ -63,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
 			trainingViewModel.updateFromExerciseData(exerciseData, exerciseStep);
 			navController.navigate(R.id.nav_training);
 		}
+
+		sendBroadcast(new Intent(ServiceQueryReceiver.RECEIVER_ACTION));
 	}
 
 	@Override
@@ -101,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	public final void onDestroy() {
 		super.onDestroy();
+		unregisterReceiver(mServiceReceiver);
 		MediaPlayer.releaseInstance(MediaTrigger.ACTIVITY);
 	}
 

@@ -1,20 +1,24 @@
 package de.jeisfeld.breathtraining.exercise;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import de.jeisfeld.breathtraining.MainActivity;
@@ -61,6 +65,10 @@ public class ExerciseService extends Service {
 	 */
 	private boolean mIsPausing = false;
 	/**
+	 * Flag indicating if exercise is pausing.
+	 */
+	private boolean mIsStopping = false;
+	/**
 	 * Flag indicating if exercise is skipping to next breath.
 	 */
 	private boolean mIsSkipping = false;
@@ -68,13 +76,17 @@ public class ExerciseService extends Service {
 	 * The current exercise step.
 	 */
 	private ExerciseStep mExerciseStep = null;
+	/**
+	 * The service query receiver.
+	 */
+	private ServiceQueryReceiver mServiceQueryReceiver;
 
 	/**
 	 * Trigger the exercise service.
 	 *
-	 * @param context The context.
+	 * @param context        The context.
 	 * @param serviceCommand The service command.
-	 * @param exerciseData The exercise data.
+	 * @param exerciseData   The exercise data.
 	 */
 	public static void triggerExerciseService(final Context context, final ServiceCommand serviceCommand, final ExerciseData exerciseData) {
 		Intent serviceIntent = new Intent(context, ExerciseService.class);
@@ -86,6 +98,8 @@ public class ExerciseService extends Service {
 	@Override
 	public final void onCreate() {
 		super.onCreate();
+		mServiceQueryReceiver = new ServiceQueryReceiver(this);
+		registerReceiver(mServiceQueryReceiver, new IntentFilter(ServiceQueryReceiver.RECEIVER_ACTION));
 		createNotificationChannel();
 	}
 
@@ -107,6 +121,7 @@ public class ExerciseService extends Service {
 			synchronized (mRunningThreads) {
 				mIsPausing = false;
 				mIsSkipping = false;
+				mIsStopping = false;
 				mRunningThreads.notifyAll();
 				if (mRunningThreads.size() > 0) {
 					mRunningThreads.get(mRunningThreads.size() - 1).interrupt();
@@ -119,6 +134,7 @@ public class ExerciseService extends Service {
 			synchronized (mRunningThreads) {
 				mIsPausing = false;
 				mIsSkipping = false;
+				mIsStopping = true;
 				mRunningThreads.notifyAll();
 				if (mRunningThreads.size() > 0) {
 					mRunningThreads.get(mRunningThreads.size() - 1).interrupt();
@@ -131,6 +147,7 @@ public class ExerciseService extends Service {
 				mIsSkipping = true;
 				if (mRunningThreads.size() > 0) {
 					mRunningThreads.get(mRunningThreads.size() - 1).interrupt();
+					mRunningThreads.get(mRunningThreads.size() - 1).updateExerciseData(exerciseData);
 				}
 			}
 			return START_STICKY;
@@ -159,6 +176,7 @@ public class ExerciseService extends Service {
 	@Override
 	public final void onDestroy() {
 		super.onDestroy();
+		unregisterReceiver(mServiceQueryReceiver);
 	}
 
 	@Override
@@ -197,8 +215,8 @@ public class ExerciseService extends Service {
 	/**
 	 * Start the notification.
 	 *
-	 * @param exerciseData The exercise data.
-	 * @param exerciseStep The current exercise step.
+	 * @param exerciseData   The exercise data.
+	 * @param exerciseStep   The current exercise step.
 	 * @param serviceCommand The service command.
 	 */
 	private void startNotification(final ExerciseData exerciseData, final ExerciseStep exerciseStep, final ServiceCommand serviceCommand) {
@@ -213,7 +231,7 @@ public class ExerciseService extends Service {
 		if (exerciseStep != null) {
 			contentTextResource = exerciseStep.getStepType().getDisplayResource();
 		}
-		else if (serviceCommand != null) {
+		else if (serviceCommand != null && serviceCommand.getDisplayResource() != 0) {
 			contentTextResource = serviceCommand.getDisplayResource();
 		}
 
@@ -229,9 +247,9 @@ public class ExerciseService extends Service {
 	/**
 	 * Update the service after the exercise has ended.
 	 *
-	 * @param wakeLock The wakelock.
+	 * @param wakeLock      The wakelock.
 	 * @param animationData The instance of animationData which is ended.
-	 * @param thread The thread which is ended.
+	 * @param thread        The thread which is ended.
 	 */
 	private void updateOnEndExercise(final WakeLock wakeLock, final ExerciseData animationData, final Thread thread) {
 		if (wakeLock != null && wakeLock.isHeld()) {
@@ -243,7 +261,7 @@ public class ExerciseService extends Service {
 			if (mRunningThreads.size() == 0) {
 				MediaPlayer.releaseInstance(MediaTrigger.SERVICE);
 				stopService(new Intent(this, ExerciseService.class));
-				sendBroadcast(ServiceReceiver.createIntent(PlayStatus.STOPPED));
+				sendBroadcast(ServiceReceiver.createIntent(PlayStatus.STOPPED, null));
 			}
 		}
 	}
@@ -337,7 +355,7 @@ public class ExerciseService extends Service {
 					mIsSkipping = false;
 					MediaPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE,
 							mExerciseData.getSoundType(), mExerciseStep.getStepType(), nextDelay);
-					sendBroadcast(ServiceReceiver.createIntent(mExerciseStep));
+					sendBroadcast(ServiceReceiver.createIntent(null, mExerciseStep));
 					startNotification(mExerciseData, mExerciseStep, null);
 					try {
 						if (mExerciseStep.getDuration() > SOUND_PREPARE_DELAY) {
@@ -350,7 +368,7 @@ public class ExerciseService extends Service {
 						}
 					}
 					catch (InterruptedException e) {
-						if (!mIsSkipping) {
+						if (mIsStopping) {
 							updateOnEndExercise(wakeLock, mExerciseData, this);
 							return;
 						}
@@ -361,7 +379,7 @@ public class ExerciseService extends Service {
 								mRunningThreads.wait();
 							}
 							catch (InterruptedException e) {
-								if (!mIsSkipping) {
+								if (mIsStopping) {
 									updateOnEndExercise(wakeLock, mExerciseData, this);
 									return;
 								}
@@ -375,13 +393,60 @@ public class ExerciseService extends Service {
 			try {
 				MediaPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE, mExerciseData.getSoundType(),
 						StepType.RELAX, nextDelay);
-				sendBroadcast(ServiceReceiver.createIntent(new ExerciseStep(StepType.RELAX, 0, 0)));
+				mExerciseStep = new ExerciseStep(StepType.RELAX, 0, 0);
+				sendBroadcast(ServiceReceiver.createIntent(PlayStatus.PLAYING, mExerciseStep));
+				startNotification(mExerciseData, mExerciseStep, null);
 				Thread.sleep(END_WAIT_DURATION);
 			}
 			catch (InterruptedException e) {
 				// Ignore
 			}
 			updateOnEndExercise(wakeLock, mExerciseData, this);
+		}
+	}
+
+	/**
+	 * A broadcast receiver for receiving messages from service to update UI.
+	 */
+	public static class ServiceQueryReceiver extends BroadcastReceiver {
+		/**
+		 * The action triggering this receiver.
+		 */
+		public static final String RECEIVER_ACTION = "de.jeisfeld.breathtraining.SERVICE_QUERY_RECEIVER";
+
+		private final WeakReference<ExerciseService> mExerciseService;
+
+		/**
+		 * Default constructor.
+		 */
+		public ServiceQueryReceiver() {
+			mExerciseService = null;
+		}
+
+		/**
+		 * Constructor.
+		 * @param exerciseService The exerciseService.
+		 */
+		public ServiceQueryReceiver(final ExerciseService exerciseService) {
+			mExerciseService = new WeakReference<>(exerciseService);
+		}
+
+		@Override
+		public final void onReceive(final Context context, final Intent intent) {
+			if (mExerciseService == null) {
+				return;
+			}
+			ExerciseService exerciseService = mExerciseService.get();
+			if (exerciseService != null) {
+				synchronized (exerciseService.mRunningThreads) {
+					if(exerciseService.mRunningThreads.size() > 0) {
+						ExerciseData exerciseData = exerciseService.mRunningThreads.get(exerciseService.mRunningThreads.size() - 1).mExerciseData;
+						Intent serviceIntent = ServiceReceiver.createIntent(exerciseData.getPlayStatus(), exerciseService.mExerciseStep);
+						exerciseData.addToIntent(serviceIntent);
+						exerciseService.sendBroadcast(serviceIntent);
+					}
+				}
+			}
 		}
 	}
 }

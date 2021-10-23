@@ -263,7 +263,6 @@ public abstract class ExerciseData implements Serializable {
 	 */
 	public void retrieveStatus(final ExerciseData origin) {
 		mCurrentStepNumber = origin.mCurrentStepNumber;
-		mPlayStatus = origin.mPlayStatus;
 		mCurrentSteps = getStepsForRepetition(mCurrentRepetitionNumber);
 	}
 }
