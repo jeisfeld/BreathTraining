@@ -86,7 +86,7 @@ public abstract class ExerciseData implements Serializable {
 	/**
 	 * The playing status.
 	 */
-	private final PlayStatus mPlayStatus;
+	private PlayStatus mPlayStatus;
 
 	/**
 	 * Constructor.
@@ -127,7 +127,7 @@ public abstract class ExerciseData implements Serializable {
 	 * @return The next exercise step.
 	 */
 	public final ExerciseStep getNextStep() {
-		if (mCurrentSteps == null || mCurrentStepNumber == mCurrentSteps.length - 1) {
+		if (mCurrentSteps == null || mCurrentStepNumber >= mCurrentSteps.length - 1) {
 			mCurrentRepetitionNumber++;
 			if (mCurrentRepetitionNumber > getRepetitions()) {
 				// made all repetitions
@@ -244,4 +244,14 @@ public abstract class ExerciseData implements Serializable {
 		}
 	}
 
+	/**
+	 * Retrieve the status from other ExerciseData.
+	 * @param origin The other ExerciseData.
+	 */
+	public void retrieveStatus(final ExerciseData origin) {
+		mCurrentRepetitionNumber = origin.mCurrentRepetitionNumber;
+		mCurrentStepNumber = origin.mCurrentStepNumber;
+		mPlayStatus = origin.mPlayStatus;
+		mCurrentSteps = getStepsForRepetition(mCurrentRepetitionNumber);
+	}
 }
