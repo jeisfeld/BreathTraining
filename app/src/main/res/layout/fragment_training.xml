@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:text=""
-        android:textSize="36sp"
+        android:textSize="@dimen/text_xxlarge"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/button_start"
         app:layout_constraintEnd_toEndOf="parent"

@@ -14,6 +14,8 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.view.View;
+import android.widget.RemoteViews;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -36,9 +38,21 @@ public class ExerciseService extends Service {
 	 */
 	private static final int SERVICE_ID = 1;
 	/**
-	 * The request code for the main notification.
+	 * The request code for starting the app from notification.
 	 */
 	private static final int REQUEST_CODE_START_APP = 1;
+	/**
+	 * The request code for stopping the service
+	 */
+	private static final int REQUEST_CODE_STOP = 2;
+	/**
+	 * The request code for pausing the service
+	 */
+	private static final int REQUEST_CODE_PAUSE = 3;
+	/**
+	 * The request code for resuming the service
+	 */
+	private static final int REQUEST_CODE_RESUME = 4;
 	/**
 	 * Intent key for the service command.
 	 */
@@ -89,10 +103,21 @@ public class ExerciseService extends Service {
 	 * @param exerciseData   The exercise data.
 	 */
 	public static void triggerExerciseService(final Context context, final ServiceCommand serviceCommand, final ExerciseData exerciseData) {
+		ContextCompat.startForegroundService(context, getTriggerIntent(context, serviceCommand, exerciseData));
+	}
+
+	/**
+	 * Get a service intent for triggering the exercise service.
+	 * @param context        The context.
+	 * @param serviceCommand The service command.
+	 * @param exerciseData   The exercise data.
+	 * @return The service intent.
+	 */
+	private static Intent getTriggerIntent(final Context context, final ServiceCommand serviceCommand, final ExerciseData exerciseData) {
 		Intent serviceIntent = new Intent(context, ExerciseService.class);
 		serviceIntent.putExtra(EXTRA_SERVICE_COMMAND, serviceCommand);
 		exerciseData.addToIntent(serviceIntent);
-		ContextCompat.startForegroundService(context, serviceIntent);
+		return serviceIntent;
 	}
 
 	@Override
@@ -112,7 +137,6 @@ public class ExerciseService extends Service {
 		final ServiceCommand serviceCommand = (ServiceCommand) intent.getSerializableExtra(EXTRA_SERVICE_COMMAND);
 		final ExerciseData exerciseData = ExerciseData.fromIntent(intent);
 		assert exerciseData != null;
-		startNotification(exerciseData, mExerciseStep, serviceCommand);
 
 		switch (serviceCommand) {
 		case START:
@@ -129,7 +153,7 @@ public class ExerciseService extends Service {
 				mRunningThreads.add(newThread);
 			}
 			newThread.start();
-			return START_STICKY;
+			break;
 		case STOP:
 			synchronized (mRunningThreads) {
 				mIsPausing = false;
@@ -140,7 +164,7 @@ public class ExerciseService extends Service {
 					mRunningThreads.get(mRunningThreads.size() - 1).interrupt();
 				}
 			}
-			return START_STICKY;
+			break;
 		case PAUSE:
 			synchronized (mRunningThreads) {
 				mIsPausing = true;
@@ -150,7 +174,7 @@ public class ExerciseService extends Service {
 					mRunningThreads.get(mRunningThreads.size() - 1).updateExerciseData(exerciseData);
 				}
 			}
-			return START_STICKY;
+			break;
 		case RESUME:
 			synchronized (mRunningThreads) {
 				if (mRunningThreads.size() > 0) {
@@ -159,7 +183,7 @@ public class ExerciseService extends Service {
 				mIsPausing = false;
 				mRunningThreads.notifyAll();
 			}
-			return START_STICKY;
+			break;
 		case SKIP:
 			synchronized (mRunningThreads) {
 				if (mRunningThreads.size() > 0) {
@@ -167,10 +191,11 @@ public class ExerciseService extends Service {
 					mRunningThreads.get(mRunningThreads.size() - 1).interrupt();
 				}
 			}
-			return START_STICKY;
+			break;
 		default:
-			return START_STICKY;
 		}
+		startNotification(exerciseData, mExerciseStep, serviceCommand);
+		return START_STICKY;
 	}
 
 	@Override
@@ -235,9 +260,44 @@ public class ExerciseService extends Service {
 			contentTextResource = serviceCommand.getDisplayResource();
 		}
 
+		RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.notification);
+		remoteViews.setTextViewText(R.id.text_step_name, getString(contentTextResource));
+		remoteViews.setTextViewText(R.id.text_step_number,
+				exerciseStep == null || exerciseStep.getRepetition() == 0 ? "" : exerciseStep.getRepetition() + "/" + exerciseData.getRepetitions());
+		remoteViews.setViewVisibility(R.id.button_resume, mIsPausing ? View.VISIBLE : View.INVISIBLE);
+		remoteViews.setViewVisibility(R.id.button_pause, mIsPausing ? View.INVISIBLE : View.VISIBLE);
+
+		PendingIntent pendingIntentStop;
+		PendingIntent pendingIntentPause;
+		PendingIntent pendingIntentResume;
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+			pendingIntentStop = PendingIntent.getForegroundService(this, REQUEST_CODE_STOP,
+					getTriggerIntent(this, ServiceCommand.STOP, exerciseData),
+					PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+			pendingIntentPause = PendingIntent.getForegroundService(this, REQUEST_CODE_PAUSE,
+					getTriggerIntent(this, ServiceCommand.PAUSE, exerciseData),
+					PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+			pendingIntentResume = PendingIntent.getForegroundService(this, REQUEST_CODE_RESUME,
+					getTriggerIntent(this, ServiceCommand.RESUME, exerciseData),
+					PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+		}
+		else {
+			pendingIntentStop = PendingIntent.getService(this, REQUEST_CODE_STOP,
+					getTriggerIntent(this, ServiceCommand.STOP, exerciseData),
+					PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+			pendingIntentPause = PendingIntent.getService(this, REQUEST_CODE_PAUSE,
+					getTriggerIntent(this, ServiceCommand.PAUSE, exerciseData),
+					PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+			pendingIntentResume = PendingIntent.getService(this, REQUEST_CODE_RESUME,
+					getTriggerIntent(this, ServiceCommand.RESUME, exerciseData),
+					PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+		}
+		remoteViews.setOnClickPendingIntent(R.id.button_stop, pendingIntentStop);
+		remoteViews.setOnClickPendingIntent(R.id.button_pause, pendingIntentPause);
+		remoteViews.setOnClickPendingIntent(R.id.button_resume, pendingIntentResume);
+
 		Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-				.setContentTitle(getString(R.string.notification_title_exercise))
-				.setContentText(getString(contentTextResource))
+				.setCustomContentView(remoteViews)
 				.setContentIntent(pendingIntent)
 				.setSmallIcon(R.drawable.ic_notification)
 				.build();
@@ -425,6 +485,7 @@ public class ExerciseService extends Service {
 
 		/**
 		 * Constructor.
+		 *
 		 * @param exerciseService The exerciseService.
 		 */
 		public ServiceQueryReceiver(final ExerciseService exerciseService) {
@@ -439,7 +500,7 @@ public class ExerciseService extends Service {
 			ExerciseService exerciseService = mExerciseService.get();
 			if (exerciseService != null) {
 				synchronized (exerciseService.mRunningThreads) {
-					if(exerciseService.mRunningThreads.size() > 0) {
+					if (exerciseService.mRunningThreads.size() > 0) {
 						ExerciseData exerciseData = exerciseService.mRunningThreads.get(exerciseService.mRunningThreads.size() - 1).mExerciseData;
 						Intent serviceIntent = ServiceReceiver.createIntent(exerciseData.getPlayStatus(), exerciseService.mExerciseStep);
 						exerciseData.addToIntent(serviceIntent);

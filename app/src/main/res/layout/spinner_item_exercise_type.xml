@@ -4,4 +4,4 @@
     android:layout_height="wrap_content"
     android:maxLines="1"
     android:textAlignment="center"
-    android:textSize="@dimen/text_big_size"/>
+    android:textSize="@dimen/text_large"/>

@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:text="@string/text_inhale"
-        android:textSize="36sp"
+        android:textSize="@dimen/text_xxlarge"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/button_start"
         app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/message_measure"
-                android:textSize="@dimen/text_big_size"
+                android:textSize="@dimen/text_large"
                 app:layout_constraintBottom_toTopOf="@id/button_start"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -79,7 +79,7 @@
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
                     android:text="@string/text_sound_type"
-                    android:textSize="@dimen/text_big_size" />
+                    android:textSize="@dimen/text_large" />
 
                 <Spinner
                     android:id="@+id/spinnerSoundType"
