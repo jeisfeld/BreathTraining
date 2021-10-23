@@ -258,11 +258,13 @@ public abstract class ExerciseData implements Serializable {
 	}
 
 	/**
-	 * Retrieve the status from other ExerciseData.
+	 * Retrieve the status from other ExerciseData and upate the playStatus.
 	 * @param origin The other ExerciseData.
+	 * @param playStatus The new playStatus.
 	 */
-	public void retrieveStatus(final ExerciseData origin) {
+	public void retrieveStatus(final ExerciseData origin, final PlayStatus playStatus) {
 		mCurrentStepNumber = origin.mCurrentStepNumber;
 		mCurrentSteps = getStepsForRepetition(mCurrentRepetitionNumber);
+		mPlayStatus = playStatus;
 	}
 }

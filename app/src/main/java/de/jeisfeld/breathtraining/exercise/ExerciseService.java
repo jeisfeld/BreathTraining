@@ -171,14 +171,14 @@ public class ExerciseService extends Service {
 				mIsSkipping = true;
 				if (mRunningThreads.size() > 0) {
 					mRunningThreads.get(mRunningThreads.size() - 1).interrupt();
-					mRunningThreads.get(mRunningThreads.size() - 1).updateExerciseData(exerciseData);
+					mRunningThreads.get(mRunningThreads.size() - 1).updateExerciseData(exerciseData, PlayStatus.PAUSED);
 				}
 			}
 			break;
 		case RESUME:
 			synchronized (mRunningThreads) {
 				if (mRunningThreads.size() > 0) {
-					mRunningThreads.get(mRunningThreads.size() - 1).updateExerciseData(exerciseData);
+					mRunningThreads.get(mRunningThreads.size() - 1).updateExerciseData(exerciseData, PlayStatus.PLAYING);
 				}
 				mIsPausing = false;
 				mRunningThreads.notifyAll();
@@ -397,9 +397,10 @@ public class ExerciseService extends Service {
 		 * Update the exercise data.
 		 *
 		 * @param exerciseData The new exercise data.
+		 * @param playStatus The new playStatus.
 		 */
-		private void updateExerciseData(final ExerciseData exerciseData) {
-			exerciseData.retrieveStatus(mExerciseData);
+		private void updateExerciseData(final ExerciseData exerciseData, final PlayStatus playStatus) {
+			exerciseData.retrieveStatus(mExerciseData, playStatus);
 			mExerciseData = exerciseData;
 		}
 
