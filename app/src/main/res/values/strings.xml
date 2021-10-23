@@ -5,7 +5,6 @@
     <string name="nav_header_title">Breath Training</string>
     <string name="nav_header_subtitle">googleplay@jeisfeld.de</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
 
     <string name="menu_training">Training</string>
     <string name="menu_measure">Measure</string>
@@ -16,15 +15,15 @@
     <string name="button_resume">Resume</string>
     <string name="button_ok">OK</string>
 
-    <string name="text_inhale">Inhale …</string>
-    <string name="text_exhale">Exhale …</string>
-    <string name="text_hold">Hold …</string>
-    <string name="text_relax">Relax …</string>
-    <string name="text_starting">Starting …</string>
-    <string name="text_stopping">Stopping …</string>
-    <string name="text_pausing">Pausing …</string>
-    <string name="text_resuming">Resuming …</string>
-    <string name="text_skipping">Skipping …</string>
+    <string name="text_inhale">Inhale…</string>
+    <string name="text_exhale">Exhale…</string>
+    <string name="text_hold">Hold…</string>
+    <string name="text_relax">Relax…</string>
+    <string name="text_starting">Starting…</string>
+    <string name="text_stopping">Stopping…</string>
+    <string name="text_pausing">Pausing…</string>
+    <string name="text_resuming">Resuming…</string>
+    <string name="text_skipping">Skipping…</string>
 
     <string name="title_dialog_confirmation">Confirmation</string>
 

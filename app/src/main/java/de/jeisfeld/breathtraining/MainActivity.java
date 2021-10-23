@@ -6,6 +6,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,6 +19,7 @@ import androidx.navigation.ui.NavigationUI;
 import de.jeisfeld.breathtraining.databinding.ActivityMainBinding;
 import de.jeisfeld.breathtraining.exercise.ExerciseData;
 import de.jeisfeld.breathtraining.exercise.ExerciseStep;
+import de.jeisfeld.breathtraining.exercise.PlayStatus;
 import de.jeisfeld.breathtraining.sound.MediaPlayer;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
 import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
@@ -29,20 +33,12 @@ public class MainActivity extends AppCompatActivity {
 	 * The navigation bar configuration.
 	 */
 	private AppBarConfiguration mAppBarConfiguration;
-	/**
-	 * The activity binding.
-	 */
-	private ActivityMainBinding mBinding;
-	/**
-	 * The service receiver.
-	 */
-	private ServiceReceiver mServiceReceiver;
 
 	@Override
 	protected final void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		mBinding = ActivityMainBinding.inflate(getLayoutInflater());
+		ActivityMainBinding mBinding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(mBinding.getRoot());
 
 		setSupportActionBar(mBinding.appBarMain.toolbar);
@@ -52,15 +48,15 @@ public class MainActivity extends AppCompatActivity {
 		// menu should be considered as top level destinations.
 		mAppBarConfiguration = new AppBarConfiguration.Builder(
 				R.id.nav_training, R.id.nav_measure)
-						.setOpenableLayout(drawer)
-						.build();
+				.setOpenableLayout(drawer)
+				.build();
 		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 		NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 		NavigationUI.setupWithNavController(navigationView, navController);
 
 		TrainingViewModel trainingViewModel = new ViewModelProvider(this).get(TrainingViewModel.class);
 
-		mServiceReceiver = new ServiceReceiver(new Handler(), trainingViewModel);
+		ServiceReceiver mServiceReceiver = new ServiceReceiver(new Handler(), trainingViewModel);
 		registerReceiver(mServiceReceiver, new IntentFilter(ServiceReceiver.RECEIVER_ACTION));
 
 		ExerciseData exerciseData = ExerciseData.fromIntent(getIntent());
@@ -73,8 +69,27 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	public final boolean onCreateOptionsMenu(final Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
+		TrainingViewModel trainingViewModel = new ViewModelProvider(this).get(TrainingViewModel.class);
+
+		MenuItem menuItemPlay = menu.findItem(R.id.action_play);
+		MenuItem menuItemPause = menu.findItem(R.id.action_pause);
+
+		menuItemPlay.setOnMenuItemClickListener(item -> {
+			trainingViewModel.play(MainActivity.this);
+			return true;
+		});
+
+		menuItemPause.setOnMenuItemClickListener(item -> {
+			trainingViewModel.pause(MainActivity.this);
+			return true;
+		});
+
+		trainingViewModel.getPlayStatus().observe(MainActivity.this, playStatus -> {
+			menuItemPause.setVisible(playStatus == PlayStatus.PLAYING);
+			menuItemPlay.setVisible(playStatus != PlayStatus.PLAYING);
+		});
+
 		return true;
 	}
 

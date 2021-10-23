@@ -286,7 +286,7 @@ public class TrainingViewModel extends ViewModel {
 	 *
 	 * @return The play status.
 	 */
-	protected MutableLiveData<PlayStatus> getPlayStatus() {
+	public MutableLiveData<PlayStatus> getPlayStatus() {
 		return mPlayStatus;
 	}
 
@@ -322,9 +322,11 @@ public class TrainingViewModel extends ViewModel {
 	 *
 	 * @param context The context.
 	 */
-	protected void play(final Context context) {
+	public void play(final Context context) {
+		ExerciseService.triggerExerciseService(context,
+				mPlayStatus.getValue() == PlayStatus.PAUSED ? ServiceCommand.RESUME : ServiceCommand.START,
+				getExerciseData());
 		mPlayStatus.setValue(PlayStatus.PLAYING);
-		ExerciseService.triggerExerciseService(context, ServiceCommand.START, getExerciseData());
 	}
 
 	/**
@@ -342,7 +344,7 @@ public class TrainingViewModel extends ViewModel {
 	 *
 	 * @param context The context.
 	 */
-	protected void pause(final Context context) {
+	public void pause(final Context context) {
 		mPlayStatus.setValue(PlayStatus.PAUSED);
 		ExerciseService.triggerExerciseService(context, ServiceCommand.PAUSE, getExerciseData());
 	}
@@ -355,17 +357,6 @@ public class TrainingViewModel extends ViewModel {
 	protected void next(final Context context) {
 		ExerciseService.triggerExerciseService(context, ServiceCommand.SKIP, getExerciseData());
 	}
-
-	/**
-	 * Resume playing.
-	 *
-	 * @param context The context.
-	 */
-	protected void resume(final Context context) {
-		mPlayStatus.setValue(PlayStatus.PLAYING);
-		ExerciseService.triggerExerciseService(context, ServiceCommand.RESUME, getExerciseData());
-	}
-
 
 	/**
 	 * Convert seekbar value to value in ms for duration.

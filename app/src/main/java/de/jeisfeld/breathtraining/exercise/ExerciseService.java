@@ -1,8 +1,5 @@
 package de.jeisfeld.breathtraining.exercise;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -15,6 +12,9 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
@@ -126,6 +126,9 @@ public class ExerciseService extends Service {
 			synchronized (mRunningThreads) {
 				mIsPausing = true;
 				mIsSkipping = true;
+				if (mRunningThreads.size() > 0) {
+					mRunningThreads.get(mRunningThreads.size() - 1).interrupt();
+				}
 			}
 			return START_STICKY;
 		case RESUME:
@@ -232,6 +235,7 @@ public class ExerciseService extends Service {
 			wakeLock.release();
 		}
 		synchronized (mRunningThreads) {
+			//noinspection SuspiciousMethodCalls
 			mRunningThreads.remove(thread);
 			if (mRunningThreads.size() == 0) {
 				MediaPlayer.releaseInstance(MediaTrigger.SERVICE);
@@ -340,17 +344,24 @@ public class ExerciseService extends Service {
 						else {
 							nextDelay = exerciseStep.getDuration();
 						}
-
-						synchronized (mRunningThreads) {
-							if (mIsPausing) {
-								mRunningThreads.wait();
-							}
-						}
 					}
 					catch (InterruptedException e) {
 						if (!mIsSkipping) {
 							updateOnEndExercise(wakeLock, mExerciseData, this);
 							return;
+						}
+					}
+					synchronized (mRunningThreads) {
+						if (mIsPausing) {
+							try {
+								mRunningThreads.wait();
+							}
+							catch (InterruptedException e) {
+								if (!mIsSkipping) {
+									updateOnEndExercise(wakeLock, mExerciseData, this);
+									return;
+								}
+							}
 						}
 					}
 				}

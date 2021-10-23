@@ -147,7 +147,7 @@ public class TrainingFragment extends Fragment {
 		mBinding.buttonStart.setOnClickListener(v -> mTrainingViewModel.play(getContext()));
 		mBinding.buttonStop.setOnClickListener(v -> mTrainingViewModel.stop(getContext()));
 		mBinding.buttonPause.setOnClickListener(v -> mTrainingViewModel.pause(getContext()));
-		mBinding.buttonResume.setOnClickListener(v -> mTrainingViewModel.resume(getContext()));
+		mBinding.buttonResume.setOnClickListener(v -> mTrainingViewModel.play(getContext()));
 		mBinding.buttonBreathe.setOnClickListener(v -> mTrainingViewModel.next(getContext()));
 	}
 
