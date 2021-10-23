@@ -239,7 +239,7 @@ public class ExerciseService extends Service {
 				.setContentTitle(getString(R.string.notification_title_exercise))
 				.setContentText(getString(contentTextResource))
 				.setContentIntent(pendingIntent)
-				.setSmallIcon(R.mipmap.ic_launcher)
+				.setSmallIcon(R.drawable.ic_notification)
 				.build();
 		startForeground(SERVICE_ID, notification);
 	}
