@@ -24,11 +24,15 @@
         <entry key="..\:/Git/BreathControl/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.26927083333333335" />
         <entry key="..\:/Git/BreathControl/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.26927083333333335" />
         <entry key="..\:/Git/BreathTraining/app/src/main/res/drawable/ic_launcher_foreground.xml" value="1.0" />
+        <entry key="..\:/Git/BreathTraining/app/src/main/res/layout/activity_main.xml" value="0.24479166666666666" />
+        <entry key="..\:/Git/BreathTraining/app/src/main/res/layout/app_bar_main.xml" value="0.24479166666666666" />
         <entry key="..\:/Git/BreathTraining/app/src/main/res/layout/fragment_measure.xml" value="0.24479166666666666" />
         <entry key="..\:/Git/BreathTraining/app/src/main/res/layout/fragment_training.xml" value="0.1859375" />
+        <entry key="..\:/Git/BreathTraining/app/src/main/res/layout/nav_header_main.xml" value="0.24479166666666666" />
         <entry key="..\:/Git/BreathTraining/app/src/main/res/layout/notification.xml" value="0.1859375" />
         <entry key="..\:/Git/BreathTraining/app/src/main/res/menu/activity_main_drawer.xml" value="0.20729166666666668" />
         <entry key="..\:/Git/BreathTraining/app/src/main/res/menu/main.xml" value="0.20185185185185187" />
+        <entry key="..\:/Git/BreathTraining/app/src/main/res/mipmap-anydpi/ic_launcher.xml" value="0.26927083333333335" />
       </map>
     </option>
   </component>
