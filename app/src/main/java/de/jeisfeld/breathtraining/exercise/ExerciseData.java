@@ -36,6 +36,10 @@ public abstract class ExerciseData implements Serializable {
 	 */
 	protected static final String EXTRA_REPETITIONS = "de.jeisfeld.breathtraining.REPETITIONS";
 	/**
+	 * Key for the repetitions within the intent.
+	 */
+	protected static final String EXTRA_CURRENT_REPETITION = "de.jeisfeld.breathtraining.CURRENT_REPETITION";
+	/**
 	 * Key for the sound type within the intent.
 	 */
 	protected static final String EXTRA_SOUND_TYPE = "de.jeisfeld.breathtraining.SOUND_TYPE";
@@ -74,7 +78,7 @@ public abstract class ExerciseData implements Serializable {
 	/**
 	 * The current repetition number.
 	 */
-	private int mCurrentRepetitionNumber = 0;
+	private int mCurrentRepetitionNumber;
 	/**
 	 * The current step number within the repetition.
 	 */
@@ -96,14 +100,16 @@ public abstract class ExerciseData implements Serializable {
 	 * @param inOutRelation The in/out relation.
 	 * @param soundType The sound type.
 	 * @param playStatus The playing status.
+	 * @param currentRepetitionNumber The current repetition number.
 	 */
 	public ExerciseData(final Integer repetitions, final Long breathDuration, final Double inOutRelation, final SoundType soundType,
-			final PlayStatus playStatus) {
+			final PlayStatus playStatus, final int currentRepetitionNumber) {
 		mRepetitions = repetitions;
 		mBreathDuration = breathDuration;
 		mInOutRelation = inOutRelation;
 		mSoundType = soundType;
 		mPlayStatus = playStatus;
+		mCurrentRepetitionNumber = currentRepetitionNumber;
 	}
 
 	/**
@@ -144,6 +150,10 @@ public abstract class ExerciseData implements Serializable {
 				return null;
 			}
 		}
+		else if (mCurrentRepetitionNumber > getRepetitions()) {
+			// may happen if current repetition or number of repetitions has been changed
+			return null;
+		}
 		else {
 			mCurrentStepNumber++;
 		}
@@ -163,6 +173,7 @@ public abstract class ExerciseData implements Serializable {
 		serviceIntent.putExtra(EXTRA_IN_OUT_RELATION, mInOutRelation);
 		serviceIntent.putExtra(EXTRA_SOUND_TYPE, mSoundType);
 		serviceIntent.putExtra(ServiceReceiver.EXTRA_PLAY_STATUS, mPlayStatus);
+		serviceIntent.putExtra(EXTRA_CURRENT_REPETITION, mCurrentRepetitionNumber);
 	}
 
 	/**
@@ -227,18 +238,20 @@ public abstract class ExerciseData implements Serializable {
 		double inOutRelation = intent.getDoubleExtra(EXTRA_IN_OUT_RELATION, 0.5); // MAGIC_NUMBER
 		SoundType soundType = (SoundType) intent.getSerializableExtra(EXTRA_SOUND_TYPE);
 		PlayStatus playStatus = (PlayStatus) intent.getSerializableExtra(ServiceReceiver.EXTRA_PLAY_STATUS);
+		int currentRepetitionNumber = intent.getIntExtra(EXTRA_CURRENT_REPETITION, 0);
 
 		switch (exerciseType) {
 		case SIMPLE:
 			long breathEndDuration = intent.getLongExtra(EXTRA_BREATH_END_DURATION, 0);
-			return new SimpleExerciseData(repetitions, breathDuration, breathEndDuration, inOutRelation, soundType, playStatus);
+			return new SimpleExerciseData(repetitions, breathDuration, breathEndDuration, inOutRelation, soundType,
+					playStatus, currentRepetitionNumber);
 		case HOLD:
 			long holdStartDuration = intent.getLongExtra(EXTRA_HOLD_START_DURATION, 0);
 			long holdEndDuration = intent.getLongExtra(EXTRA_HOLD_END_DURATION, 0);
 			HoldPosition holdPosition = (HoldPosition) intent.getSerializableExtra(EXTRA_HOLD_POSITION);
 			double holdVariation = intent.getDoubleExtra(EXTRA_HOLD_VARIATION, 0);
 			return new HoldExerciseData(repetitions, breathDuration, inOutRelation, holdStartDuration,
-					holdEndDuration, holdPosition, holdVariation, soundType, playStatus);
+					holdEndDuration, holdPosition, holdVariation, soundType, playStatus, currentRepetitionNumber);
 		default:
 			return null;
 		}
@@ -249,7 +262,6 @@ public abstract class ExerciseData implements Serializable {
 	 * @param origin The other ExerciseData.
 	 */
 	public void retrieveStatus(final ExerciseData origin) {
-		mCurrentRepetitionNumber = origin.mCurrentRepetitionNumber;
 		mCurrentStepNumber = origin.mCurrentStepNumber;
 		mPlayStatus = origin.mPlayStatus;
 		mCurrentSteps = getStepsForRepetition(mCurrentRepetitionNumber);

@@ -47,11 +47,12 @@ public class HoldExerciseData extends ExerciseData {
 	 * @param holdVariation The hold variation
 	 * @param soundType The sound type
 	 * @param playStatus The playing status
+	 * @param currentRepetitionNumber The current repetition number.
 	 */
 	public HoldExerciseData(final Integer repetitions, final Long breathDuration, final Double inOutRelation, // SUPPRESS_CHECKSTYLE
 			final Long holdStartDuration, final Long holdEndDuration, final HoldPosition holdPosition, final Double holdVariation,
-			final SoundType soundType, final PlayStatus playStatus) {
-		super(repetitions, breathDuration, inOutRelation, soundType, playStatus);
+			final SoundType soundType, final PlayStatus playStatus, final int currentRepetitionNumber) {
+		super(repetitions, breathDuration, inOutRelation, soundType, playStatus, currentRepetitionNumber);
 		mHoldStartDuration = holdStartDuration;
 		mHoldEndDuration = holdEndDuration;
 		mHoldPosition = holdPosition;
@@ -127,22 +128,22 @@ public class HoldExerciseData extends ExerciseData {
 		switch (mHoldPosition) {
 		case IN:
 			return new ExerciseStep[] {
-					new ExerciseStep(StepType.INHALE, (long) (getBreathDuration() * getInOutRelation())),
-					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition)),
-					new ExerciseStep(StepType.EXHALE, (long) (getBreathDuration() * (1 - getInOutRelation())))
+					new ExerciseStep(StepType.INHALE, (long) (getBreathDuration() * getInOutRelation()), repetition),
+					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition), repetition),
+					new ExerciseStep(StepType.EXHALE, (long) (getBreathDuration() * (1 - getInOutRelation())), repetition)
 			};
 		case OUT:
 			return new ExerciseStep[] {
-					new ExerciseStep(StepType.INHALE, (long) (getBreathDuration() * getInOutRelation())),
-					new ExerciseStep(StepType.EXHALE, (long) (getBreathDuration() * (1 - getInOutRelation()))),
-					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition))
+					new ExerciseStep(StepType.INHALE, (long) (getBreathDuration() * getInOutRelation()), repetition),
+					new ExerciseStep(StepType.EXHALE, (long) (getBreathDuration() * (1 - getInOutRelation())), repetition),
+					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition), repetition)
 			};
 		case BOTH:
 			return new ExerciseStep[] {
-					new ExerciseStep(StepType.INHALE, (long) (getBreathDuration() * getInOutRelation())),
-					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition) / 2),
-					new ExerciseStep(StepType.EXHALE, (long) (getBreathDuration() * (1 - getInOutRelation()))),
-					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition) / 2),
+					new ExerciseStep(StepType.INHALE, (long) (getBreathDuration() * getInOutRelation()), repetition),
+					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition) / 2, repetition),
+					new ExerciseStep(StepType.EXHALE, (long) (getBreathDuration() * (1 - getInOutRelation())), repetition),
+					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition) / 2, repetition),
 			};
 		default:
 			return null;

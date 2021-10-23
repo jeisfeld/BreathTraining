@@ -1,5 +1,8 @@
 package de.jeisfeld.breathtraining.exercise;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,10 +15,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import de.jeisfeld.breathtraining.MainActivity;
@@ -65,13 +64,17 @@ public class ExerciseService extends Service {
 	 * Flag indicating if exercise is skipping to next breath.
 	 */
 	private boolean mIsSkipping = false;
+	/**
+	 * The current exercise step.
+	 */
+	private ExerciseStep mExerciseStep = null;
 
 	/**
 	 * Trigger the exercise service.
 	 *
-	 * @param context        The context.
+	 * @param context The context.
 	 * @param serviceCommand The service command.
-	 * @param exerciseData   The exercise data.
+	 * @param exerciseData The exercise data.
 	 */
 	public static void triggerExerciseService(final Context context, final ServiceCommand serviceCommand, final ExerciseData exerciseData) {
 		Intent serviceIntent = new Intent(context, ExerciseService.class);
@@ -95,7 +98,7 @@ public class ExerciseService extends Service {
 		final ServiceCommand serviceCommand = (ServiceCommand) intent.getSerializableExtra(EXTRA_SERVICE_COMMAND);
 		final ExerciseData exerciseData = ExerciseData.fromIntent(intent);
 		assert exerciseData != null;
-		startNotification(exerciseData, null, serviceCommand);
+		startNotification(exerciseData, mExerciseStep, serviceCommand);
 
 		switch (serviceCommand) {
 		case START:
@@ -194,8 +197,8 @@ public class ExerciseService extends Service {
 	/**
 	 * Start the notification.
 	 *
-	 * @param exerciseData   The exercise data.
-	 * @param exerciseStep   The current exercise step.
+	 * @param exerciseData The exercise data.
+	 * @param exerciseStep The current exercise step.
 	 * @param serviceCommand The service command.
 	 */
 	private void startNotification(final ExerciseData exerciseData, final ExerciseStep exerciseStep, final ServiceCommand serviceCommand) {
@@ -226,16 +229,16 @@ public class ExerciseService extends Service {
 	/**
 	 * Update the service after the exercise has ended.
 	 *
-	 * @param wakeLock      The wakelock.
+	 * @param wakeLock The wakelock.
 	 * @param animationData The instance of animationData which is ended.
-	 * @param thread        The thread which is ended.
+	 * @param thread The thread which is ended.
 	 */
 	private void updateOnEndExercise(final WakeLock wakeLock, final ExerciseData animationData, final Thread thread) {
 		if (wakeLock != null && wakeLock.isHeld()) {
 			wakeLock.release();
 		}
 		synchronized (mRunningThreads) {
-			//noinspection SuspiciousMethodCalls
+			// noinspection SuspiciousMethodCalls
 			mRunningThreads.remove(thread);
 			if (mRunningThreads.size() == 0) {
 				MediaPlayer.releaseInstance(MediaTrigger.SERVICE);
@@ -297,7 +300,7 @@ public class ExerciseService extends Service {
 	/**
 	 * An animation thread for the exercise.
 	 */
-	private class ExerciseAnimationThread extends Thread {
+	private final class ExerciseAnimationThread extends Thread {
 		/**
 		 * the exercise data.
 		 */
@@ -308,7 +311,7 @@ public class ExerciseService extends Service {
 		 *
 		 * @param exerciseData The exercise data.
 		 */
-		private ExerciseAnimationThread(ExerciseData exerciseData) {
+		private ExerciseAnimationThread(final ExerciseData exerciseData) {
 			mExerciseData = exerciseData;
 		}
 
@@ -317,7 +320,7 @@ public class ExerciseService extends Service {
 		 *
 		 * @param exerciseData The new exercise data.
 		 */
-		private void updateExerciseData(ExerciseData exerciseData) {
+		private void updateExerciseData(final ExerciseData exerciseData) {
 			exerciseData.retrieveStatus(mExerciseData);
 			mExerciseData = exerciseData;
 		}
@@ -327,22 +330,23 @@ public class ExerciseService extends Service {
 			final WakeLock wakeLock = acquireWakelock(this);
 			long nextDelay = SOUND_PREPARE_DELAY;
 
-			ExerciseStep exerciseStep = mExerciseData.getNextStep();
-			while (exerciseStep != null) {
-				if (!(mIsSkipping && exerciseStep.getStepType() == StepType.HOLD)) {
+			mExerciseStep = mExerciseData.getNextStep();
+			while (mExerciseStep != null) {
+				if (!(mIsSkipping && mExerciseStep.getStepType() == StepType.HOLD)) {
 					// Execute the step, except in case of hold while skipping
 					mIsSkipping = false;
 					MediaPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE,
-							mExerciseData.getSoundType(), exerciseStep.getStepType(), nextDelay);
-					sendBroadcast(ServiceReceiver.createIntent(exerciseStep));
-					startNotification(mExerciseData, exerciseStep, null);
+							mExerciseData.getSoundType(), mExerciseStep.getStepType(), nextDelay);
+					sendBroadcast(ServiceReceiver.createIntent(mExerciseStep));
+					startNotification(mExerciseData, mExerciseStep, null);
 					try {
-						if (exerciseStep.getDuration() > SOUND_PREPARE_DELAY) {
-							Thread.sleep(exerciseStep.getDuration() - SOUND_PREPARE_DELAY);
+						if (mExerciseStep.getDuration() > SOUND_PREPARE_DELAY) {
+							// noinspection BusyWait
+							Thread.sleep(mExerciseStep.getDuration() - SOUND_PREPARE_DELAY);
 							nextDelay = SOUND_PREPARE_DELAY;
 						}
 						else {
-							nextDelay = exerciseStep.getDuration();
+							nextDelay = mExerciseStep.getDuration();
 						}
 					}
 					catch (InterruptedException e) {
@@ -365,12 +369,13 @@ public class ExerciseService extends Service {
 						}
 					}
 				}
-				exerciseStep = mExerciseData.getNextStep();
+				mExerciseStep = mExerciseData.getNextStep();
 			}
 
 			try {
 				MediaPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE, mExerciseData.getSoundType(),
 						StepType.RELAX, nextDelay);
+				sendBroadcast(ServiceReceiver.createIntent(new ExerciseStep(StepType.RELAX, 0, 0)));
 				Thread.sleep(END_WAIT_DURATION);
 			}
 			catch (InterruptedException e) {

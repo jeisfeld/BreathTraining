@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.databinding.FragmentTrainingBinding;
+import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.ExerciseType;
 import de.jeisfeld.breathtraining.exercise.HoldPosition;
 import de.jeisfeld.breathtraining.sound.SoundType;
@@ -48,18 +49,19 @@ public class TrainingFragment extends Fragment {
 	public final View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		mTrainingViewModel = new ViewModelProvider(requireActivity()).get(TrainingViewModel.class);
 		mBinding = FragmentTrainingBinding.inflate(inflater, container, false);
-		View root = mBinding.getRoot();
 
 		final Spinner spinnerExerciseType = mBinding.spinnerExerciseType;
 		spinnerExerciseType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_exercise_type,
 				getResources().getStringArray(R.array.values_exercise_type)));
-		mTrainingViewModel.getExerciseType().observe(getViewLifecycleOwner(), exerciseType -> spinnerExerciseType.setSelection(exerciseType.ordinal()));
-		spinnerExerciseType.setOnItemSelectedListener(getOnExerciseTypeSelectedListener(root, mTrainingViewModel));
+		mTrainingViewModel.getExerciseType().observe(getViewLifecycleOwner(),
+				exerciseType -> spinnerExerciseType.setSelection(exerciseType.ordinal()));
+		spinnerExerciseType.setOnItemSelectedListener(getOnExerciseTypeSelectedListener(mTrainingViewModel));
 
 		final Spinner spinnerHoldPosition = mBinding.spinnerHoldPosition;
 		spinnerHoldPosition.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
 				getResources().getStringArray(R.array.values_hold_position)));
-		mTrainingViewModel.getHoldPosition().observe(getViewLifecycleOwner(), holdPosition -> spinnerHoldPosition.setSelection(holdPosition.ordinal()));
+		mTrainingViewModel.getHoldPosition().observe(getViewLifecycleOwner(),
+				holdPosition -> spinnerHoldPosition.setSelection(holdPosition.ordinal()));
 		spinnerHoldPosition.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
@@ -88,16 +90,17 @@ public class TrainingFragment extends Fragment {
 			}
 		});
 
-		prepareSeekbarRepetitions(root);
-		prepareSeekbarBreathDuration(root);
-		prepareSeekbarBreathEndDuration(root);
-		prepareSeekbarHoldStartDuration(root);
-		prepareSeekbarHoldEndDuration(root);
-		prepareSeekbarInOutRelation(root);
-		prepareSeekbarHoldVariation(root);
+		prepareSeekbarRepetitions();
+		prepareSeekbarBreathDuration();
+		prepareSeekbarBreathEndDuration();
+		prepareSeekbarHoldStartDuration();
+		prepareSeekbarHoldEndDuration();
+		prepareSeekbarInOutRelation();
+		prepareSeekbarHoldVariation();
+		prepareSeekbarCurrentRepetition();
 		prepareButtons();
 
-		return root;
+		return mBinding.getRoot();
 	}
 
 	@Override
@@ -118,6 +121,7 @@ public class TrainingFragment extends Fragment {
 				mBinding.buttonPause.setVisibility(View.INVISIBLE);
 				mBinding.buttonResume.setVisibility(View.INVISIBLE);
 				mBinding.buttonBreathe.setVisibility(View.INVISIBLE);
+				mBinding.tableRowCurrentRepetition.setVisibility(View.GONE);
 				break;
 			case PLAYING:
 				mBinding.buttonStart.setVisibility(View.INVISIBLE);
@@ -125,6 +129,7 @@ public class TrainingFragment extends Fragment {
 				mBinding.buttonPause.setVisibility(View.VISIBLE);
 				mBinding.buttonResume.setVisibility(View.INVISIBLE);
 				mBinding.buttonBreathe.setVisibility(View.VISIBLE);
+				mBinding.tableRowCurrentRepetition.setVisibility(View.VISIBLE);
 				break;
 			case PAUSED:
 				mBinding.buttonStart.setVisibility(View.INVISIBLE);
@@ -132,6 +137,7 @@ public class TrainingFragment extends Fragment {
 				mBinding.buttonPause.setVisibility(View.INVISIBLE);
 				mBinding.buttonResume.setVisibility(View.VISIBLE);
 				mBinding.buttonBreathe.setVisibility(View.INVISIBLE);
+				mBinding.tableRowCurrentRepetition.setVisibility(View.VISIBLE);
 				break;
 			default:
 				break;
@@ -140,7 +146,8 @@ public class TrainingFragment extends Fragment {
 
 		mTrainingViewModel.getExerciseStep().observe(getViewLifecycleOwner(), exerciseStep -> {
 			if (exerciseStep != null && exerciseStep.getStepType() != null) {
-				mBinding.buttonBreathe.setText(exerciseStep.getStepType().getDisplayResource());
+				mBinding.buttonBreathe.setText(getString(R.string.formatting_current_repetition,
+						getString(exerciseStep.getStepType().getDisplayResource()), mTrainingViewModel.getRepetitionString()));
 			}
 		});
 
@@ -153,10 +160,8 @@ public class TrainingFragment extends Fragment {
 
 	/**
 	 * Prepare the repetitions seekbar.
-	 *
-	 * @param root The parent view.
 	 */
-	private void prepareSeekbarRepetitions(final View root) {
+	private void prepareSeekbarRepetitions() {
 		mBinding.textViewRepetitions.setText(String.format(Locale.getDefault(), "%d",
 				TrainingViewModel.repetitionsSeekbarToValue(mBinding.seekBarRepetitions.getProgress())));
 		mTrainingViewModel.getRepetitions().observe(getViewLifecycleOwner(), value -> {
@@ -165,15 +170,14 @@ public class TrainingFragment extends Fragment {
 			mBinding.textViewRepetitions.setText(String.format(Locale.getDefault(), "%d", value));
 		});
 		mBinding.seekBarRepetitions.setOnSeekBarChangeListener(
-				(OnSeekBarProgressChangedListener) progress -> mTrainingViewModel.updateRepetitions(TrainingViewModel.repetitionsSeekbarToValue(progress)));
+				(OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
+						.updateRepetitions(TrainingViewModel.repetitionsSeekbarToValue(progress)));
 	}
 
 	/**
 	 * Prepare the breath duration seekbar.
-	 *
-	 * @param root The parent view.
 	 */
-	private void prepareSeekbarBreathDuration(final View root) {
+	private void prepareSeekbarBreathDuration() {
 		long breathDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarBreathDuration.getProgress(), false);
 		if (breathDuration >= MAX_TWODIGIT_SECONDS) {
 			mBinding.textViewBreathDuration.setText(String.format(Locale.getDefault(), "%.0fs", breathDuration / MILLIS_PER_SECOND));
@@ -197,10 +201,8 @@ public class TrainingFragment extends Fragment {
 
 	/**
 	 * Prepare the breath end duration seekbar.
-	 *
-	 * @param root The parent view.
 	 */
-	private void prepareSeekbarBreathEndDuration(final View root) {
+	private void prepareSeekbarBreathEndDuration() {
 		long breathEndDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarBreathEndDuration.getProgress(), false);
 		if (breathEndDuration >= MAX_TWODIGIT_SECONDS) {
 			mBinding.textViewBreathEndDuration.setText(String.format(Locale.getDefault(), "%.0fs", breathEndDuration / MILLIS_PER_SECOND));
@@ -224,10 +226,8 @@ public class TrainingFragment extends Fragment {
 
 	/**
 	 * Prepare the hold start duration seekbar.
-	 *
-	 * @param root The parent view.
 	 */
-	private void prepareSeekbarHoldStartDuration(final View root) {
+	private void prepareSeekbarHoldStartDuration() {
 		long holdStartDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldStartDuration.getProgress(), true);
 		if (holdStartDuration >= MAX_TWODIGIT_SECONDS) {
 			mBinding.textViewHoldStartDuration.setText(String.format(Locale.getDefault(), "%.0fs", holdStartDuration / MILLIS_PER_SECOND));
@@ -251,10 +251,8 @@ public class TrainingFragment extends Fragment {
 
 	/**
 	 * Prepare the hold end duration seekbar.
-	 *
-	 * @param root The parent view.
 	 */
-	private void prepareSeekbarHoldEndDuration(final View root) {
+	private void prepareSeekbarHoldEndDuration() {
 		long holdEndDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldEndDuration.getProgress(), true);
 		if (holdEndDuration >= MAX_TWODIGIT_SECONDS) {
 			mBinding.textViewHoldEndDuration.setText(String.format(Locale.getDefault(), "%.0fs", holdEndDuration / MILLIS_PER_SECOND));
@@ -278,10 +276,8 @@ public class TrainingFragment extends Fragment {
 
 	/**
 	 * Prepare the in out relation seekbar.
-	 *
-	 * @param root The parent view.
 	 */
-	private void prepareSeekbarInOutRelation(final View root) {
+	private void prepareSeekbarInOutRelation() {
 		mBinding.textViewInOutRelation.setText(String.format(Locale.getDefault(), "%d%%", mBinding.seekBarInOutRelation.getProgress()));
 		mTrainingViewModel.getInOutRelation().observe(getViewLifecycleOwner(), value -> {
 			int seekBarValue = (int) Math.round(value * 100); // MAGIC_NUMBER
@@ -296,10 +292,8 @@ public class TrainingFragment extends Fragment {
 
 	/**
 	 * Prepare the hold variation seekbar.
-	 *
-	 * @param root The parent view.
 	 */
-	private void prepareSeekbarHoldVariation(final View root) {
+	private void prepareSeekbarHoldVariation() {
 		mBinding.textViewHoldVariation.setText(String.format(Locale.getDefault(), "%d%%", mBinding.seekBarHoldVariation.getProgress()));
 		mTrainingViewModel.getHoldVariation().observe(getViewLifecycleOwner(), value -> {
 			int seekBarValue = (int) Math.round(value * 100); // MAGIC_NUMBER
@@ -313,13 +307,35 @@ public class TrainingFragment extends Fragment {
 	}
 
 	/**
+	 * Prepare the current repetition seekbar.
+	 */
+	private void prepareSeekbarCurrentRepetition() {
+		mTrainingViewModel.getRepetitions().observe(getViewLifecycleOwner(), repetitions -> {
+			mBinding.seekBarCurrentRepetition.setMax(repetitions - 1);
+			ExerciseStep exerciseStep = mTrainingViewModel.getExerciseStep().getValue();
+			int currentRepetition = exerciseStep == null ? 0 : exerciseStep.getRepetition();
+			mBinding.seekBarCurrentRepetition.setProgress(Math.max(0, Math.min(currentRepetition, repetitions - 1)));
+		});
+		mTrainingViewModel.getExerciseStep().observe(getViewLifecycleOwner(), exerciseStep -> {
+			mBinding.seekBarCurrentRepetition.setProgress(Math.max(0, exerciseStep.getRepetition() - 1));
+			mBinding.textViewCurrentRepetition.setText(String.format(Locale.getDefault(), "%d", exerciseStep.getRepetition()));
+		});
+		mBinding.seekBarCurrentRepetition.setOnSeekBarChangeListener(
+				(OnSeekBarProgressChangedListener) progress -> {
+					ExerciseStep exerciseStep = mTrainingViewModel.getExerciseStep().getValue();
+					if (exerciseStep != null) {
+						mTrainingViewModel.updateExerciseStep(new ExerciseStep(exerciseStep.getStepType(), exerciseStep.getDuration(), progress + 1));
+					}
+				});
+	}
+
+	/**
 	 * Get the listener on exercise type change.
 	 *
-	 * @param parentView The parent view.
 	 * @param viewModel The view model.
 	 * @return The listener.
 	 */
-	protected final OnItemSelectedListener getOnExerciseTypeSelectedListener(final View parentView, final TrainingViewModel viewModel) {
+	protected final OnItemSelectedListener getOnExerciseTypeSelectedListener(final TrainingViewModel viewModel) {
 		return new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {

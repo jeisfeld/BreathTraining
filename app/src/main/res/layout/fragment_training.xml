@@ -337,6 +337,37 @@
                         android:layout_weight="@integer/selector_spinner_width" />
                 </TableRow>
 
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/seekbar_height" />
+
+                <TableRow
+                    android:id="@+id/tableRowCurrentRepetition"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_current_repetition" />
+
+                    <SeekBar
+                        android:id="@+id/seekBarCurrentRepetition"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:max="1" />
+
+                    <TextView
+                        android:id="@+id/textViewCurrentRepetition"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
+                </TableRow>
             </TableLayout>
         </LinearLayout>
     </ScrollView>

@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,8 +20,8 @@ import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.PlayStatus;
 import de.jeisfeld.breathtraining.sound.MediaPlayer;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
-import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
 import de.jeisfeld.breathtraining.ui.training.ServiceReceiver;
+import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
 
 /**
  * Main activity of the app.
@@ -48,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
 		// menu should be considered as top level destinations.
 		mAppBarConfiguration = new AppBarConfiguration.Builder(
 				R.id.nav_training, R.id.nav_measure)
-				.setOpenableLayout(drawer)
-				.build();
+						.setOpenableLayout(drawer)
+						.build();
 		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 		NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 		NavigationUI.setupWithNavController(navigationView, navController);

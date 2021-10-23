@@ -36,6 +36,8 @@
     <string name="text_hold_position">Hold Position:</string>
     <string name="text_hold_variation">Hold Variation:</string>
     <string name="text_sound_type">Sound:</string>
+    <string name="text_current_repetition">Repetition:</string>
+    <string name="formatting_current_repetition">%1$s\n\n%2$s</string>
 
     <string name="key_exercise_type">exercise_type</string>
     <string name="key_breath_duration">breath_duration</string>

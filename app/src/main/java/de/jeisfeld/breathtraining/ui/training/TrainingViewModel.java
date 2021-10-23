@@ -15,6 +15,7 @@ import de.jeisfeld.breathtraining.exercise.HoldExerciseData;
 import de.jeisfeld.breathtraining.exercise.HoldPosition;
 import de.jeisfeld.breathtraining.exercise.PlayStatus;
 import de.jeisfeld.breathtraining.exercise.SimpleExerciseData;
+import de.jeisfeld.breathtraining.exercise.StepType;
 import de.jeisfeld.breathtraining.sound.SoundType;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
@@ -89,7 +90,7 @@ public class TrainingViewModel extends ViewModel {
 	/**
 	 * The current exercise step.
 	 */
-	private final MutableLiveData<ExerciseStep> mExerciseStep = new MutableLiveData<>(null);
+	private final MutableLiveData<ExerciseStep> mExerciseStep = new MutableLiveData<>(new ExerciseStep(null, 0, 0));
 
 	/**
 	 * Get the exercise type.
@@ -297,6 +298,9 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	public void updatePlayStatus(final PlayStatus playStatus) {
 		mPlayStatus.postValue(playStatus);
+		if (playStatus == PlayStatus.STOPPED) {
+			mExerciseStep.setValue(new ExerciseStep(null, 0, 0));
+		}
 	}
 
 	/**
@@ -306,6 +310,21 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	protected MutableLiveData<ExerciseStep> getExerciseStep() {
 		return mExerciseStep;
+	}
+
+	/**
+	 * Get the display string for the number of repetitions.
+	 *
+	 * @return The display string for the number of repetitions.
+	 */
+	protected String getRepetitionString() {
+		ExerciseStep exerciseStep = mExerciseStep.getValue();
+		if (exerciseStep == null || exerciseStep.getStepType() == StepType.RELAX) {
+			return "";
+		}
+		else {
+			return "(" + exerciseStep.getRepetition() + "/" + mRepetitions.getValue() + ")";
+		}
 	}
 
 	/**
@@ -323,10 +342,9 @@ public class TrainingViewModel extends ViewModel {
 	 * @param context The context.
 	 */
 	public void play(final Context context) {
-		ExerciseService.triggerExerciseService(context,
-				mPlayStatus.getValue() == PlayStatus.PAUSED ? ServiceCommand.RESUME : ServiceCommand.START,
-				getExerciseData());
+		ServiceCommand serviceCommand = mPlayStatus.getValue() == PlayStatus.PAUSED ? ServiceCommand.RESUME : ServiceCommand.START;
 		mPlayStatus.setValue(PlayStatus.PLAYING);
+		ExerciseService.triggerExerciseService(context, serviceCommand, getExerciseData());
 	}
 
 	/**
@@ -425,13 +443,16 @@ public class TrainingViewModel extends ViewModel {
 		if (exerciseType == null) {
 			return null;
 		}
+		int repetition = mExerciseStep.getValue() == null ? 0 : mExerciseStep.getValue().getRepetition();
+
 		switch (exerciseType) {
 		case SIMPLE:
 			return new SimpleExerciseData(mRepetitions.getValue(), mBreathDuration.getValue(), mBreathEndDuration.getValue(),
-					mInOutRelation.getValue(), mSoundType.getValue(), mPlayStatus.getValue());
+					mInOutRelation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(), repetition);
 		case HOLD:
 			return new HoldExerciseData(mRepetitions.getValue(), mBreathDuration.getValue(), mInOutRelation.getValue(), mHoldStartDuration.getValue(),
-					mHoldEndDuration.getValue(), mHoldPosition.getValue(), mHoldVariation.getValue(), mSoundType.getValue(), mPlayStatus.getValue());
+					mHoldEndDuration.getValue(), mHoldPosition.getValue(), mHoldVariation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(),
+					repetition);
 		default:
 			return null;
 		}

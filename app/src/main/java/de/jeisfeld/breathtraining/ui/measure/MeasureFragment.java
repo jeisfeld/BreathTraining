@@ -13,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.databinding.FragmentMeasureBinding;
 import de.jeisfeld.breathtraining.sound.SoundType;
