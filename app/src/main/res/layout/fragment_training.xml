@@ -206,8 +206,7 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/tableRowHoldStartDuration"
-                    android:visibility="gone">
+                    android:id="@+id/tableRowHoldStartDuration">
 
                     <TextView
                         android:layout_width="0dp"
@@ -237,8 +236,7 @@
 
 
                 <TableRow
-                    android:id="@+id/tableRowHoldEndDuration"
-                    android:visibility="gone">
+                    android:id="@+id/tableRowHoldEndDuration">
 
                     <TextView
                         android:layout_width="0dp"
@@ -267,8 +265,7 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/tableRowHoldPosition"
-                    android:visibility="gone">
+                    android:id="@+id/tableRowHoldPosition">
 
                     <TextView
                         android:layout_width="0dp"
@@ -287,8 +284,7 @@
 
 
                 <TableRow
-                    android:id="@+id/tableRowHoldVariation"
-                    android:visibility="gone">
+                    android:id="@+id/tableRowHoldVariation">
 
                     <TextView
                         android:layout_width="0dp"

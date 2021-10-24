@@ -14,7 +14,6 @@ import de.jeisfeld.breathtraining.exercise.ExerciseType;
 import de.jeisfeld.breathtraining.exercise.HoldExerciseData;
 import de.jeisfeld.breathtraining.exercise.HoldPosition;
 import de.jeisfeld.breathtraining.exercise.PlayStatus;
-import de.jeisfeld.breathtraining.exercise.SimpleExerciseData;
 import de.jeisfeld.breathtraining.exercise.StepType;
 import de.jeisfeld.breathtraining.sound.SoundType;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
@@ -27,7 +26,7 @@ public class TrainingViewModel extends ViewModel {
 	 * The exercise type.
 	 */
 	private final MutableLiveData<ExerciseType> mExerciseType = new MutableLiveData<>(
-			ExerciseType.values()[PreferenceUtil.getSharedPreferenceInt(R.string.key_exercise_type, ExerciseType.SIMPLE.ordinal())]);
+			ExerciseType.values()[PreferenceUtil.getSharedPreferenceInt(R.string.key_exercise_type, ExerciseType.STANDARD.ordinal())]);
 
 	/**
 	 * The number of repetitions.
@@ -462,18 +461,9 @@ public class TrainingViewModel extends ViewModel {
 			return null;
 		}
 		int repetition = mExerciseStep.getValue() == null ? 0 : mExerciseStep.getValue().getRepetition();
-
-		switch (exerciseType) {
-		case SIMPLE:
-			return new SimpleExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mBreathEndDuration.getValue(),
-					mInOutRelation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(), repetition);
-		case HOLD:
-			return new HoldExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mBreathEndDuration.getValue(),
-					mInOutRelation.getValue(), mHoldStartDuration.getValue(), mHoldEndDuration.getValue(), mHoldPosition.getValue(),
-					mHoldVariation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(), repetition);
-		default:
-			return null;
-		}
+		return new HoldExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mBreathEndDuration.getValue(),
+				mInOutRelation.getValue(), mHoldStartDuration.getValue(), mHoldEndDuration.getValue(), mHoldPosition.getValue(),
+				mHoldVariation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(), repetition);
 	}
 
 	/**
@@ -494,24 +484,16 @@ public class TrainingViewModel extends ViewModel {
 
 		mRepetitions.setValue(exerciseData.getRepetitions());
 		mBreathStartDuration.setValue(exerciseData.getBreathStartDuration());
-		mInOutRelation.setValue(exerciseData.getInOutRelation());
 		mSoundType.setValue(exerciseData.getSoundType());
 		mPlayStatus.setValue(exerciseData.getPlayStatus());
 
-		switch (exerciseType) {
-		case SIMPLE:
-			mBreathEndDuration.setValue(((SimpleExerciseData) exerciseData).getBreathEndDuration());
-			break;
-		case HOLD:
-			HoldExerciseData holdData = (HoldExerciseData) exerciseData;
-			mHoldStartDuration.setValue(holdData.getHoldStartDuration());
-			mHoldEndDuration.setValue(holdData.getHoldEndDuration());
-			mHoldPosition.setValue(holdData.getHoldPosition());
-			mHoldVariation.setValue(holdData.getHoldVariation());
-			break;
-		default:
-			// do nothing
-		}
+		HoldExerciseData holdData = (HoldExerciseData) exerciseData;
+		mBreathEndDuration.setValue(holdData.getBreathEndDuration());
+		mInOutRelation.setValue(holdData.getInOutRelation());
+		mHoldStartDuration.setValue(holdData.getHoldStartDuration());
+		mHoldEndDuration.setValue(holdData.getHoldEndDuration());
+		mHoldPosition.setValue(holdData.getHoldPosition());
+		mHoldVariation.setValue(holdData.getHoldVariation());
 
 		if (exerciseStep != null) {
 			updateExerciseStep(exerciseStep);

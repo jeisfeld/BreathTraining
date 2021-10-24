@@ -5,12 +5,7 @@ package de.jeisfeld.breathtraining.exercise;
  */
 public enum ExerciseType {
 	/**
-	 * Simple breathing.
+	 * Standard breath training.
 	 */
-	SIMPLE,
-	/**
-	 * Breathing with holding breath.
-	 */
-	HOLD
-
+	STANDARD
 }

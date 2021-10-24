@@ -309,22 +309,6 @@ public class TrainingFragment extends Fragment {
 			@Override
 			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
 				ExerciseType exerciseType = ExerciseType.values()[position];
-				switch (exerciseType) {
-				case SIMPLE:
-					mBinding.tableRowHoldStartDuration.setVisibility(View.GONE);
-					mBinding.tableRowHoldEndDuration.setVisibility(View.GONE);
-					mBinding.tableRowHoldPosition.setVisibility(View.GONE);
-					mBinding.tableRowHoldVariation.setVisibility(View.GONE);
-					break;
-				case HOLD:
-					mBinding.tableRowHoldStartDuration.setVisibility(View.VISIBLE);
-					mBinding.tableRowHoldEndDuration.setVisibility(View.VISIBLE);
-					mBinding.tableRowHoldPosition.setVisibility(View.VISIBLE);
-					mBinding.tableRowHoldVariation.setVisibility(View.VISIBLE);
-					break;
-				default:
-					break;
-				}
 				viewModel.updateExerciseType(exerciseType);
 			}
 

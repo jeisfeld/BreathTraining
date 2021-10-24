@@ -19,6 +19,10 @@ public class HoldExerciseData extends ExerciseData {
 	 */
 	private final long mBreathEndDuration;
 	/**
+	 * The in/out relation.
+	 */
+	private final double mInOutRelation;
+	/**
 	 * The hold start duration.
 	 */
 	private final long mHoldStartDuration;
@@ -57,8 +61,9 @@ public class HoldExerciseData extends ExerciseData {
 	public HoldExerciseData(final Integer repetitions, final Long breathStartDuration, final Long breathEndDuration, // SUPPRESS_CHECKSTYLE
 							final Double inOutRelation, final Long holdStartDuration, final Long holdEndDuration, final HoldPosition holdPosition,
 							final Double holdVariation, final SoundType soundType, final PlayStatus playStatus, final int currentRepetitionNumber) {
-		super(repetitions, breathStartDuration, inOutRelation, soundType, playStatus, currentRepetitionNumber);
+		super(repetitions, breathStartDuration, soundType, playStatus, currentRepetitionNumber);
 		mBreathEndDuration = breathEndDuration;
+		mInOutRelation = inOutRelation;
 		mHoldStartDuration = holdStartDuration;
 		mHoldEndDuration = holdEndDuration;
 		mHoldPosition = holdPosition;
@@ -70,9 +75,16 @@ public class HoldExerciseData extends ExerciseData {
 	 *
 	 * @return The breath end duration
 	 */
-
 	public long getBreathEndDuration() {
 		return mBreathEndDuration;
+	}
+	/**
+	 * Get the in/out relation.
+	 *
+	 * @return The in/out relation.
+	 */
+	public double getInOutRelation() {
+		return mInOutRelation;
 	}
 	/**
 	 * Get the hold start duration.
@@ -112,13 +124,14 @@ public class HoldExerciseData extends ExerciseData {
 
 	@Override
 	public final ExerciseType getType() {
-		return ExerciseType.HOLD;
+		return ExerciseType.STANDARD;
 	}
 
 	@Override
 	public final void addToIntent(final Intent serviceIntent) {
 		super.addToIntent(serviceIntent);
 		serviceIntent.putExtra(EXTRA_BREATH_END_DURATION, mBreathEndDuration);
+		serviceIntent.putExtra(EXTRA_IN_OUT_RELATION, mInOutRelation);
 		serviceIntent.putExtra(EXTRA_HOLD_START_DURATION, mHoldStartDuration);
 		serviceIntent.putExtra(EXTRA_HOLD_END_DURATION, mHoldEndDuration);
 		serviceIntent.putExtra(EXTRA_HOLD_POSITION, mHoldPosition);

@@ -3,6 +3,7 @@ package de.jeisfeld.breathtraining.exercise;
 import java.io.Serializable;
 
 import android.content.Intent;
+
 import de.jeisfeld.breathtraining.sound.SoundType;
 import de.jeisfeld.breathtraining.ui.training.ServiceReceiver;
 
@@ -24,14 +25,6 @@ public abstract class ExerciseData implements Serializable {
 	 */
 	protected static final String EXTRA_BREATH_START_DURATION = "de.jeisfeld.breathtraining.BREATH_START_DURATION";
 	/**
-	 * Key for the breath duration within the intent.
-	 */
-	protected static final String EXTRA_BREATH_END_DURATION = "de.jeisfeld.breathtraining.BREATH_END_DURATION";
-	/**
-	 * Key for the in/out relation within the intent.
-	 */
-	protected static final String EXTRA_IN_OUT_RELATION = "de.jeisfeld.breathtraining.IN_OUT_RELATION";
-	/**
 	 * Key for the repetitions within the intent.
 	 */
 	protected static final String EXTRA_REPETITIONS = "de.jeisfeld.breathtraining.REPETITIONS";
@@ -43,6 +36,14 @@ public abstract class ExerciseData implements Serializable {
 	 * Key for the sound type within the intent.
 	 */
 	protected static final String EXTRA_SOUND_TYPE = "de.jeisfeld.breathtraining.SOUND_TYPE";
+	/**
+	 * Key for the breath duration within the intent.
+	 */
+	protected static final String EXTRA_BREATH_END_DURATION = "de.jeisfeld.breathtraining.BREATH_END_DURATION";
+	/**
+	 * Key for the in/out relation within the intent.
+	 */
+	protected static final String EXTRA_IN_OUT_RELATION = "de.jeisfeld.breathtraining.IN_OUT_RELATION";
 	/**
 	 * Key for the hold start duration within the intent.
 	 */
@@ -68,10 +69,6 @@ public abstract class ExerciseData implements Serializable {
 	 */
 	private final long mBreathStartDuration;
 	/**
-	 * The in/out relation.
-	 */
-	private final double mInOutRelation;
-	/**
 	 * The sound type.
 	 */
 	private final SoundType mSoundType;
@@ -95,18 +92,16 @@ public abstract class ExerciseData implements Serializable {
 	/**
 	 * Constructor.
 	 *
-	 * @param repetitions The number of repetitions.
-	 * @param breathStartDuration The breath start duration.
-	 * @param inOutRelation The in/out relation.
-	 * @param soundType The sound type.
-	 * @param playStatus The playing status.
+	 * @param repetitions             The number of repetitions.
+	 * @param breathStartDuration     The breath start duration.
+	 * @param soundType               The sound type.
+	 * @param playStatus              The playing status.
 	 * @param currentRepetitionNumber The current repetition number.
 	 */
-	public ExerciseData(final Integer repetitions, final Long breathStartDuration, final Double inOutRelation, final SoundType soundType,
-			final PlayStatus playStatus, final int currentRepetitionNumber) {
+	public ExerciseData(final Integer repetitions, final Long breathStartDuration, final SoundType soundType,
+						final PlayStatus playStatus, final int currentRepetitionNumber) {
 		mRepetitions = repetitions;
 		mBreathStartDuration = breathStartDuration;
-		mInOutRelation = inOutRelation;
 		mSoundType = soundType;
 		mPlayStatus = playStatus;
 		mCurrentRepetitionNumber = currentRepetitionNumber;
@@ -170,7 +165,6 @@ public abstract class ExerciseData implements Serializable {
 		serviceIntent.putExtra(EXTRA_EXERCISE_TYPE, getType());
 		serviceIntent.putExtra(EXTRA_REPETITIONS, mRepetitions);
 		serviceIntent.putExtra(EXTRA_BREATH_START_DURATION, mBreathStartDuration);
-		serviceIntent.putExtra(EXTRA_IN_OUT_RELATION, mInOutRelation);
 		serviceIntent.putExtra(EXTRA_SOUND_TYPE, mSoundType);
 		serviceIntent.putExtra(ServiceReceiver.EXTRA_PLAY_STATUS, mPlayStatus);
 		serviceIntent.putExtra(EXTRA_CURRENT_REPETITION, mCurrentRepetitionNumber);
@@ -192,15 +186,6 @@ public abstract class ExerciseData implements Serializable {
 	 */
 	public long getBreathStartDuration() {
 		return mBreathStartDuration;
-	}
-
-	/**
-	 * Get the in/out relation.
-	 *
-	 * @return The in/out relation.
-	 */
-	public double getInOutRelation() {
-		return mInOutRelation;
 	}
 
 	/**
@@ -240,27 +225,19 @@ public abstract class ExerciseData implements Serializable {
 		PlayStatus playStatus = (PlayStatus) intent.getSerializableExtra(ServiceReceiver.EXTRA_PLAY_STATUS);
 		int currentRepetitionNumber = intent.getIntExtra(EXTRA_CURRENT_REPETITION, 0);
 
-		switch (exerciseType) {
-		case SIMPLE:
-			long breathEndDuration0 = intent.getLongExtra(EXTRA_BREATH_END_DURATION, 0);
-			return new SimpleExerciseData(repetitions, breathStartDuration, breathEndDuration0, inOutRelation, soundType,
-					playStatus, currentRepetitionNumber);
-		case HOLD:
-			long breathEndDuration = intent.getLongExtra(EXTRA_BREATH_END_DURATION, 0);
-			long holdStartDuration = intent.getLongExtra(EXTRA_HOLD_START_DURATION, 0);
-			long holdEndDuration = intent.getLongExtra(EXTRA_HOLD_END_DURATION, 0);
-			HoldPosition holdPosition = (HoldPosition) intent.getSerializableExtra(EXTRA_HOLD_POSITION);
-			double holdVariation = intent.getDoubleExtra(EXTRA_HOLD_VARIATION, 0);
-			return new HoldExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdStartDuration,
-					holdEndDuration, holdPosition, holdVariation, soundType, playStatus, currentRepetitionNumber);
-		default:
-			return null;
-		}
+		long breathEndDuration = intent.getLongExtra(EXTRA_BREATH_END_DURATION, 0);
+		long holdStartDuration = intent.getLongExtra(EXTRA_HOLD_START_DURATION, 0);
+		long holdEndDuration = intent.getLongExtra(EXTRA_HOLD_END_DURATION, 0);
+		HoldPosition holdPosition = (HoldPosition) intent.getSerializableExtra(EXTRA_HOLD_POSITION);
+		double holdVariation = intent.getDoubleExtra(EXTRA_HOLD_VARIATION, 0);
+		return new HoldExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdStartDuration,
+				holdEndDuration, holdPosition, holdVariation, soundType, playStatus, currentRepetitionNumber);
 	}
 
 	/**
 	 * Retrieve the status from other ExerciseData and upate the playStatus.
-	 * @param origin The other ExerciseData.
+	 *
+	 * @param origin     The other ExerciseData.
 	 * @param playStatus The new playStatus.
 	 */
 	public void retrieveStatus(final ExerciseData origin, final PlayStatus playStatus) {
