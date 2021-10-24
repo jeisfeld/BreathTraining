@@ -32,6 +32,7 @@
     <string name="text_breath_end_duration">End Duration:</string>
     <string name="text_in_out_relation">In/Out Relation:</string>
     <string name="text_hold_breath">Hold Breath:</string>
+    <string name="text_hold_duration">Hold Duration:</string>
     <string name="text_hold_start_duration">Hold Start Dur:</string>
     <string name="text_hold_end_duration">Hold End Dur:</string>
     <string name="text_hold_position">Hold Position:</string>

@@ -2,6 +2,8 @@ package de.jeisfeld.breathtraining.ui.training;
 
 import android.content.Context;
 
+import java.util.Objects;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -150,8 +152,13 @@ public class TrainingViewModel extends ViewModel {
 	 * @param breathStartDuration The new breath start duration
 	 */
 	public void updateBreathStartDuration(final long breathStartDuration) {
+		final Long oldStartDuration = mBreathStartDuration.getValue();
 		mBreathStartDuration.setValue(breathStartDuration);
 		PreferenceUtil.setSharedPreferenceLong(R.string.key_breath_start_duration, breathStartDuration);
+		if (Objects.equals(mBreathStartDuration.getValue(), mBreathEndDuration.getValue())
+				|| Objects.equals(oldStartDuration, mBreathEndDuration.getValue())) {
+			updateBreathEndDuration(breathStartDuration);
+		}
 	}
 
 	/**
@@ -207,8 +214,13 @@ public class TrainingViewModel extends ViewModel {
 	 * @param holdStartDuration The new hold start duration
 	 */
 	protected void updateHoldStartDuration(final long holdStartDuration) {
+		final Long oldStartDuration = mHoldStartDuration.getValue();
 		mHoldStartDuration.setValue(holdStartDuration);
 		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_start_duration, holdStartDuration);
+		if (Objects.equals(mHoldStartDuration.getValue(), mHoldEndDuration.getValue())
+				|| Objects.equals(oldStartDuration, mHoldEndDuration.getValue())) {
+			updateHoldEndDuration(holdStartDuration);
+		}
 	}
 
 	/**

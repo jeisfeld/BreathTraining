@@ -232,6 +232,16 @@ public class TrainingFragment extends Fragment {
 			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
 			mBinding.seekBarHoldStartDuration.setProgress(seekbarValue);
 			setDurationText(mBinding.textViewHoldStartDuration, duration);
+
+			if (duration == 0) {
+				mTrainingViewModel.updateHoldEndDuration(0);
+				mBinding.tableRowHoldEndDuration.setVisibility(View.GONE);
+				mBinding.textLabelHoldStartDuration.setText(R.string.text_hold_duration);
+			}
+			else {
+				mBinding.tableRowHoldEndDuration.setVisibility(View.VISIBLE);
+				mBinding.textLabelHoldStartDuration.setText(R.string.text_hold_start_duration);
+			}
 		});
 		mBinding.seekBarHoldStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
 				.updateHoldStartDuration(TrainingViewModel.durationSeekbarToValue(progress, true)));
@@ -241,7 +251,7 @@ public class TrainingFragment extends Fragment {
 	 * Prepare the hold end duration seekbar.
 	 */
 	private void prepareSeekbarHoldEndDuration() {
-		long holdEndDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldEndDuration.getProgress(), true);
+		long holdEndDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldEndDuration.getProgress(), false);
 		setDurationText(mBinding.textViewHoldStartDuration, holdEndDuration);
 		mTrainingViewModel.getHoldEndDuration().observe(getViewLifecycleOwner(), duration -> {
 			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
@@ -249,7 +259,7 @@ public class TrainingFragment extends Fragment {
 			setDurationText(mBinding.textViewHoldEndDuration, duration);
 		});
 		mBinding.seekBarHoldEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
-				.updateHoldEndDuration(TrainingViewModel.durationSeekbarToValue(progress, true)));
+				.updateHoldEndDuration(TrainingViewModel.durationSeekbarToValue(progress, false)));
 	}
 
 	/**
