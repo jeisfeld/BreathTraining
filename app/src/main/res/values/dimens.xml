@@ -15,9 +15,9 @@
     <dimen name="notification_button_size">48dp</dimen>
     <dimen name="non_seekbar_left_margin">10dp</dimen>
 
-    <integer name="selector_label_width">31</integer>
-    <integer name="selector_spinner_width">69</integer>
-    <integer name="selector_seekbar_width">57</integer>
-    <integer name="selector_text_width">12</integer>
+    <integer name="selector_label_width">34</integer>
+    <integer name="selector_spinner_width">66</integer>
+    <integer name="selector_seekbar_width">56</integer>
+    <integer name="selector_text_width">10</integer>
 
 </resources>

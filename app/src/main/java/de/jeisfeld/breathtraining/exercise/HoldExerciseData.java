@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import android.content.Intent;
+
 import de.jeisfeld.breathtraining.sound.SoundType;
 
 /**
@@ -27,17 +28,21 @@ public class HoldExerciseData extends ExerciseData {
 	 */
 	private final boolean mHoldBreath;
 	/**
-	 * The hold start duration.
+	 * The hold in start duration.
 	 */
-	private final long mHoldStartDuration;
+	private final long mHoldInStartDuration;
 	/**
-	 * The hold start duration.
+	 * The hold in end duration.
 	 */
-	private final long mHoldEndDuration;
+	private final long mHoldInEndDuration;
 	/**
-	 * The hold position.
+	 * The hold out start duration.
 	 */
-	private final HoldPosition mHoldPosition;
+	private final long mHoldOutStartDuration;
+	/**
+	 * The hold out end duration.
+	 */
+	private final long mHoldOutEndDuration;
 	/**
 	 * The hold variation.
 	 */
@@ -50,29 +55,31 @@ public class HoldExerciseData extends ExerciseData {
 	/**
 	 * Constructor.
 	 *
-	 * @param repetitions The number of repetitions
-	 * @param breathStartDuration The breath duration
-	 * @param breathEndDuration The breath end duration.
-	 * @param inOutRelation The in/out relation
-	 * @param holdStartDuration The hold start duration
-	 * @param holdEndDuration The hold end duration
-	 * @param holdPosition The hold position
-	 * @param holdVariation The hold variation
-	 * @param soundType The sound type
-	 * @param playStatus The playing status
+	 * @param repetitions             The number of repetitions
+	 * @param breathStartDuration     The breath duration
+	 * @param breathEndDuration       The breath end duration.
+	 * @param inOutRelation           The in/out relation
+	 * @param holdInStartDuration     The hold in start duration
+	 * @param holdInEndDuration       The hold in end duration
+	 * @param holdOutStartDuration    The hold out start duration
+	 * @param holdOutEndDuration      The hold out end duration
+	 * @param holdVariation           The hold variation
+	 * @param soundType               The sound type
+	 * @param playStatus              The playing status
 	 * @param currentRepetitionNumber The current repetition number.
 	 */
 	public HoldExerciseData(final Integer repetitions, final Long breathStartDuration, final Long breathEndDuration, // SUPPRESS_CHECKSTYLE
-							final Double inOutRelation, final Boolean holdBreath, final Long holdStartDuration, final Long holdEndDuration,
-							final HoldPosition holdPosition, final Double holdVariation, final SoundType soundType, final PlayStatus playStatus,
-							final int currentRepetitionNumber) {
+							final Double inOutRelation, final Boolean holdBreath, final Long holdInStartDuration, final Long holdInEndDuration,
+							final Long holdOutStartDuration, final Long holdOutEndDuration, final Double holdVariation,
+							final SoundType soundType, final PlayStatus playStatus, final int currentRepetitionNumber) {
 		super(repetitions, breathStartDuration, soundType, playStatus, currentRepetitionNumber);
 		mBreathEndDuration = breathEndDuration;
 		mInOutRelation = inOutRelation;
 		mHoldBreath = holdBreath;
-		mHoldStartDuration = holdStartDuration;
-		mHoldEndDuration = holdEndDuration;
-		mHoldPosition = holdPosition;
+		mHoldInStartDuration = holdInStartDuration;
+		mHoldInEndDuration = holdInEndDuration;
+		mHoldOutStartDuration = holdOutStartDuration;
+		mHoldOutEndDuration = holdOutEndDuration;
 		mHoldVariation = holdVariation;
 	}
 
@@ -84,6 +91,7 @@ public class HoldExerciseData extends ExerciseData {
 	public long getBreathEndDuration() {
 		return mBreathEndDuration;
 	}
+
 	/**
 	 * Get the in/out relation.
 	 *
@@ -101,30 +109,41 @@ public class HoldExerciseData extends ExerciseData {
 	public boolean isHoldBreath() {
 		return mHoldBreath;
 	}
+
 	/**
 	 * Get the hold start duration.
 	 *
-	 * @return The hold start duration
+	 * @return The hold in start duration
 	 */
-	public long getHoldStartDuration() {
-		return mHoldStartDuration;
-	}
-	/**
-	 * Get the hold end duration.
-	 *
-	 * @return The hold end duration
-	 */
-	public long getHoldEndDuration() {
-		return mHoldEndDuration;
+	public long getHoldInStartDuration() {
+		return mHoldInStartDuration;
 	}
 
 	/**
-	 * Get the hold position.
+	 * Get the hold in end duration.
 	 *
-	 * @return The hold position
+	 * @return The hold in end duration
 	 */
-	public HoldPosition getHoldPosition() {
-		return mHoldPosition;
+	public long getHoldInEndDuration() {
+		return mHoldInEndDuration;
+	}
+
+	/**
+	 * Get the hold out start duration.
+	 *
+	 * @return The hold out start duration
+	 */
+	public long getHoldOutStartDuration() {
+		return mHoldOutStartDuration;
+	}
+
+	/**
+	 * Get the hold out end duration.
+	 *
+	 * @return The hold out end duration
+	 */
+	public long getHoldOutEndDuration() {
+		return mHoldOutEndDuration;
 	}
 
 	/**
@@ -147,21 +166,36 @@ public class HoldExerciseData extends ExerciseData {
 		serviceIntent.putExtra(EXTRA_BREATH_END_DURATION, mBreathEndDuration);
 		serviceIntent.putExtra(EXTRA_IN_OUT_RELATION, mInOutRelation);
 		serviceIntent.putExtra(EXTRA_HOLD_BREATH, mHoldBreath);
-		serviceIntent.putExtra(EXTRA_HOLD_START_DURATION, mHoldStartDuration);
-		serviceIntent.putExtra(EXTRA_HOLD_END_DURATION, mHoldEndDuration);
-		serviceIntent.putExtra(EXTRA_HOLD_POSITION, mHoldPosition);
+		serviceIntent.putExtra(EXTRA_HOLD_IN_START_DURATION, mHoldInStartDuration);
+		serviceIntent.putExtra(EXTRA_HOLD_IN_END_DURATION, mHoldInEndDuration);
+		serviceIntent.putExtra(EXTRA_HOLD_OUT_START_DURATION, mHoldOutStartDuration);
+		serviceIntent.putExtra(EXTRA_HOLD_OUT_END_DURATION, mHoldOutEndDuration);
 		serviceIntent.putExtra(EXTRA_HOLD_VARIATION, mHoldVariation);
 	}
 
 	/**
-	 * Get the hold duration for a certain repetition.
+	 * Get the hold in duration for a certain repetition.
 	 *
 	 * @param repetition The repetition
-	 * @return The hold duration
+	 * @return The hold in duration
 	 */
-	private long getHoldDuration(final int repetition) {
-		long holdDuration = getRepetitions() < 2 ? mHoldEndDuration
-				: mHoldStartDuration + (mHoldEndDuration - mHoldStartDuration) * (repetition - 1) / (getRepetitions() - 1);
+	private long getHoldInDuration(final int repetition) {
+		long holdDuration = getRepetitions() < 2 ? mHoldInEndDuration
+				: mHoldInStartDuration + (mHoldInEndDuration - mHoldInStartDuration) * (repetition - 1) / (getRepetitions() - 1);
+		double variation = (mDoubleIterator.next() * 2 - 1) * mHoldVariation;
+		holdDuration += holdDuration * variation;
+		return holdDuration;
+	}
+
+	/**
+	 * Get the hold out duration for a certain repetition.
+	 *
+	 * @param repetition The repetition
+	 * @return The hold out duration
+	 */
+	private long getHoldOutDuration(final int repetition) {
+		long holdDuration = getRepetitions() < 2 ? mHoldOutEndDuration
+				: mHoldOutStartDuration + (mHoldOutEndDuration - mHoldOutStartDuration) * (repetition - 1) / (getRepetitions() - 1);
 		double variation = (mDoubleIterator.next() * 2 - 1) * mHoldVariation;
 		holdDuration += holdDuration * variation;
 		return holdDuration;
@@ -173,32 +207,15 @@ public class HoldExerciseData extends ExerciseData {
 				: getBreathStartDuration() + (mBreathEndDuration - getBreathStartDuration()) * (repetition - 1) / (getRepetitions() - 1);
 
 		if (mHoldBreath) {
-			switch (mHoldPosition) {
-			case IN:
-				return new ExerciseStep[] {
-						new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()), repetition),
-						new ExerciseStep(StepType.HOLD, getHoldDuration(repetition), repetition),
-						new ExerciseStep(StepType.EXHALE, (long) (currentBreathDuration * (1 - getInOutRelation())), repetition)
-				};
-			case OUT:
-				return new ExerciseStep[] {
-						new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()), repetition),
-						new ExerciseStep(StepType.EXHALE, (long) (currentBreathDuration * (1 - getInOutRelation())), repetition),
-						new ExerciseStep(StepType.HOLD, getHoldDuration(repetition), repetition)
-				};
-			case BOTH:
-				return new ExerciseStep[] {
-						new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()), repetition),
-						new ExerciseStep(StepType.HOLD, getHoldDuration(repetition) / 2, repetition),
-						new ExerciseStep(StepType.EXHALE, (long) (currentBreathDuration * (1 - getInOutRelation())), repetition),
-						new ExerciseStep(StepType.HOLD, getHoldDuration(repetition) / 2, repetition),
-				};
-			default:
-				return null;
-			}
+			return new ExerciseStep[]{
+					new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()), repetition),
+					new ExerciseStep(StepType.HOLD, getHoldInDuration(repetition) / 2, repetition),
+					new ExerciseStep(StepType.EXHALE, (long) (currentBreathDuration * (1 - getInOutRelation())), repetition),
+					new ExerciseStep(StepType.HOLD, getHoldOutDuration(repetition) / 2, repetition),
+			};
 		}
 		else {
-			return new ExerciseStep[] {
+			return new ExerciseStep[]{
 					new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()), repetition),
 					new ExerciseStep(StepType.EXHALE, (long) (currentBreathDuration * (1 - getInOutRelation())), repetition),
 			};

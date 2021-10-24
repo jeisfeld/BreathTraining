@@ -49,17 +49,21 @@ public abstract class ExerciseData implements Serializable {
 	 */
 	protected static final String EXTRA_HOLD_BREATH = "de.jeisfeld.breathtraining.HOLD_BREATH";
 	/**
-	 * Key for the hold start duration within the intent.
+	 * Key for the hold in start duration within the intent.
 	 */
-	protected static final String EXTRA_HOLD_START_DURATION = "de.jeisfeld.breathtraining.HOLD_START_DURATION";
+	protected static final String EXTRA_HOLD_IN_START_DURATION = "de.jeisfeld.breathtraining.HOLD_IN_START_DURATION";
 	/**
-	 * Key for the hold end duration within the intent.
+	 * Key for the hold in end duration within the intent.
 	 */
-	protected static final String EXTRA_HOLD_END_DURATION = "de.jeisfeld.breathtraining.HOLD_END_DURATION";
+	protected static final String EXTRA_HOLD_IN_END_DURATION = "de.jeisfeld.breathtraining.HOLD_IN_END_DURATION";
 	/**
-	 * Key for the hold position within the intent.
+	 * Key for the hold out start duration within the intent.
 	 */
-	protected static final String EXTRA_HOLD_POSITION = "de.jeisfeld.breathtraining.HOLD_POSITION";
+	protected static final String EXTRA_HOLD_OUT_START_DURATION = "de.jeisfeld.breathtraining.HOLD_OUT_START_DURATION";
+	/**
+	 * Key for the hold out end duration within the intent.
+	 */
+	protected static final String EXTRA_HOLD_OUT_END_DURATION = "de.jeisfeld.breathtraining.HOLD_OUT_END_DURATION";
 	/**
 	 * Key for the hold variation within the intent.
 	 */
@@ -228,14 +232,15 @@ public abstract class ExerciseData implements Serializable {
 		double inOutRelation = intent.getDoubleExtra(EXTRA_IN_OUT_RELATION, 0.5); // MAGIC_NUMBER
 		PlayStatus playStatus = (PlayStatus) intent.getSerializableExtra(ServiceReceiver.EXTRA_PLAY_STATUS);
 		boolean holdBreath = intent.getBooleanExtra(EXTRA_HOLD_BREATH, false);
-		long holdStartDuration = intent.getLongExtra(EXTRA_HOLD_START_DURATION, 0);
-		long holdEndDuration = intent.getLongExtra(EXTRA_HOLD_END_DURATION, 0);
-		HoldPosition holdPosition = (HoldPosition) intent.getSerializableExtra(EXTRA_HOLD_POSITION);
+		long holdInStartDuration = intent.getLongExtra(EXTRA_HOLD_IN_START_DURATION, 0);
+		long holdInEndDuration = intent.getLongExtra(EXTRA_HOLD_IN_END_DURATION, 0);
+		long holdOutStartDuration = intent.getLongExtra(EXTRA_HOLD_OUT_START_DURATION, 0);
+		long holdOutEndDuration = intent.getLongExtra(EXTRA_HOLD_OUT_END_DURATION, 0);
 		double holdVariation = intent.getDoubleExtra(EXTRA_HOLD_VARIATION, 0);
 		SoundType soundType = (SoundType) intent.getSerializableExtra(EXTRA_SOUND_TYPE);
 		int currentRepetitionNumber = intent.getIntExtra(EXTRA_CURRENT_REPETITION, 0);
-		return new HoldExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdBreath, holdStartDuration,
-				holdEndDuration, holdPosition, holdVariation, soundType, playStatus, currentRepetitionNumber);
+		return new HoldExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdBreath, holdInStartDuration,
+				holdInEndDuration, holdOutStartDuration, holdOutEndDuration, holdVariation, soundType, playStatus, currentRepetitionNumber);
 	}
 
 	/**

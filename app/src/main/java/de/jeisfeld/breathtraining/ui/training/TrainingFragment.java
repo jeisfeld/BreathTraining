@@ -1,6 +1,7 @@
 package de.jeisfeld.breathtraining.ui.training;
 
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import android.os.Bundle;
@@ -10,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
@@ -24,7 +23,6 @@ import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.databinding.FragmentTrainingBinding;
 import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.ExerciseType;
-import de.jeisfeld.breathtraining.exercise.HoldPosition;
 import de.jeisfeld.breathtraining.sound.SoundType;
 
 /**
@@ -55,9 +53,10 @@ public class TrainingFragment extends Fragment {
 		prepareSeekbarBreathEndDuration();
 		prepareSeekbarInOutRelation();
 		prepareCheckBoxHoldBreath();
-		prepareSeekbarHoldStartDuration();
-		prepareSeekbarHoldEndDuration();
-		prepareSpinnerHoldPosition();
+		prepareSeekbarHoldInStartDuration();
+		prepareSeekbarHoldInEndDuration();
+		prepareSeekbarHoldOutStartDuration();
+		prepareSeekbarHoldOutEndDuration();
 		prepareSeekbarHoldVariation();
 		prepareSpinnerSoundType();
 		prepareSeekbarCurrentRepetition();
@@ -214,74 +213,100 @@ public class TrainingFragment extends Fragment {
 		mTrainingViewModel.getHoldBreath().observe(getViewLifecycleOwner(), holdBreath -> {
 			mBinding.checkBoxHoldBreath.setChecked(holdBreath);
 			int holdViewStatus = holdBreath ? View.VISIBLE : View.GONE;
-			mBinding.tableRowHoldStartDuration.setVisibility(holdViewStatus);
-			mBinding.tableRowHoldEndDuration.setVisibility(holdViewStatus);
-			mBinding.tableRowHoldPosition.setVisibility(holdViewStatus);
+			mBinding.tableRowHoldInStartDuration.setVisibility(holdViewStatus);
+			mBinding.tableRowHoldInEndDuration.setVisibility(holdViewStatus);
+			mBinding.tableRowHoldOutStartDuration.setVisibility(holdViewStatus);
+			mBinding.tableRowHoldOutEndDuration.setVisibility(holdViewStatus);
 			mBinding.tableRowHoldVariation.setVisibility(holdViewStatus);
+
+			if (Objects.equals(mTrainingViewModel.getHoldInStartDuration().getValue(), 0L)) {
+				mBinding.tableRowHoldInEndDuration.setVisibility(View.GONE);
+			}
+			if (Objects.equals(mTrainingViewModel.getHoldOutStartDuration().getValue(), 0L)) {
+				mBinding.tableRowHoldOutEndDuration.setVisibility(View.GONE);
+			}
 		});
 		mBinding.checkBoxHoldBreath.setOnCheckedChangeListener((buttonView, isChecked) -> mTrainingViewModel.updateHoldBreath(isChecked));
 	}
 
 	/**
-	 * Prepare the hold start duration seekbar.
+	 * Prepare the hold in start duration seekbar.
 	 */
-	private void prepareSeekbarHoldStartDuration() {
-		long holdStartDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldStartDuration.getProgress(), true);
-		setDurationText(mBinding.textViewHoldStartDuration, holdStartDuration);
-		mTrainingViewModel.getHoldStartDuration().observe(getViewLifecycleOwner(), duration -> {
+	private void prepareSeekbarHoldInStartDuration() {
+		long holdInStartDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldInStartDuration.getProgress(), true);
+		setDurationText(mBinding.textViewHoldInStartDuration, holdInStartDuration);
+		mTrainingViewModel.getHoldInStartDuration().observe(getViewLifecycleOwner(), duration -> {
 			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
-			mBinding.seekBarHoldStartDuration.setProgress(seekbarValue);
-			setDurationText(mBinding.textViewHoldStartDuration, duration);
+			mBinding.seekBarHoldInStartDuration.setProgress(seekbarValue);
+			setDurationText(mBinding.textViewHoldInStartDuration, duration);
 
 			if (duration == 0) {
-				mTrainingViewModel.updateHoldEndDuration(0);
-				mBinding.tableRowHoldEndDuration.setVisibility(View.GONE);
-				mBinding.textLabelHoldStartDuration.setText(R.string.text_hold_duration);
+				mTrainingViewModel.updateHoldInEndDuration(0);
+				mBinding.tableRowHoldInEndDuration.setVisibility(View.GONE);
+				mBinding.textLabelHoldInStartDuration.setText(R.string.text_hold_in_duration);
 			}
 			else {
-				mBinding.tableRowHoldEndDuration.setVisibility(View.VISIBLE);
-				mBinding.textLabelHoldStartDuration.setText(R.string.text_hold_start_duration);
+				mBinding.tableRowHoldInEndDuration.setVisibility(View.VISIBLE);
+				mBinding.textLabelHoldInStartDuration.setText(R.string.text_hold_in_start_duration);
 			}
 		});
-		mBinding.seekBarHoldStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
-				.updateHoldStartDuration(TrainingViewModel.durationSeekbarToValue(progress, true)));
+		mBinding.seekBarHoldInStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
+				.updateHoldInStartDuration(TrainingViewModel.durationSeekbarToValue(progress, true)));
 	}
 
 	/**
-	 * Prepare the hold end duration seekbar.
+	 * Prepare the hold in  end duration seekbar.
 	 */
-	private void prepareSeekbarHoldEndDuration() {
-		long holdEndDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldEndDuration.getProgress(), false);
-		setDurationText(mBinding.textViewHoldStartDuration, holdEndDuration);
-		mTrainingViewModel.getHoldEndDuration().observe(getViewLifecycleOwner(), duration -> {
+	private void prepareSeekbarHoldInEndDuration() {
+		long holdInEndDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldInEndDuration.getProgress(), false);
+		setDurationText(mBinding.textViewHoldInStartDuration, holdInEndDuration);
+		mTrainingViewModel.getHoldInEndDuration().observe(getViewLifecycleOwner(), duration -> {
 			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
-			mBinding.seekBarHoldEndDuration.setProgress(seekbarValue);
-			setDurationText(mBinding.textViewHoldEndDuration, duration);
+			mBinding.seekBarHoldInEndDuration.setProgress(seekbarValue);
+			setDurationText(mBinding.textViewHoldInEndDuration, duration);
 		});
-		mBinding.seekBarHoldEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
-				.updateHoldEndDuration(TrainingViewModel.durationSeekbarToValue(progress, false)));
+		mBinding.seekBarHoldInEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
+				.updateHoldInEndDuration(TrainingViewModel.durationSeekbarToValue(progress, false)));
 	}
 
 	/**
-	 * Prepare the spinner for hold position.
+	 * Prepare the hold out start duration seekbar.
 	 */
-	private void prepareSpinnerHoldPosition() {
-		final Spinner spinnerHoldPosition = mBinding.spinnerHoldPosition;
-		spinnerHoldPosition.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
-				getResources().getStringArray(R.array.values_hold_position)));
-		mTrainingViewModel.getHoldPosition().observe(getViewLifecycleOwner(),
-				holdPosition -> spinnerHoldPosition.setSelection(holdPosition.ordinal()));
-		spinnerHoldPosition.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
-				mTrainingViewModel.updateHoldPosition(HoldPosition.values()[position]);
-			}
+	private void prepareSeekbarHoldOutStartDuration() {
+		long holdOutStartDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldOutStartDuration.getProgress(), true);
+		setDurationText(mBinding.textViewHoldOutStartDuration, holdOutStartDuration);
+		mTrainingViewModel.getHoldOutStartDuration().observe(getViewLifecycleOwner(), duration -> {
+			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
+			mBinding.seekBarHoldOutStartDuration.setProgress(seekbarValue);
+			setDurationText(mBinding.textViewHoldOutStartDuration, duration);
 
-			@Override
-			public void onNothingSelected(final AdapterView<?> parent) {
-				// do nothing
+			if (duration == 0) {
+				mTrainingViewModel.updateHoldOutEndDuration(0);
+				mBinding.tableRowHoldOutEndDuration.setVisibility(View.GONE);
+				mBinding.textLabelHoldOutStartDuration.setText(R.string.text_hold_out_duration);
+			}
+			else {
+				mBinding.tableRowHoldOutEndDuration.setVisibility(View.VISIBLE);
+				mBinding.textLabelHoldOutStartDuration.setText(R.string.text_hold_out_start_duration);
 			}
 		});
+		mBinding.seekBarHoldOutStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
+				.updateHoldOutStartDuration(TrainingViewModel.durationSeekbarToValue(progress, true)));
+	}
+
+	/**
+	 * Prepare the hold out end duration seekbar.
+	 */
+	private void prepareSeekbarHoldOutEndDuration() {
+		long holdOutEndDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldOutEndDuration.getProgress(), false);
+		setDurationText(mBinding.textViewHoldOutStartDuration, holdOutEndDuration);
+		mTrainingViewModel.getHoldOutEndDuration().observe(getViewLifecycleOwner(), duration -> {
+			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
+			mBinding.seekBarHoldOutEndDuration.setProgress(seekbarValue);
+			setDurationText(mBinding.textViewHoldOutEndDuration, duration);
+		});
+		mBinding.seekBarHoldOutEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
+				.updateHoldOutEndDuration(TrainingViewModel.durationSeekbarToValue(progress, false)));
 	}
 
 	/**

@@ -14,7 +14,6 @@ import de.jeisfeld.breathtraining.exercise.ExerciseService.ServiceCommand;
 import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.ExerciseType;
 import de.jeisfeld.breathtraining.exercise.HoldExerciseData;
-import de.jeisfeld.breathtraining.exercise.HoldPosition;
 import de.jeisfeld.breathtraining.exercise.PlayStatus;
 import de.jeisfeld.breathtraining.exercise.StepType;
 import de.jeisfeld.breathtraining.sound.SoundType;
@@ -54,16 +53,28 @@ public class TrainingViewModel extends ViewModel {
 			PreferenceUtil.getSharedPreferenceBoolean(R.string.key_hold_breath, false));
 
 	/**
-	 * The hold start duration.
+	 * The hold in start duration.
 	 */
-	private final MutableLiveData<Long> mHoldStartDuration = new MutableLiveData<>(
-			PreferenceUtil.getSharedPreferenceLong(R.string.key_hold_start_duration, 3000L));
+	private final MutableLiveData<Long> mHoldInStartDuration = new MutableLiveData<>(
+			PreferenceUtil.getSharedPreferenceLong(R.string.key_hold_in_start_duration, 0));
 
 	/**
-	 * The hold end duration.
+	 * The hold in end duration.
 	 */
-	private final MutableLiveData<Long> mHoldEndDuration = new MutableLiveData<>(
-			PreferenceUtil.getSharedPreferenceLong(R.string.key_hold_end_duration, 6000L));
+	private final MutableLiveData<Long> mHoldInEndDuration = new MutableLiveData<>(
+			PreferenceUtil.getSharedPreferenceLong(R.string.key_hold_in_end_duration, 0));
+
+	/**
+	 * The hold out start duration.
+	 */
+	private final MutableLiveData<Long> mHoldOutStartDuration = new MutableLiveData<>(
+			PreferenceUtil.getSharedPreferenceLong(R.string.key_hold_out_start_duration, 0));
+
+	/**
+	 * The hold out end duration.
+	 */
+	private final MutableLiveData<Long> mHoldOutEndDuration = new MutableLiveData<>(
+			PreferenceUtil.getSharedPreferenceLong(R.string.key_hold_out_end_duration, 0));
 
 	/**
 	 * The in out relation.
@@ -76,12 +87,6 @@ public class TrainingViewModel extends ViewModel {
 	 */
 	private final MutableLiveData<Double> mHoldVariation = new MutableLiveData<>(
 			PreferenceUtil.getSharedPreferenceDouble(R.string.key_hold_variation, 0));
-
-	/**
-	 * The hold position.
-	 */
-	private final MutableLiveData<HoldPosition> mHoldPosition = new MutableLiveData<>(
-			HoldPosition.values()[PreferenceUtil.getSharedPreferenceInt(R.string.key_hold_position, HoldPosition.OUT.ordinal())]);
 
 	/**
 	 * The flag indicating what sound should be played.
@@ -200,46 +205,89 @@ public class TrainingViewModel extends ViewModel {
 	}
 
 	/**
-	 * Get the hold start duration.
+	 * Get the hold in start duration.
 	 *
-	 * @return The hold start duration.
+	 * @return The hold in start duration.
 	 */
-	protected MutableLiveData<Long> getHoldStartDuration() {
-		return mHoldStartDuration;
+	protected MutableLiveData<Long> getHoldInStartDuration() {
+		return mHoldInStartDuration;
 	}
 
 	/**
-	 * Update the hold start duration.
+	 * Update the hold in start duration.
 	 *
-	 * @param holdStartDuration The new hold start duration
+	 * @param holdInStartDuration The new hold in start duration
 	 */
-	protected void updateHoldStartDuration(final long holdStartDuration) {
-		final Long oldStartDuration = mHoldStartDuration.getValue();
-		mHoldStartDuration.setValue(holdStartDuration);
-		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_start_duration, holdStartDuration);
-		if (Objects.equals(mHoldStartDuration.getValue(), mHoldEndDuration.getValue())
-				|| Objects.equals(oldStartDuration, mHoldEndDuration.getValue())) {
-			updateHoldEndDuration(holdStartDuration);
+	protected void updateHoldInStartDuration(final long holdInStartDuration) {
+		final Long oldStartDuration = mHoldInStartDuration.getValue();
+		mHoldInStartDuration.setValue(holdInStartDuration);
+		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_in_start_duration, holdInStartDuration);
+		if (Objects.equals(mHoldInStartDuration.getValue(), mHoldInEndDuration.getValue())
+				|| Objects.equals(oldStartDuration, mHoldInEndDuration.getValue())) {
+			updateHoldInEndDuration(holdInStartDuration);
 		}
 	}
 
 	/**
-	 * Get the hold end duration.
+	 * Get the hold in end duration.
 	 *
-	 * @return The hold end duration.
+	 * @return The hold in end duration.
 	 */
-	protected MutableLiveData<Long> getHoldEndDuration() {
-		return mHoldEndDuration;
+	protected MutableLiveData<Long> getHoldInEndDuration() {
+		return mHoldInEndDuration;
 	}
 
 	/**
-	 * Update the hold end duration.
+	 * Update the hold in end duration.
 	 *
-	 * @param holdEndDuration The new hold end duration
+	 * @param holdInEndDuration The new hold in end duration
 	 */
-	protected void updateHoldEndDuration(final long holdEndDuration) {
-		mHoldEndDuration.setValue(holdEndDuration);
-		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_end_duration, holdEndDuration);
+	protected void updateHoldInEndDuration(final long holdInEndDuration) {
+		mHoldInEndDuration.setValue(holdInEndDuration);
+		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_in_end_duration, holdInEndDuration);
+	}
+
+	/**
+	 * Get the hold out start duration.
+	 *
+	 * @return The hold out start duration.
+	 */
+	protected MutableLiveData<Long> getHoldOutStartDuration() {
+		return mHoldOutStartDuration;
+	}
+
+	/**
+	 * Update the hold out start duration.
+	 *
+	 * @param holdOutStartDuration The new hold out start duration
+	 */
+	protected void updateHoldOutStartDuration(final long holdOutStartDuration) {
+		final Long oldStartDuration = mHoldOutStartDuration.getValue();
+		mHoldOutStartDuration.setValue(holdOutStartDuration);
+		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_out_start_duration, holdOutStartDuration);
+		if (Objects.equals(mHoldOutStartDuration.getValue(), mHoldOutEndDuration.getValue())
+				|| Objects.equals(oldStartDuration, mHoldOutEndDuration.getValue())) {
+			updateHoldOutEndDuration(holdOutStartDuration);
+		}
+	}
+
+	/**
+	 * Get the hold out end duration.
+	 *
+	 * @return The hold out end duration.
+	 */
+	protected MutableLiveData<Long> getHoldOutEndDuration() {
+		return mHoldOutEndDuration;
+	}
+
+	/**
+	 * Update the hold out end duration.
+	 *
+	 * @param holdOutEndDuration The new hold out end duration
+	 */
+	protected void updateHoldOutEndDuration(final long holdOutEndDuration) {
+		mHoldOutEndDuration.setValue(holdOutEndDuration);
+		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_out_start_duration, holdOutEndDuration);
 	}
 
 	/**
@@ -278,25 +326,6 @@ public class TrainingViewModel extends ViewModel {
 	protected void updateHoldVariation(final double holdVariation) {
 		mHoldVariation.setValue(holdVariation);
 		PreferenceUtil.setSharedPreferenceDouble(R.string.key_hold_variation, holdVariation);
-	}
-
-	/**
-	 * Get the hold position.
-	 *
-	 * @return The hold position.
-	 */
-	public LiveData<HoldPosition> getHoldPosition() {
-		return mHoldPosition;
-	}
-
-	/**
-	 * Update the hold position.
-	 *
-	 * @param holdPosition The new hold position
-	 */
-	protected void updateHoldPosition(final HoldPosition holdPosition) {
-		mHoldPosition.setValue(holdPosition);
-		PreferenceUtil.setSharedPreferenceInt(R.string.key_hold_position, holdPosition.ordinal());
 	}
 
 	/**
@@ -499,8 +528,9 @@ public class TrainingViewModel extends ViewModel {
 		}
 		int repetition = mExerciseStep.getValue() == null ? 0 : mExerciseStep.getValue().getRepetition();
 		return new HoldExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mBreathEndDuration.getValue(),
-				mInOutRelation.getValue(), mHoldBreath.getValue(), mHoldStartDuration.getValue(), mHoldEndDuration.getValue(),
-				mHoldPosition.getValue(), mHoldVariation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(), repetition);
+				mInOutRelation.getValue(), mHoldBreath.getValue(), mHoldInStartDuration.getValue(), mHoldInEndDuration.getValue(),
+				mHoldOutStartDuration.getValue(), mHoldOutEndDuration.getValue(), mHoldVariation.getValue(), mSoundType.getValue(),
+				mPlayStatus.getValue(), repetition);
 	}
 
 	/**
@@ -527,9 +557,10 @@ public class TrainingViewModel extends ViewModel {
 		HoldExerciseData holdData = (HoldExerciseData) exerciseData;
 		mBreathEndDuration.setValue(holdData.getBreathEndDuration());
 		mInOutRelation.setValue(holdData.getInOutRelation());
-		mHoldStartDuration.setValue(holdData.getHoldStartDuration());
-		mHoldEndDuration.setValue(holdData.getHoldEndDuration());
-		mHoldPosition.setValue(holdData.getHoldPosition());
+		mHoldInStartDuration.setValue(holdData.getHoldInStartDuration());
+		mHoldInEndDuration.setValue(holdData.getHoldInEndDuration());
+		mHoldOutStartDuration.setValue(holdData.getHoldOutStartDuration());
+		mHoldOutEndDuration.setValue(holdData.getHoldOutEndDuration());
 		mHoldVariation.setValue(holdData.getHoldVariation());
 
 		if (exerciseStep != null) {

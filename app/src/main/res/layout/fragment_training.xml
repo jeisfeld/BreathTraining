@@ -223,18 +223,18 @@
 
                 </TableRow>
 
-                <TableRow android:id="@+id/tableRowHoldStartDuration">
+                <TableRow android:id="@+id/tableRowHoldInStartDuration">
 
                     <TextView
-                        android:id="@+id/textLabelHoldStartDuration"
+                        android:id="@+id/textLabelHoldInStartDuration"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|start"
                         android:layout_weight="@integer/selector_label_width"
-                        android:text="@string/text_hold_start_duration" />
+                        android:text="@string/text_hold_in_start_duration" />
 
                     <SeekBar
-                        android:id="@+id/seekBarHoldStartDuration"
+                        android:id="@+id/seekBarHoldInStartDuration"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/seekbar_height"
                         android:layout_gravity="center_vertical"
@@ -243,7 +243,7 @@
                         android:progress="1000" />
 
                     <TextView
-                        android:id="@+id/textViewHoldStartDuration"
+                        android:id="@+id/textViewHoldInStartDuration"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|end"
@@ -253,17 +253,17 @@
                 </TableRow>
 
 
-                <TableRow android:id="@+id/tableRowHoldEndDuration">
+                <TableRow android:id="@+id/tableRowHoldInEndDuration">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|start"
                         android:layout_weight="@integer/selector_label_width"
-                        android:text="@string/text_hold_end_duration" />
+                        android:text="@string/text_hold_in_end_duration" />
 
                     <SeekBar
-                        android:id="@+id/seekBarHoldEndDuration"
+                        android:id="@+id/seekBarHoldInEndDuration"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/seekbar_height"
                         android:layout_gravity="center_vertical"
@@ -272,7 +272,7 @@
                         android:progress="50" />
 
                     <TextView
-                        android:id="@+id/textViewHoldEndDuration"
+                        android:id="@+id/textViewHoldInEndDuration"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|end"
@@ -281,23 +281,63 @@
 
                 </TableRow>
 
-                <TableRow android:id="@+id/tableRowHoldPosition">
+                <TableRow android:id="@+id/tableRowHoldOutStartDuration">
+
+                    <TextView
+                        android:id="@+id/textLabelHoldOutStartDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_hold_out_start_duration" />
+
+                    <SeekBar
+                        android:id="@+id/seekBarHoldOutStartDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:max="255"
+                        android:progress="1000" />
+
+                    <TextView
+                        android:id="@+id/textViewHoldOutStartDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
+
+                </TableRow>
+
+
+                <TableRow android:id="@+id/tableRowHoldOutEndDuration">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|start"
                         android:layout_weight="@integer/selector_label_width"
-                        android:text="@string/text_hold_position" />
+                        android:text="@string/text_hold_out_end_duration" />
 
-                    <Spinner
-                        android:id="@+id/spinnerHoldPosition"
+                    <SeekBar
+                        android:id="@+id/seekBarHoldOutEndDuration"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/seekbar_height"
                         android:layout_gravity="center_vertical"
-                        android:layout_weight="@integer/selector_spinner_width" />
-                </TableRow>
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:max="255"
+                        android:progress="50" />
 
+                    <TextView
+                        android:id="@+id/textViewHoldOutEndDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
+
+                </TableRow>
 
                 <TableRow android:id="@+id/tableRowHoldVariation">
 
