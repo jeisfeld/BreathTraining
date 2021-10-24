@@ -242,15 +242,16 @@ public abstract class ExerciseData implements Serializable {
 
 		switch (exerciseType) {
 		case SIMPLE:
-			long breathEndDuration = intent.getLongExtra(EXTRA_BREATH_END_DURATION, 0);
-			return new SimpleExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, soundType,
+			long breathEndDuration0 = intent.getLongExtra(EXTRA_BREATH_END_DURATION, 0);
+			return new SimpleExerciseData(repetitions, breathStartDuration, breathEndDuration0, inOutRelation, soundType,
 					playStatus, currentRepetitionNumber);
 		case HOLD:
+			long breathEndDuration = intent.getLongExtra(EXTRA_BREATH_END_DURATION, 0);
 			long holdStartDuration = intent.getLongExtra(EXTRA_HOLD_START_DURATION, 0);
 			long holdEndDuration = intent.getLongExtra(EXTRA_HOLD_END_DURATION, 0);
 			HoldPosition holdPosition = (HoldPosition) intent.getSerializableExtra(EXTRA_HOLD_POSITION);
 			double holdVariation = intent.getDoubleExtra(EXTRA_HOLD_VARIATION, 0);
-			return new HoldExerciseData(repetitions, breathStartDuration, inOutRelation, holdStartDuration,
+			return new HoldExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdStartDuration,
 					holdEndDuration, holdPosition, holdVariation, soundType, playStatus, currentRepetitionNumber);
 		default:
 			return null;

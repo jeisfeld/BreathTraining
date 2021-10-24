@@ -311,14 +311,12 @@ public class TrainingFragment extends Fragment {
 				ExerciseType exerciseType = ExerciseType.values()[position];
 				switch (exerciseType) {
 				case SIMPLE:
-					mBinding.tableRowBreathEndDuration.setVisibility(View.VISIBLE);
 					mBinding.tableRowHoldStartDuration.setVisibility(View.GONE);
 					mBinding.tableRowHoldEndDuration.setVisibility(View.GONE);
 					mBinding.tableRowHoldPosition.setVisibility(View.GONE);
 					mBinding.tableRowHoldVariation.setVisibility(View.GONE);
 					break;
 				case HOLD:
-					mBinding.tableRowBreathEndDuration.setVisibility(View.GONE);
 					mBinding.tableRowHoldStartDuration.setVisibility(View.VISIBLE);
 					mBinding.tableRowHoldEndDuration.setVisibility(View.VISIBLE);
 					mBinding.tableRowHoldPosition.setVisibility(View.VISIBLE);

@@ -15,6 +15,10 @@ public class HoldExerciseData extends ExerciseData {
 	 */
 	private static final long serialVersionUID = 1L;
 	/**
+	 * The breath end duration.
+	 */
+	private final long mBreathEndDuration;
+	/**
 	 * The hold start duration.
 	 */
 	private final long mHoldStartDuration;
@@ -40,6 +44,7 @@ public class HoldExerciseData extends ExerciseData {
 	 *
 	 * @param repetitions The number of repetitions
 	 * @param breathStartDuration The breath duration
+	 * @param breathEndDuration The breath end duration.
 	 * @param inOutRelation The in/out relation
 	 * @param holdStartDuration The hold start duration
 	 * @param holdEndDuration The hold end duration
@@ -49,16 +54,26 @@ public class HoldExerciseData extends ExerciseData {
 	 * @param playStatus The playing status
 	 * @param currentRepetitionNumber The current repetition number.
 	 */
-	public HoldExerciseData(final Integer repetitions, final Long breathStartDuration, final Double inOutRelation, // SUPPRESS_CHECKSTYLE
-			final Long holdStartDuration, final Long holdEndDuration, final HoldPosition holdPosition, final Double holdVariation,
-			final SoundType soundType, final PlayStatus playStatus, final int currentRepetitionNumber) {
+	public HoldExerciseData(final Integer repetitions, final Long breathStartDuration, final Long breathEndDuration, // SUPPRESS_CHECKSTYLE
+							final Double inOutRelation, final Long holdStartDuration, final Long holdEndDuration, final HoldPosition holdPosition,
+							final Double holdVariation, final SoundType soundType, final PlayStatus playStatus, final int currentRepetitionNumber) {
 		super(repetitions, breathStartDuration, inOutRelation, soundType, playStatus, currentRepetitionNumber);
+		mBreathEndDuration = breathEndDuration;
 		mHoldStartDuration = holdStartDuration;
 		mHoldEndDuration = holdEndDuration;
 		mHoldPosition = holdPosition;
 		mHoldVariation = holdVariation;
 	}
 
+	/**
+	 * Get the breath end duration.
+	 *
+	 * @return The breath end duration
+	 */
+
+	public long getBreathEndDuration() {
+		return mBreathEndDuration;
+	}
 	/**
 	 * Get the hold start duration.
 	 *
@@ -103,6 +118,7 @@ public class HoldExerciseData extends ExerciseData {
 	@Override
 	public final void addToIntent(final Intent serviceIntent) {
 		super.addToIntent(serviceIntent);
+		serviceIntent.putExtra(EXTRA_BREATH_END_DURATION, mBreathEndDuration);
 		serviceIntent.putExtra(EXTRA_HOLD_START_DURATION, mHoldStartDuration);
 		serviceIntent.putExtra(EXTRA_HOLD_END_DURATION, mHoldEndDuration);
 		serviceIntent.putExtra(EXTRA_HOLD_POSITION, mHoldPosition);
@@ -125,24 +141,27 @@ public class HoldExerciseData extends ExerciseData {
 
 	@Override
 	protected final ExerciseStep[] getStepsForRepetition(final int repetition) {
+		long currentBreathDuration = getRepetitions() < 2 ? mBreathEndDuration
+				: getBreathStartDuration() + (mBreathEndDuration - getBreathStartDuration()) * (repetition - 1) / (getRepetitions() - 1);
+
 		switch (mHoldPosition) {
 		case IN:
 			return new ExerciseStep[] {
-					new ExerciseStep(StepType.INHALE, (long) (getBreathStartDuration() * getInOutRelation()), repetition),
+					new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()), repetition),
 					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition), repetition),
-					new ExerciseStep(StepType.EXHALE, (long) (getBreathStartDuration() * (1 - getInOutRelation())), repetition)
+					new ExerciseStep(StepType.EXHALE, (long) (currentBreathDuration * (1 - getInOutRelation())), repetition)
 			};
 		case OUT:
 			return new ExerciseStep[] {
-					new ExerciseStep(StepType.INHALE, (long) (getBreathStartDuration() * getInOutRelation()), repetition),
-					new ExerciseStep(StepType.EXHALE, (long) (getBreathStartDuration() * (1 - getInOutRelation())), repetition),
+					new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()), repetition),
+					new ExerciseStep(StepType.EXHALE, (long) (currentBreathDuration * (1 - getInOutRelation())), repetition),
 					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition), repetition)
 			};
 		case BOTH:
 			return new ExerciseStep[] {
-					new ExerciseStep(StepType.INHALE, (long) (getBreathStartDuration() * getInOutRelation()), repetition),
+					new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()), repetition),
 					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition) / 2, repetition),
-					new ExerciseStep(StepType.EXHALE, (long) (getBreathStartDuration() * (1 - getInOutRelation())), repetition),
+					new ExerciseStep(StepType.EXHALE, (long) (currentBreathDuration * (1 - getInOutRelation())), repetition),
 					new ExerciseStep(StepType.HOLD, getHoldDuration(repetition) / 2, repetition),
 			};
 		default:

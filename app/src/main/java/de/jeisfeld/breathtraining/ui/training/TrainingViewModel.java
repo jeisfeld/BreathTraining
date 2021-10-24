@@ -468,9 +468,9 @@ public class TrainingViewModel extends ViewModel {
 			return new SimpleExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mBreathEndDuration.getValue(),
 					mInOutRelation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(), repetition);
 		case HOLD:
-			return new HoldExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mInOutRelation.getValue(), mHoldStartDuration.getValue(),
-					mHoldEndDuration.getValue(), mHoldPosition.getValue(), mHoldVariation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(),
-					repetition);
+			return new HoldExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mBreathEndDuration.getValue(),
+					mInOutRelation.getValue(), mHoldStartDuration.getValue(), mHoldEndDuration.getValue(), mHoldPosition.getValue(),
+					mHoldVariation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(), repetition);
 		default:
 			return null;
 		}
