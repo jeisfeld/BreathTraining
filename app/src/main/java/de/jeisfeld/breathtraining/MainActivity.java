@@ -21,7 +21,7 @@ import de.jeisfeld.breathtraining.exercise.ExerciseData;
 import de.jeisfeld.breathtraining.exercise.ExerciseService.ServiceQueryReceiver;
 import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.PlayStatus;
-import de.jeisfeld.breathtraining.sound.MediaPlayer;
+import de.jeisfeld.breathtraining.sound.SoundPlayer;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
 import de.jeisfeld.breathtraining.ui.training.ServiceReceiver;
 import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 	public final void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(mServiceReceiver);
-		MediaPlayer.releaseInstance(MediaTrigger.ACTIVITY);
+		SoundPlayer.releaseInstance(MediaTrigger.ACTIVITY);
 	}
 
 }

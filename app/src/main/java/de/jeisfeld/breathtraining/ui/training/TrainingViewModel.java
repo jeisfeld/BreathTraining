@@ -387,7 +387,7 @@ public class TrainingViewModel extends ViewModel {
 		if (allowZero && seekbarValue == 0) {
 			return 0;
 		}
-		return Math.round(250 * Math.exp(0.025 * seekbarValue)); // MAGIC_NUMBER
+		return Math.round(511 * Math.exp(0.025 * seekbarValue)); // MAGIC_NUMBER
 	}
 
 	/**
@@ -400,7 +400,7 @@ public class TrainingViewModel extends ViewModel {
 		if (value == 0) {
 			return 0;
 		}
-		return (int) Math.round(Math.log(value / 250.0) / 0.025); // MAGIC_NUMBER
+		return (int) Math.round(Math.log(value / 511.0) / 0.025); // MAGIC_NUMBER
 	}
 
 	/**

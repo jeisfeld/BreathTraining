@@ -11,7 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.exercise.StepType;
-import de.jeisfeld.breathtraining.sound.MediaPlayer;
+import de.jeisfeld.breathtraining.sound.SoundPlayer;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
 import de.jeisfeld.breathtraining.sound.SoundType;
 import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
@@ -103,7 +103,7 @@ public class MeasureViewModel extends ViewModel {
 
 		SoundType soundType = mSoundType.getValue();
 		if (soundType != null) {
-			MediaPlayer.getInstance().play(context, MediaTrigger.ACTIVITY, soundType, StepType.INHALE, 0);
+			SoundPlayer.getInstance().play(context, MediaTrigger.ACTIVITY, soundType, StepType.INHALE);
 		}
 	}
 
@@ -119,7 +119,7 @@ public class MeasureViewModel extends ViewModel {
 			return false;
 		}
 		doChangeBreathCalculations();
-		MediaPlayer.getInstance().stop();
+		SoundPlayer.getInstance().stop();
 
 		if (mBreatheInDurations.size() < 1 || mBreatheOutDurations.size() < 1) {
 			mText.setValue(context.getString(R.string.message_measurement_too_short));
@@ -203,8 +203,8 @@ public class MeasureViewModel extends ViewModel {
 
 		SoundType soundType = mSoundType.getValue();
 		if (soundType != null) {
-			MediaPlayer.getInstance().play(context, MediaTrigger.ACTIVITY, soundType,
-					Boolean.TRUE.equals(mIsBreathingOut.getValue()) ? StepType.EXHALE : StepType.INHALE, 0);
+			SoundPlayer.getInstance().play(context, MediaTrigger.ACTIVITY, soundType,
+					Boolean.TRUE.equals(mIsBreathingOut.getValue()) ? StepType.EXHALE : StepType.INHALE);
 		}
 	}
 

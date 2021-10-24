@@ -24,8 +24,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import de.jeisfeld.breathtraining.MainActivity;
 import de.jeisfeld.breathtraining.R;
-import de.jeisfeld.breathtraining.sound.MediaPlayer;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
+import de.jeisfeld.breathtraining.sound.SoundPlayer;
 import de.jeisfeld.breathtraining.ui.training.ServiceReceiver;
 
 /**
@@ -64,10 +64,6 @@ public class ExerciseService extends Service {
 	 * The wait duration at the end, before closing.
 	 */
 	private static final long END_WAIT_DURATION = 2000;
-	/**
-	 * Delay time to allow sound pre-preparation.
-	 */
-	private static final long SOUND_PREPARE_DELAY = 100;
 
 	/**
 	 * The running threads.
@@ -230,7 +226,7 @@ public class ExerciseService extends Service {
 	private void createNotificationChannel() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			NotificationChannel animationChannel = new NotificationChannel(
-					CHANNEL_ID, getString(R.string.notification_channel), NotificationManager.IMPORTANCE_DEFAULT);
+					CHANNEL_ID, getString(R.string.notification_channel), NotificationManager.IMPORTANCE_LOW);
 			NotificationManager manager = getSystemService(NotificationManager.class);
 			assert manager != null;
 			manager.createNotificationChannel(animationChannel);
@@ -319,7 +315,7 @@ public class ExerciseService extends Service {
 			// noinspection SuspiciousMethodCalls
 			mRunningThreads.remove(thread);
 			if (mRunningThreads.size() == 0) {
-				MediaPlayer.releaseInstance(MediaTrigger.SERVICE);
+				SoundPlayer.releaseInstance(MediaTrigger.SERVICE);
 				stopService(new Intent(this, ExerciseService.class));
 				sendBroadcast(ServiceReceiver.createIntent(PlayStatus.STOPPED, null));
 			}
@@ -376,6 +372,24 @@ public class ExerciseService extends Service {
 	}
 
 	/**
+	 * Get the sound delay for an exercise step. (Allow pre- delays in case of significant step durations.)
+	 *
+	 * @param step The step.
+	 * @return The sound delay.
+	 */
+	private static long getDelay(final ExerciseStep step) {
+		if (step.getDuration() < 500) { // MAGIC_NUMBER
+			return 0;
+		}
+		else if (step.getDuration() < 1000) { // MAGIC_NUMBER
+			return (step.getDuration() - 500) / 5; // MAGIC_NUMBER
+		}
+		else {
+			return 100; // MAGIC_NUMBER
+		}
+	}
+
+	/**
 	 * An animation thread for the exercise.
 	 */
 	private final class ExerciseAnimationThread extends Thread {
@@ -407,26 +421,19 @@ public class ExerciseService extends Service {
 		@Override
 		public void run() {
 			final WakeLock wakeLock = acquireWakelock(this);
-			long nextDelay = SOUND_PREPARE_DELAY;
-
 			mExerciseStep = mExerciseData.getNextStep();
+
 			while (mExerciseStep != null) {
 				if (!(mIsSkipping && mExerciseStep.getStepType() == StepType.HOLD)) {
 					// Execute the step, except in case of hold while skipping
 					mIsSkipping = false;
-					MediaPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE,
-							mExerciseData.getSoundType(), mExerciseStep.getStepType(), nextDelay);
-					sendBroadcast(ServiceReceiver.createIntent(null, mExerciseStep));
-					startNotification(mExerciseData, mExerciseStep, null);
 					try {
-						if (mExerciseStep.getDuration() > SOUND_PREPARE_DELAY) {
-							// noinspection BusyWait
-							Thread.sleep(mExerciseStep.getDuration() - SOUND_PREPARE_DELAY);
-							nextDelay = SOUND_PREPARE_DELAY;
-						}
-						else {
-							nextDelay = mExerciseStep.getDuration();
-						}
+						SoundPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE,
+								mExerciseData.getSoundType(), mExerciseStep.getStepType(), getDelay(mExerciseStep), mExerciseStep.getDuration());
+						sendBroadcast(ServiceReceiver.createIntent(null, mExerciseStep));
+						startNotification(mExerciseData, mExerciseStep, null);
+						// noinspection BusyWait
+						Thread.sleep(mExerciseStep.getDuration() - getDelay(mExerciseStep));
 					}
 					catch (InterruptedException e) {
 						if (mIsStopping) {
@@ -452,8 +459,7 @@ public class ExerciseService extends Service {
 			}
 
 			try {
-				MediaPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE, mExerciseData.getSoundType(),
-						StepType.RELAX, nextDelay);
+				SoundPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE, mExerciseData.getSoundType(), StepType.RELAX);
 				mExerciseStep = new ExerciseStep(StepType.RELAX, 0, 0);
 				sendBroadcast(ServiceReceiver.createIntent(PlayStatus.PLAYING, mExerciseStep));
 				startNotification(mExerciseData, mExerciseStep, null);
