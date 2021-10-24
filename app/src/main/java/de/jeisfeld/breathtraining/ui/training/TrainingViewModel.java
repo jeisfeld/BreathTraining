@@ -387,7 +387,25 @@ public class TrainingViewModel extends ViewModel {
 		if (allowZero && seekbarValue == 0) {
 			return 0;
 		}
-		return Math.round(511 * Math.exp(0.025 * seekbarValue)); // MAGIC_NUMBER
+
+		long value = Math.round(511 * Math.exp(0.025 * seekbarValue));
+		// Rounding for better round value selection via seekbar
+		if (value > 152500) { // MAGIC_NUMBER
+			value = ((value + 5000) / 10000) * 10000; // MAGIC_NUMBER
+		}
+		else if (value > 45500) { // MAGIC_NUMBER
+			value = ((value + 2500) / 5000) * 5000; // MAGIC_NUMBER
+		}
+		else if (value > 15250) { // MAGIC_NUMBER
+			value = ((value + 500) / 1000) * 1000; // MAGIC_NUMBER
+		}
+		else if (value > 5050) { // MAGIC_NUMBER
+			value = ((value + 250) / 500) * 500; // MAGIC_NUMBER
+		}
+		else {
+			value = ((value + 50) / 100) * 100; // MAGIC_NUMBER
+		}
+		return value;
 	}
 
 	/**

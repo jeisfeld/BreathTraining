@@ -13,6 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,11 +33,6 @@ public class TrainingFragment extends Fragment {
 	 * The number of milliseconds per second.
 	 */
 	private static final double MILLIS_PER_SECOND = TimeUnit.SECONDS.toMillis(1);
-	/**
-	 * The max number of milliseconds displayed as two-digit seconds with decimal point.
-	 */
-	private static final int MAX_TWODIGIT_SECONDS = 99900;
-
 	/**
 	 * The view model.
 	 */
@@ -175,25 +172,27 @@ public class TrainingFragment extends Fragment {
 	}
 
 	/**
+	 * Set the duration text field nest to a seekbar.
+	 *
+	 * @param textView The text field.
+	 * @param duration The duration to be set.
+	 */
+	private static void setDurationText(final TextView textView, final long duration) {
+		String format = duration > 14750 ? "%.0fs" : "%.1fs"; // MAGIC_NUMBER
+		textView.setText(String.format(Locale.getDefault(), format, duration / MILLIS_PER_SECOND));
+	}
+
+
+	/**
 	 * Prepare the breath start duration seekbar.
 	 */
 	private void prepareSeekbarBreathStartDuration() {
 		long breathStartDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarBreathStartDuration.getProgress(), false);
-		if (breathStartDuration >= MAX_TWODIGIT_SECONDS) {
-			mBinding.textViewBreathStartDuration.setText(String.format(Locale.getDefault(), "%.0fs", breathStartDuration / MILLIS_PER_SECOND));
-		}
-		else {
-			mBinding.textViewBreathStartDuration.setText(String.format(Locale.getDefault(), "%.1fs", breathStartDuration / MILLIS_PER_SECOND));
-		}
+		setDurationText(mBinding.textViewBreathStartDuration, breathStartDuration);
 		mTrainingViewModel.getBreathStartDuration().observe(getViewLifecycleOwner(), duration -> {
 			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
 			mBinding.seekBarBreathStartDuration.setProgress(seekbarValue);
-			if (duration >= MAX_TWODIGIT_SECONDS) {
-				mBinding.textViewBreathStartDuration.setText(String.format(Locale.getDefault(), "%.0fs", duration / MILLIS_PER_SECOND));
-			}
-			else {
-				mBinding.textViewBreathStartDuration.setText(String.format(Locale.getDefault(), "%.1fs", duration / MILLIS_PER_SECOND));
-			}
+			setDurationText(mBinding.textViewBreathStartDuration, duration);
 		});
 		mBinding.seekBarBreathStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
 				.updateBreathStartDuration(TrainingViewModel.durationSeekbarToValue(progress, false)));
@@ -204,28 +203,14 @@ public class TrainingFragment extends Fragment {
 	 */
 	private void prepareSeekbarBreathEndDuration() {
 		long breathEndDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarBreathEndDuration.getProgress(), false);
-		if (breathEndDuration >= MAX_TWODIGIT_SECONDS) {
-			mBinding.textViewBreathEndDuration.setText(String.format(Locale.getDefault(), "%.0fs", breathEndDuration / MILLIS_PER_SECOND));
-		}
-		else {
-			mBinding.textViewBreathEndDuration.setText(String.format(Locale.getDefault(), "%.1fs", breathEndDuration / MILLIS_PER_SECOND));
-		}
+		setDurationText(mBinding.textViewBreathEndDuration, breathEndDuration);
 		mTrainingViewModel.getBreathEndDuration().observe(getViewLifecycleOwner(), duration -> {
 			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
 			mBinding.seekBarBreathEndDuration.setProgress(seekbarValue);
-			if (duration >= MAX_TWODIGIT_SECONDS) {
-				mBinding.textViewBreathEndDuration.setText(String.format(Locale.getDefault(), "%.0fs", duration / MILLIS_PER_SECOND));
-			}
-			else {
-				mBinding.textViewBreathEndDuration.setText(String.format(Locale.getDefault(), "%.1fs", duration / MILLIS_PER_SECOND));
-			}
+			setDurationText(mBinding.textViewBreathEndDuration, duration);
 		});
 		mBinding.seekBarBreathEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
 				.updateBreathEndDuration(TrainingViewModel.durationSeekbarToValue(progress, false)));
-
-		//noinspection ConstantConditions
-		mBinding.textViewBreathEndDuration.setOnClickListener(v ->
-				mTrainingViewModel.updateBreathEndDuration(mTrainingViewModel.getBreathStartDuration().getValue()));
 	}
 
 	/**
@@ -233,21 +218,11 @@ public class TrainingFragment extends Fragment {
 	 */
 	private void prepareSeekbarHoldStartDuration() {
 		long holdStartDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldStartDuration.getProgress(), true);
-		if (holdStartDuration >= MAX_TWODIGIT_SECONDS) {
-			mBinding.textViewHoldStartDuration.setText(String.format(Locale.getDefault(), "%.0fs", holdStartDuration / MILLIS_PER_SECOND));
-		}
-		else {
-			mBinding.textViewHoldStartDuration.setText(String.format(Locale.getDefault(), "%.1fs", holdStartDuration / MILLIS_PER_SECOND));
-		}
+		setDurationText(mBinding.textViewHoldStartDuration, holdStartDuration);
 		mTrainingViewModel.getHoldStartDuration().observe(getViewLifecycleOwner(), duration -> {
 			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
 			mBinding.seekBarHoldStartDuration.setProgress(seekbarValue);
-			if (duration >= MAX_TWODIGIT_SECONDS) {
-				mBinding.textViewHoldStartDuration.setText(String.format(Locale.getDefault(), "%.0fs", duration / MILLIS_PER_SECOND));
-			}
-			else {
-				mBinding.textViewHoldStartDuration.setText(String.format(Locale.getDefault(), "%.1fs", duration / MILLIS_PER_SECOND));
-			}
+			setDurationText(mBinding.textViewHoldStartDuration, duration);
 		});
 		mBinding.seekBarHoldStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
 				.updateHoldStartDuration(TrainingViewModel.durationSeekbarToValue(progress, true)));
@@ -258,28 +233,14 @@ public class TrainingFragment extends Fragment {
 	 */
 	private void prepareSeekbarHoldEndDuration() {
 		long holdEndDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldEndDuration.getProgress(), true);
-		if (holdEndDuration >= MAX_TWODIGIT_SECONDS) {
-			mBinding.textViewHoldEndDuration.setText(String.format(Locale.getDefault(), "%.0fs", holdEndDuration / MILLIS_PER_SECOND));
-		}
-		else {
-			mBinding.textViewHoldEndDuration.setText(String.format(Locale.getDefault(), "%.1fs", holdEndDuration / MILLIS_PER_SECOND));
-		}
+		setDurationText(mBinding.textViewHoldStartDuration, holdEndDuration);
 		mTrainingViewModel.getHoldEndDuration().observe(getViewLifecycleOwner(), duration -> {
 			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
 			mBinding.seekBarHoldEndDuration.setProgress(seekbarValue);
-			if (duration >= MAX_TWODIGIT_SECONDS) {
-				mBinding.textViewHoldEndDuration.setText(String.format(Locale.getDefault(), "%.0fs", duration / MILLIS_PER_SECOND));
-			}
-			else {
-				mBinding.textViewHoldEndDuration.setText(String.format(Locale.getDefault(), "%.1fs", duration / MILLIS_PER_SECOND));
-			}
+			setDurationText(mBinding.textViewHoldEndDuration, duration);
 		});
 		mBinding.seekBarHoldEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
 				.updateHoldEndDuration(TrainingViewModel.durationSeekbarToValue(progress, true)));
-
-		//noinspection ConstantConditions
-		mBinding.textViewHoldEndDuration.setOnClickListener(v ->
-				mTrainingViewModel.updateHoldEndDuration(mTrainingViewModel.getHoldStartDuration().getValue()));
 	}
 
 	/**
