@@ -37,8 +37,8 @@ public class TrainingViewModel extends ViewModel {
 	/**
 	 * The breath duration.
 	 */
-	private final MutableLiveData<Long> mBreathDuration = new MutableLiveData<>(
-			PreferenceUtil.getSharedPreferenceLong(R.string.key_breath_duration, 10000L));
+	private final MutableLiveData<Long> mBreathStartDuration = new MutableLiveData<>(
+			PreferenceUtil.getSharedPreferenceLong(R.string.key_breath_start_duration, 10000L));
 
 	/**
 	 * The breath end duration.
@@ -131,22 +131,22 @@ public class TrainingViewModel extends ViewModel {
 	}
 
 	/**
-	 * Get the breath duration.
+	 * Get the breath start duration.
 	 *
-	 * @return The breath duration.
+	 * @return The breath start duration.
 	 */
-	protected MutableLiveData<Long> getBreathDuration() {
-		return mBreathDuration;
+	protected MutableLiveData<Long> getBreathStartDuration() {
+		return mBreathStartDuration;
 	}
 
 	/**
-	 * Update the breath duration.
+	 * Update the breath start duration.
 	 *
-	 * @param breathDuration The new breath duration
+	 * @param breathStartDuration The new breath start duration
 	 */
-	public void updateBreathDuration(final long breathDuration) {
-		mBreathDuration.setValue(breathDuration);
-		PreferenceUtil.setSharedPreferenceLong(R.string.key_breath_duration, breathDuration);
+	public void updateBreathStartDuration(final long breathStartDuration) {
+		mBreathStartDuration.setValue(breathStartDuration);
+		PreferenceUtil.setSharedPreferenceLong(R.string.key_breath_start_duration, breathStartDuration);
 	}
 
 	/**
@@ -447,10 +447,10 @@ public class TrainingViewModel extends ViewModel {
 
 		switch (exerciseType) {
 		case SIMPLE:
-			return new SimpleExerciseData(mRepetitions.getValue(), mBreathDuration.getValue(), mBreathEndDuration.getValue(),
+			return new SimpleExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mBreathEndDuration.getValue(),
 					mInOutRelation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(), repetition);
 		case HOLD:
-			return new HoldExerciseData(mRepetitions.getValue(), mBreathDuration.getValue(), mInOutRelation.getValue(), mHoldStartDuration.getValue(),
+			return new HoldExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mInOutRelation.getValue(), mHoldStartDuration.getValue(),
 					mHoldEndDuration.getValue(), mHoldPosition.getValue(), mHoldVariation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(),
 					repetition);
 		default:
@@ -475,7 +475,7 @@ public class TrainingViewModel extends ViewModel {
 		mExerciseType.setValue(exerciseType);
 
 		mRepetitions.setValue(exerciseData.getRepetitions());
-		mBreathDuration.setValue(exerciseData.getBreathDuration());
+		mBreathStartDuration.setValue(exerciseData.getBreathStartDuration());
 		mInOutRelation.setValue(exerciseData.getInOutRelation());
 		mSoundType.setValue(exerciseData.getSoundType());
 		mPlayStatus.setValue(exerciseData.getPlayStatus());

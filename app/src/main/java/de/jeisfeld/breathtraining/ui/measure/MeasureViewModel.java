@@ -164,7 +164,7 @@ public class MeasureViewModel extends ViewModel {
 		mText.setValue(context.getString(R.string.message_measurement_result, averageDurationSeconds, inOutRatio * 100)); // MAGIC_NUMBER
 
 		if (trainingViewModel != null) {
-			trainingViewModel.updateBreathDuration(averageDuration);
+			trainingViewModel.updateBreathStartDuration(averageDuration);
 			trainingViewModel.updateBreathEndDuration((long) (BREATH_DURATION_PROLONGATION * averageDuration));
 			trainingViewModel.updateInOutRelation(inOutRatio);
 			return true;

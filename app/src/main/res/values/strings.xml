@@ -27,10 +27,10 @@
 
     <string name="title_dialog_confirmation">Confirmation</string>
 
-    <string name="text_breath_duration">Breath Duration:</string>
+    <string name="text_breath_start_duration">Start Duration:</string>
+    <string name="text_breath_end_duration">End Duration:</string>
     <string name="text_in_out_relation">In/Out Relation:</string>
     <string name="text_repetitions">Repetitions:</string>
-    <string name="text_breath_end_duration">Breath End Dur:</string>
     <string name="text_hold_start_duration">Hold Start Dur:</string>
     <string name="text_hold_end_duration">Hold End Dur:</string>
     <string name="text_hold_position">Hold Position:</string>
@@ -40,7 +40,7 @@
     <string name="formatting_current_repetition">%1$s\n\n%2$s</string>
 
     <string name="key_exercise_type">exercise_type</string>
-    <string name="key_breath_duration">breath_duration</string>
+    <string name="key_breath_start_duration">breath_start_duration</string>
     <string name="key_breath_end_duration">breath_end_duration</string>
     <string name="key_repetitions">repetitions</string>
     <string name="key_in_out_relation">in_out_relation</string>

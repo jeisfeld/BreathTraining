@@ -96,60 +96,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TableRow android:id="@+id/tableRowBreathDuration">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|start"
-                        android:layout_weight="@integer/selector_label_width"
-                        android:text="@string/text_breath_duration" />
-
-                    <SeekBar
-                        android:id="@+id/seekBarBreathDuration"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/seekbar_height"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="@integer/selector_seekbar_width"
-                        android:max="255" />
-
-                    <TextView
-                        android:id="@+id/textViewBreathDuration"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|end"
-                        android:layout_weight="@integer/selector_text_width"
-                        android:textAlignment="viewEnd" />
-
-                </TableRow>
-
-                <TableRow android:id="@+id/tableRowInOutRelation">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|start"
-                        android:layout_weight="@integer/selector_label_width"
-                        android:text="@string/text_in_out_relation" />
-
-                    <SeekBar
-                        android:id="@+id/seek_bar_in_out_relation"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/seekbar_height"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="@integer/selector_seekbar_width"
-                        android:max="100" />
-
-                    <TextView
-                        android:id="@+id/textViewInOutRelation"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|end"
-                        android:layout_weight="@integer/selector_text_width"
-                        android:textAlignment="viewEnd" />
-
-                </TableRow>
-
                 <TableRow android:id="@+id/tableRowRepetitions">
 
                     <TextView
@@ -177,9 +123,35 @@
 
                 </TableRow>
 
+                <TableRow android:id="@+id/tableRowBreathStartDuration">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_breath_start_duration" />
+
+                    <SeekBar
+                        android:id="@+id/seekBarBreathStartDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:max="255" />
+
+                    <TextView
+                        android:id="@+id/textViewBreathStartDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
+
+                </TableRow>
+
                 <TableRow
-                    android:id="@+id/tableRowBreathEndDuration"
-                    android:visibility="gone">
+                    android:id="@+id/tableRowBreathEndDuration">
 
                     <TextView
                         android:layout_width="0dp"
@@ -198,6 +170,33 @@
 
                     <TextView
                         android:id="@+id/textViewBreathEndDuration"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
+
+                </TableRow>
+
+                <TableRow android:id="@+id/tableRowInOutRelation">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_in_out_relation" />
+
+                    <SeekBar
+                        android:id="@+id/seek_bar_in_out_relation"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:max="100" />
+
+                    <TextView
+                        android:id="@+id/textViewInOutRelation"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|end"

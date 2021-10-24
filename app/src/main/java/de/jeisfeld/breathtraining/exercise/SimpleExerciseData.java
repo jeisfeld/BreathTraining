@@ -21,16 +21,16 @@ public class SimpleExerciseData extends ExerciseData {
 	 * Constructor.
 	 *
 	 * @param repetitions       The number of repetitions.
-	 * @param breathDuration    The breath start duration.
+	 * @param breathStartDuration    The breath start duration.
 	 * @param breathEndDuration The breath end duration.
 	 * @param inOutRelation     The in/out relation.
 	 * @param soundType         The sound type.
 	 * @param playStatus The playing status.
 	 * @param currentRepetitionNumber The current repetition number.
 	 */
-	public SimpleExerciseData(final Integer repetitions, final Long breathDuration, final Long breathEndDuration, final Double inOutRelation,
+	public SimpleExerciseData(final Integer repetitions, final Long breathStartDuration, final Long breathEndDuration, final Double inOutRelation,
 							  final SoundType soundType, final PlayStatus playStatus, final int currentRepetitionNumber) {
-		super(repetitions, breathDuration, inOutRelation, soundType, playStatus, currentRepetitionNumber);
+		super(repetitions, breathStartDuration, inOutRelation, soundType, playStatus, currentRepetitionNumber);
 		mBreathEndDuration = breathEndDuration;
 	}
 
@@ -57,7 +57,7 @@ public class SimpleExerciseData extends ExerciseData {
 	@Override
 	protected final ExerciseStep[] getStepsForRepetition(final int repetition) {
 		long currentBreathDuration = getRepetitions() < 2 ? mBreathEndDuration
-				: getBreathDuration() + (mBreathEndDuration - getBreathDuration()) * (repetition - 1) / (getRepetitions() - 1);
+				: getBreathStartDuration() + (mBreathEndDuration - getBreathStartDuration()) * (repetition - 1) / (getRepetitions() - 1);
 
 		return new ExerciseStep[]{
 				new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()), repetition),
