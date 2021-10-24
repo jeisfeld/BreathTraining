@@ -13,6 +13,7 @@
     <dimen name="text_xxlarge">36sp</dimen>
     <dimen name="seekbar_height">32dp</dimen>
     <dimen name="notification_button_size">48dp</dimen>
+    <dimen name="non_seekbar_left_margin">10dp</dimen>
 
     <integer name="selector_label_width">31</integer>
     <integer name="selector_spinner_width">69</integer>

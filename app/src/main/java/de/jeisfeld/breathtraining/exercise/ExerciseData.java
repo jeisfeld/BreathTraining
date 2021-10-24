@@ -45,6 +45,10 @@ public abstract class ExerciseData implements Serializable {
 	 */
 	protected static final String EXTRA_IN_OUT_RELATION = "de.jeisfeld.breathtraining.IN_OUT_RELATION";
 	/**
+	 * Key for the hold breath flag within the intent..
+	 */
+	protected static final String EXTRA_HOLD_BREATH = "de.jeisfeld.breathtraining.HOLD_BREATH";
+	/**
 	 * Key for the hold start duration within the intent.
 	 */
 	protected static final String EXTRA_HOLD_START_DURATION = "de.jeisfeld.breathtraining.HOLD_START_DURATION";
@@ -220,17 +224,17 @@ public abstract class ExerciseData implements Serializable {
 
 		int repetitions = intent.getIntExtra(EXTRA_REPETITIONS, 0);
 		long breathStartDuration = intent.getLongExtra(EXTRA_BREATH_START_DURATION, 0);
-		double inOutRelation = intent.getDoubleExtra(EXTRA_IN_OUT_RELATION, 0.5); // MAGIC_NUMBER
-		SoundType soundType = (SoundType) intent.getSerializableExtra(EXTRA_SOUND_TYPE);
-		PlayStatus playStatus = (PlayStatus) intent.getSerializableExtra(ServiceReceiver.EXTRA_PLAY_STATUS);
-		int currentRepetitionNumber = intent.getIntExtra(EXTRA_CURRENT_REPETITION, 0);
-
 		long breathEndDuration = intent.getLongExtra(EXTRA_BREATH_END_DURATION, 0);
+		double inOutRelation = intent.getDoubleExtra(EXTRA_IN_OUT_RELATION, 0.5); // MAGIC_NUMBER
+		PlayStatus playStatus = (PlayStatus) intent.getSerializableExtra(ServiceReceiver.EXTRA_PLAY_STATUS);
+		boolean holdBreath = intent.getBooleanExtra(EXTRA_HOLD_BREATH, false);
 		long holdStartDuration = intent.getLongExtra(EXTRA_HOLD_START_DURATION, 0);
 		long holdEndDuration = intent.getLongExtra(EXTRA_HOLD_END_DURATION, 0);
 		HoldPosition holdPosition = (HoldPosition) intent.getSerializableExtra(EXTRA_HOLD_POSITION);
 		double holdVariation = intent.getDoubleExtra(EXTRA_HOLD_VARIATION, 0);
-		return new HoldExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdStartDuration,
+		SoundType soundType = (SoundType) intent.getSerializableExtra(EXTRA_SOUND_TYPE);
+		int currentRepetitionNumber = intent.getIntExtra(EXTRA_CURRENT_REPETITION, 0);
+		return new HoldExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdBreath, holdStartDuration,
 				holdEndDuration, holdPosition, holdVariation, soundType, playStatus, currentRepetitionNumber);
 	}
 

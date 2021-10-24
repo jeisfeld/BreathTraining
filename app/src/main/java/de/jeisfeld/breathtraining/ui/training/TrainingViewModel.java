@@ -46,6 +46,12 @@ public class TrainingViewModel extends ViewModel {
 			PreferenceUtil.getSharedPreferenceLong(R.string.key_breath_end_duration, 10000L));
 
 	/**
+	 * The hold breath flag.
+	 */
+	private final MutableLiveData<Boolean> mHoldBreath = new MutableLiveData<>(
+			PreferenceUtil.getSharedPreferenceBoolean(R.string.key_hold_breath, false));
+
+	/**
 	 * The hold start duration.
 	 */
 	private final MutableLiveData<Long> mHoldStartDuration = new MutableLiveData<>(
@@ -165,6 +171,25 @@ public class TrainingViewModel extends ViewModel {
 	public void updateBreathEndDuration(final long breathEndDuration) {
 		mBreathEndDuration.setValue(breathEndDuration);
 		PreferenceUtil.setSharedPreferenceLong(R.string.key_breath_end_duration, breathEndDuration);
+	}
+
+	/**
+	 * Get the hold breath flag.
+	 *
+	 * @return The hold breath flag.
+	 */
+	protected MutableLiveData<Boolean> getHoldBreath() {
+		return mHoldBreath;
+	}
+
+	/**
+	 * Update the hold breath flag.
+	 *
+	 * @param holdBreath The new hold breath flag
+	 */
+	protected void updateHoldBreath(final boolean holdBreath) {
+		mHoldBreath.setValue(holdBreath);
+		PreferenceUtil.setSharedPreferenceBoolean(R.string.key_hold_breath, holdBreath);
 	}
 
 	/**
@@ -462,8 +487,8 @@ public class TrainingViewModel extends ViewModel {
 		}
 		int repetition = mExerciseStep.getValue() == null ? 0 : mExerciseStep.getValue().getRepetition();
 		return new HoldExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mBreathEndDuration.getValue(),
-				mInOutRelation.getValue(), mHoldStartDuration.getValue(), mHoldEndDuration.getValue(), mHoldPosition.getValue(),
-				mHoldVariation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(), repetition);
+				mInOutRelation.getValue(), mHoldBreath.getValue(), mHoldStartDuration.getValue(), mHoldEndDuration.getValue(),
+				mHoldPosition.getValue(), mHoldVariation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(), repetition);
 	}
 
 	/**

@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
@@ -47,53 +49,17 @@ public class TrainingFragment extends Fragment {
 		mTrainingViewModel = new ViewModelProvider(requireActivity()).get(TrainingViewModel.class);
 		mBinding = FragmentTrainingBinding.inflate(inflater, container, false);
 
-		final Spinner spinnerExerciseType = mBinding.spinnerExerciseType;
-		spinnerExerciseType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_exercise_type,
-				getResources().getStringArray(R.array.values_exercise_type)));
-		mTrainingViewModel.getExerciseType().observe(getViewLifecycleOwner(),
-				exerciseType -> spinnerExerciseType.setSelection(exerciseType.ordinal()));
-		spinnerExerciseType.setOnItemSelectedListener(getOnExerciseTypeSelectedListener(mTrainingViewModel));
-
-		final Spinner spinnerHoldPosition = mBinding.spinnerHoldPosition;
-		spinnerHoldPosition.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
-				getResources().getStringArray(R.array.values_hold_position)));
-		mTrainingViewModel.getHoldPosition().observe(getViewLifecycleOwner(),
-				holdPosition -> spinnerHoldPosition.setSelection(holdPosition.ordinal()));
-		spinnerHoldPosition.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
-				mTrainingViewModel.updateHoldPosition(HoldPosition.values()[position]);
-			}
-
-			@Override
-			public void onNothingSelected(final AdapterView<?> parent) {
-				// do nothing
-			}
-		});
-
-		final Spinner spinnerSoundType = mBinding.spinnerSoundType;
-		spinnerSoundType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
-				getResources().getStringArray(R.array.values_sound_type)));
-		mTrainingViewModel.getSoundType().observe(getViewLifecycleOwner(), soundType -> spinnerSoundType.setSelection(soundType.ordinal()));
-		spinnerSoundType.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
-				mTrainingViewModel.updateSoundType(SoundType.values()[position]);
-			}
-
-			@Override
-			public void onNothingSelected(final AdapterView<?> parent) {
-				// do nothing
-			}
-		});
-
+		prepareSpinnerExerciseType();
 		prepareSeekbarRepetitions();
 		prepareSeekbarBreathStartDuration();
 		prepareSeekbarBreathEndDuration();
+		prepareSeekbarInOutRelation();
+		prepareCheckBoxHoldBreath();
 		prepareSeekbarHoldStartDuration();
 		prepareSeekbarHoldEndDuration();
-		prepareSeekbarInOutRelation();
+		prepareSpinnerHoldPosition();
 		prepareSeekbarHoldVariation();
+		prepareSpinnerSoundType();
 		prepareSeekbarCurrentRepetition();
 		prepareButtons();
 
@@ -156,6 +122,18 @@ public class TrainingFragment extends Fragment {
 	}
 
 	/**
+	 * Prepare the spinner for exercise type.
+	 */
+	private void prepareSpinnerExerciseType() {
+		final Spinner spinnerExerciseType = mBinding.spinnerExerciseType;
+		spinnerExerciseType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_exercise_type,
+				getResources().getStringArray(R.array.values_exercise_type)));
+		mTrainingViewModel.getExerciseType().observe(getViewLifecycleOwner(),
+				exerciseType -> spinnerExerciseType.setSelection(exerciseType.ordinal()));
+		spinnerExerciseType.setOnItemSelectedListener(getOnExerciseTypeSelectedListener(mTrainingViewModel));
+	}
+
+	/**
 	 * Prepare the repetitions seekbar.
 	 */
 	private void prepareSeekbarRepetitions() {
@@ -214,6 +192,37 @@ public class TrainingFragment extends Fragment {
 	}
 
 	/**
+	 * Prepare the in out relation seekbar.
+	 */
+	private void prepareSeekbarInOutRelation() {
+		mBinding.textViewInOutRelation.setText(String.format(Locale.getDefault(), "%d%%", mBinding.seekBarInOutRelation.getProgress()));
+		mTrainingViewModel.getInOutRelation().observe(getViewLifecycleOwner(), value -> {
+			int seekBarValue = (int) Math.round(value * 100); // MAGIC_NUMBER
+			mBinding.seekBarInOutRelation.setProgress(seekBarValue);
+			mBinding.textViewInOutRelation.setText(String.format(Locale.getDefault(), "%d%%", seekBarValue));
+		});
+		mBinding.seekBarInOutRelation.setOnSeekBarChangeListener(
+				(OnSeekBarProgressChangedListener) progress -> {
+					mTrainingViewModel.updateInOutRelation(progress / 100.0); // MAGIC_NUMBER
+				});
+	}
+
+	/**
+	 * Prepare the hold breath checkbox.
+	 */
+	private void prepareCheckBoxHoldBreath() {
+		mTrainingViewModel.getHoldBreath().observe(getViewLifecycleOwner(), holdBreath -> {
+			mBinding.checkBoxHoldBreath.setChecked(holdBreath);
+			int holdViewStatus = holdBreath ? View.VISIBLE : View.GONE;
+			mBinding.tableRowHoldStartDuration.setVisibility(holdViewStatus);
+			mBinding.tableRowHoldEndDuration.setVisibility(holdViewStatus);
+			mBinding.tableRowHoldPosition.setVisibility(holdViewStatus);
+			mBinding.tableRowHoldVariation.setVisibility(holdViewStatus);
+		});
+		mBinding.checkBoxHoldBreath.setOnCheckedChangeListener((buttonView, isChecked) -> mTrainingViewModel.updateHoldBreath(isChecked));
+	}
+
+	/**
 	 * Prepare the hold start duration seekbar.
 	 */
 	private void prepareSeekbarHoldStartDuration() {
@@ -244,19 +253,25 @@ public class TrainingFragment extends Fragment {
 	}
 
 	/**
-	 * Prepare the in out relation seekbar.
+	 * Prepare the spinner for hold position.
 	 */
-	private void prepareSeekbarInOutRelation() {
-		mBinding.textViewInOutRelation.setText(String.format(Locale.getDefault(), "%d%%", mBinding.seekBarInOutRelation.getProgress()));
-		mTrainingViewModel.getInOutRelation().observe(getViewLifecycleOwner(), value -> {
-			int seekBarValue = (int) Math.round(value * 100); // MAGIC_NUMBER
-			mBinding.seekBarInOutRelation.setProgress(seekBarValue);
-			mBinding.textViewInOutRelation.setText(String.format(Locale.getDefault(), "%d%%", seekBarValue));
+	private void prepareSpinnerHoldPosition() {
+		final Spinner spinnerHoldPosition = mBinding.spinnerHoldPosition;
+		spinnerHoldPosition.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
+				getResources().getStringArray(R.array.values_hold_position)));
+		mTrainingViewModel.getHoldPosition().observe(getViewLifecycleOwner(),
+				holdPosition -> spinnerHoldPosition.setSelection(holdPosition.ordinal()));
+		spinnerHoldPosition.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
+				mTrainingViewModel.updateHoldPosition(HoldPosition.values()[position]);
+			}
+
+			@Override
+			public void onNothingSelected(final AdapterView<?> parent) {
+				// do nothing
+			}
 		});
-		mBinding.seekBarInOutRelation.setOnSeekBarChangeListener(
-				(OnSeekBarProgressChangedListener) progress -> {
-					mTrainingViewModel.updateInOutRelation(progress / 100.0); // MAGIC_NUMBER
-				});
 	}
 
 	/**
@@ -273,6 +288,27 @@ public class TrainingFragment extends Fragment {
 				(OnSeekBarProgressChangedListener) progress -> {
 					mTrainingViewModel.updateHoldVariation(progress / 100.0); // MAGIC_NUMBER
 				});
+	}
+
+	/**
+	 * Prepare the spinner for sound type.
+	 */
+	private void prepareSpinnerSoundType() {
+		final Spinner spinnerSoundType = mBinding.spinnerSoundType;
+		spinnerSoundType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
+				getResources().getStringArray(R.array.values_sound_type)));
+		mTrainingViewModel.getSoundType().observe(getViewLifecycleOwner(), soundType -> spinnerSoundType.setSelection(soundType.ordinal()));
+		spinnerSoundType.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
+				mTrainingViewModel.updateSoundType(SoundType.values()[position]);
+			}
+
+			@Override
+			public void onNothingSelected(final AdapterView<?> parent) {
+				// do nothing
+			}
+		});
 	}
 
 	/**

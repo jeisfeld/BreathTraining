@@ -27,10 +27,11 @@
 
     <string name="title_dialog_confirmation">Confirmation</string>
 
+    <string name="text_repetitions">Repetitions:</string>
     <string name="text_breath_start_duration">Start Duration:</string>
     <string name="text_breath_end_duration">End Duration:</string>
     <string name="text_in_out_relation">In/Out Relation:</string>
-    <string name="text_repetitions">Repetitions:</string>
+    <string name="text_hold_breath">Hold Breath:</string>
     <string name="text_hold_start_duration">Hold Start Dur:</string>
     <string name="text_hold_end_duration">Hold End Dur:</string>
     <string name="text_hold_position">Hold Position:</string>
@@ -39,16 +40,17 @@
     <string name="text_current_repetition">Repetition:</string>
     <string name="formatting_current_repetition">%1$s\n\n%2$s</string>
 
+    <string name="key_repetitions">repetitions</string>
     <string name="key_exercise_type">exercise_type</string>
     <string name="key_breath_start_duration">breath_start_duration</string>
     <string name="key_breath_end_duration">breath_end_duration</string>
-    <string name="key_repetitions">repetitions</string>
     <string name="key_in_out_relation">in_out_relation</string>
-    <string name="key_sound_type">sound_type</string>
+    <string name="key_hold_breath">hold_breath</string>
     <string name="key_hold_start_duration">hold_start_duration</string>
     <string name="key_hold_end_duration">hold_end_duration</string>
     <string name="key_hold_position">hold_position</string>
     <string name="key_hold_variation">hold_variation</string>
+    <string name="key_sound_type">sound_type</string>
 
     <string name="message_measure">Press “Start” after exhaling to start the measurement of breath duration.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
     <string name="message_measurement_too_short">Measurement was too short.\n\nInhale and exhale at least once before stopping the measurement.</string>
