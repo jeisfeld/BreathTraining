@@ -78,6 +78,10 @@ public class SoundPlayer extends android.media.MediaPlayer {
 		if (soundType == SoundType.BREATH && duration > 0) {
 			playBreath(context, trigger, stepType, delay, duration);
 		}
+		else //noinspection StatementWithEmptyBody
+			if (stepType == StepType.HOLD && duration < 300) { // MAGIC_NUMBER
+			// do not play very short hold
+		}
 		else {
 			play(context, trigger, soundType.getSoundResource(stepType), delay, 1);
 		}

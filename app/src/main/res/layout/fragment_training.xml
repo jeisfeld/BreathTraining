@@ -213,14 +213,40 @@
                         android:layout_weight="@integer/selector_label_width"
                         android:text="@string/text_hold_breath" />
 
-                    <CheckBox
-                        android:id="@+id/checkBoxHoldBreath"
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="@dimen/seekbar_height"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="@dimen/non_seekbar_left_margin"
-                        android:layout_weight="@integer/selector_spinner_width" />
+                        android:layout_weight="@integer/selector_seekbar_width"
+                        android:orientation="horizontal"
+                        android:paddingStart="@dimen/non_seekbar_left_margin"
+                        tools:ignore="RtlSymmetry">
 
+                        <CheckBox
+                            android:id="@+id/checkBoxHoldBreathIn"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/seekbar_height"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:text="@string/text_checkbox_hold_in" />
+
+                        <CheckBox
+                            android:id="@+id/checkBoxHoldBreathOut"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/seekbar_height"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:text="@string/text_checkbox_hold_out" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textViewHoldBreath"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="@integer/selector_text_width"
+                        android:textAlignment="viewEnd" />
                 </TableRow>
 
                 <TableRow android:id="@+id/tableRowHoldInStartDuration">
@@ -354,7 +380,7 @@
                         android:layout_height="@dimen/seekbar_height"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="@integer/selector_seekbar_width"
-                        android:max="90" />
+                        android:max="100" />
 
                     <TextView
                         android:id="@+id/textViewHoldVariation"
@@ -377,7 +403,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|start"
                         android:layout_weight="@integer/selector_label_width"
-                        android:text="@string/text_sound_type" />
+                        android:text="@string/text_sound_type"
+                        android:textSize="@dimen/text_large" />
 
                     <Spinner
                         android:id="@+id/spinnerSoundType"

@@ -52,9 +52,10 @@ public class TrainingFragment extends Fragment {
 		prepareSeekbarBreathStartDuration();
 		prepareSeekbarBreathEndDuration();
 		prepareSeekbarInOutRelation();
-		prepareCheckBoxHoldBreath();
+		prepareCheckBoxHoldBreathIn();
 		prepareSeekbarHoldInStartDuration();
 		prepareSeekbarHoldInEndDuration();
+		prepareCheckBoxHoldBreathOut();
 		prepareSeekbarHoldOutStartDuration();
 		prepareSeekbarHoldOutEndDuration();
 		prepareSeekbarHoldVariation();
@@ -207,51 +208,35 @@ public class TrainingFragment extends Fragment {
 	}
 
 	/**
-	 * Prepare the hold breath checkbox.
+	 * Prepare the hold breath in checkbox.
 	 */
-	private void prepareCheckBoxHoldBreath() {
-		mTrainingViewModel.getHoldBreath().observe(getViewLifecycleOwner(), holdBreath -> {
-			mBinding.checkBoxHoldBreath.setChecked(holdBreath);
-			int holdViewStatus = holdBreath ? View.VISIBLE : View.GONE;
-			mBinding.tableRowHoldInStartDuration.setVisibility(holdViewStatus);
-			mBinding.tableRowHoldInEndDuration.setVisibility(holdViewStatus);
-			mBinding.tableRowHoldOutStartDuration.setVisibility(holdViewStatus);
-			mBinding.tableRowHoldOutEndDuration.setVisibility(holdViewStatus);
-			mBinding.tableRowHoldVariation.setVisibility(holdViewStatus);
+	private void prepareCheckBoxHoldBreathIn() {
+		mTrainingViewModel.getHoldBreathIn().observe(getViewLifecycleOwner(), holdBreathIn -> {
+			mBinding.checkBoxHoldBreathIn.setChecked(holdBreathIn);
+			boolean isHoldBreathOut = Boolean.TRUE.equals(mTrainingViewModel.getHoldBreathOut().getValue());
+			int holdViewStatus1 = holdBreathIn ? View.VISIBLE : View.GONE;
+			int holdViewStatus2 = isHoldBreathOut || holdBreathIn ? View.VISIBLE : View.GONE;
 
-			if (Objects.equals(mTrainingViewModel.getHoldInStartDuration().getValue(), 0L)) {
-				mBinding.tableRowHoldInEndDuration.setVisibility(View.GONE);
-			}
-			if (Objects.equals(mTrainingViewModel.getHoldOutStartDuration().getValue(), 0L)) {
-				mBinding.tableRowHoldOutEndDuration.setVisibility(View.GONE);
-			}
+			mBinding.tableRowHoldInStartDuration.setVisibility(holdViewStatus1);
+			mBinding.tableRowHoldInEndDuration.setVisibility(holdViewStatus1);
+			mBinding.tableRowHoldVariation.setVisibility(holdViewStatus2);
 		});
-		mBinding.checkBoxHoldBreath.setOnCheckedChangeListener((buttonView, isChecked) -> mTrainingViewModel.updateHoldBreath(isChecked));
+		mBinding.checkBoxHoldBreathIn.setOnCheckedChangeListener((buttonView, isChecked) -> mTrainingViewModel.updateHoldBreathIn(isChecked));
 	}
 
 	/**
 	 * Prepare the hold in start duration seekbar.
 	 */
 	private void prepareSeekbarHoldInStartDuration() {
-		long holdInStartDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldInStartDuration.getProgress(), true);
+		long holdInStartDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldInStartDuration.getProgress(), false);
 		setDurationText(mBinding.textViewHoldInStartDuration, holdInStartDuration);
 		mTrainingViewModel.getHoldInStartDuration().observe(getViewLifecycleOwner(), duration -> {
 			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
 			mBinding.seekBarHoldInStartDuration.setProgress(seekbarValue);
 			setDurationText(mBinding.textViewHoldInStartDuration, duration);
-
-			if (duration == 0) {
-				mTrainingViewModel.updateHoldInEndDuration(0);
-				mBinding.tableRowHoldInEndDuration.setVisibility(View.GONE);
-				mBinding.textLabelHoldInStartDuration.setText(R.string.text_hold_in_duration);
-			}
-			else {
-				mBinding.tableRowHoldInEndDuration.setVisibility(View.VISIBLE);
-				mBinding.textLabelHoldInStartDuration.setText(R.string.text_hold_in_start_duration);
-			}
 		});
 		mBinding.seekBarHoldInStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
-				.updateHoldInStartDuration(TrainingViewModel.durationSeekbarToValue(progress, true)));
+				.updateHoldInStartDuration(TrainingViewModel.durationSeekbarToValue(progress, false)));
 	}
 
 	/**
@@ -270,28 +255,35 @@ public class TrainingFragment extends Fragment {
 	}
 
 	/**
+	 * Prepare the hold breath in checkbox.
+	 */
+	private void prepareCheckBoxHoldBreathOut() {
+		mTrainingViewModel.getHoldBreathOut().observe(getViewLifecycleOwner(), holdBreathOut -> {
+			mBinding.checkBoxHoldBreathOut.setChecked(holdBreathOut);
+			boolean isHoldBreathIn = Boolean.TRUE.equals(mTrainingViewModel.getHoldBreathIn().getValue());
+			int holdViewStatus1 = holdBreathOut ? View.VISIBLE : View.GONE;
+			int holdViewStatus2 = isHoldBreathIn || holdBreathOut ? View.VISIBLE : View.GONE;
+
+			mBinding.tableRowHoldOutStartDuration.setVisibility(holdViewStatus1);
+			mBinding.tableRowHoldOutEndDuration.setVisibility(holdViewStatus1);
+			mBinding.tableRowHoldVariation.setVisibility(holdViewStatus2);
+		});
+		mBinding.checkBoxHoldBreathOut.setOnCheckedChangeListener((buttonView, isChecked) -> mTrainingViewModel.updateHoldBreathOut(isChecked));
+	}
+
+	/**
 	 * Prepare the hold out start duration seekbar.
 	 */
 	private void prepareSeekbarHoldOutStartDuration() {
-		long holdOutStartDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldOutStartDuration.getProgress(), true);
+		long holdOutStartDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldOutStartDuration.getProgress(), false);
 		setDurationText(mBinding.textViewHoldOutStartDuration, holdOutStartDuration);
 		mTrainingViewModel.getHoldOutStartDuration().observe(getViewLifecycleOwner(), duration -> {
 			int seekbarValue = TrainingViewModel.durationValueToSeekbar(duration);
 			mBinding.seekBarHoldOutStartDuration.setProgress(seekbarValue);
 			setDurationText(mBinding.textViewHoldOutStartDuration, duration);
-
-			if (duration == 0) {
-				mTrainingViewModel.updateHoldOutEndDuration(0);
-				mBinding.tableRowHoldOutEndDuration.setVisibility(View.GONE);
-				mBinding.textLabelHoldOutStartDuration.setText(R.string.text_hold_out_duration);
-			}
-			else {
-				mBinding.tableRowHoldOutEndDuration.setVisibility(View.VISIBLE);
-				mBinding.textLabelHoldOutStartDuration.setText(R.string.text_hold_out_start_duration);
-			}
 		});
 		mBinding.seekBarHoldOutStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
-				.updateHoldOutStartDuration(TrainingViewModel.durationSeekbarToValue(progress, true)));
+				.updateHoldOutStartDuration(TrainingViewModel.durationSeekbarToValue(progress, false)));
 	}
 
 	/**
@@ -330,7 +322,7 @@ public class TrainingFragment extends Fragment {
 	 */
 	private void prepareSpinnerSoundType() {
 		final Spinner spinnerSoundType = mBinding.spinnerSoundType;
-		spinnerSoundType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
+		spinnerSoundType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_largetext,
 				getResources().getStringArray(R.array.values_sound_type)));
 		mTrainingViewModel.getSoundType().observe(getViewLifecycleOwner(), soundType -> spinnerSoundType.setSelection(soundType.ordinal()));
 		spinnerSoundType.setOnItemSelectedListener(new OnItemSelectedListener() {
