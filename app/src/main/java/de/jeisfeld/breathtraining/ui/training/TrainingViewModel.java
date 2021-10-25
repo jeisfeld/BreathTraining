@@ -1,8 +1,9 @@
 package de.jeisfeld.breathtraining.ui.training;
 
+import android.content.Context;
+
 import java.util.Objects;
 
-import android.content.Context;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -624,25 +625,25 @@ public class TrainingViewModel extends ViewModel {
 		if (exerciseType == null) {
 			return;
 		}
-		mExerciseType.setValue(exerciseType);
+		updateExerciseType(exerciseType);
 
-		mRepetitions.setValue(exerciseData.getRepetitions());
-		mBreathStartDuration.setValue(exerciseData.getBreathStartDuration());
-		mSoundType.setValue(exerciseData.getSoundType());
-		mPlayStatus.setValue(exerciseData.getPlayStatus());
+		updateRepetitions(exerciseData.getRepetitions());
+		updateBreathStartDuration(exerciseData.getBreathStartDuration());
+		updateSoundType(exerciseData.getSoundType());
+		updatePlayStatus(exerciseData.getPlayStatus());
 
 		StandardExerciseData holdData = (StandardExerciseData) exerciseData;
-		mBreathEndDuration.setValue(holdData.getBreathEndDuration());
-		mInOutRelation.setValue(holdData.getInOutRelation());
-		mHoldBreathIn.setValue(holdData.isHoldBreathIn());
-		mHoldInStartDuration.setValue(holdData.getHoldInStartDuration());
-		mHoldInEndDuration.setValue(holdData.getHoldInEndDuration());
-		mHoldInPosition.setValue(holdData.getHoldInPosition());
-		mHoldBreathOut.setValue(holdData.isHoldBreathOut());
-		mHoldOutStartDuration.setValue(holdData.getHoldOutStartDuration());
-		mHoldOutEndDuration.setValue(holdData.getHoldOutEndDuration());
-		mHoldOutPosition.setValue(holdData.getHoldOutPosition());
-		mHoldVariation.setValue(holdData.getHoldVariation());
+		updateBreathEndDuration(holdData.getBreathEndDuration());
+		updateInOutRelation(holdData.getInOutRelation());
+		updateHoldBreathIn(holdData.isHoldBreathIn());
+		updateHoldInStartDuration(holdData.getHoldInStartDuration());
+		updateHoldInEndDuration(holdData.getHoldInEndDuration());
+		updateHoldInPosition(holdData.getHoldInPosition());
+		updateHoldBreathOut(holdData.isHoldBreathOut());
+		updateHoldOutStartDuration(holdData.getHoldOutStartDuration());
+		updateHoldOutEndDuration(holdData.getHoldOutEndDuration());
+		updateHoldOutPosition(holdData.getHoldOutPosition());
+		updateHoldVariation(holdData.getHoldVariation());
 
 		if (exerciseStep != null) {
 			updateExerciseStep(exerciseStep);

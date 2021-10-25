@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import androidx.fragment.app.FragmentActivity;
 import de.jeisfeld.breathtraining.Application;
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.util.DialogUtil.ConfirmDialogFragment.ConfirmDialogListener;
+import de.jeisfeld.breathtraining.util.DialogUtil.RequestInputDialogFragment.RequestInputDialogListener;
 
 /**
  * Helper class to show standard dialogs.
@@ -46,6 +48,10 @@ public final class DialogUtil {
 	 * Instance state flag indicating if a dialog should not be recreated after orientation change.
 	 */
 	private static final String PREVENT_RECREATION = "preventRecreation";
+	/**
+	 * Parameter to pass the text value of the input field.
+	 */
+	private static final String PARAM_TEXT_VALUE = "textValue";
 
 	/**
 	 * Hide default constructor.
@@ -120,6 +126,37 @@ public final class DialogUtil {
 	public static void displayConfirmationMessage(final FragmentActivity activity, final Integer titleResource,
 												  final int messageResource, final Object... args) {
 		displayConfirmationMessage(activity, null, titleResource, null, R.string.button_ok, messageResource, args);
+	}
+
+	/**
+	 * Display a confirmation message asking for cancel or ok.
+	 *
+	 * @param activity        the current activity
+	 * @param listener        The listener waiting for the response
+	 * @param titleResource   the resource with the title string
+	 * @param buttonResource  the display on the positive button
+	 * @param textValue       the text to be displayed in the input field
+	 * @param messageResource the confirmation message
+	 * @param args            arguments for the confirmation message
+	 */
+	public static void displayInputDialog(final FragmentActivity activity,
+										  final RequestInputDialogListener listener, final int titleResource, final int buttonResource,
+										  final String textValue, final int messageResource, final Object... args) {
+		String message = capitalizeFirst(activity.getString(messageResource, args));
+		Bundle bundle = new Bundle();
+		bundle.putCharSequence(PARAM_MESSAGE, message);
+		bundle.putInt(PARAM_TITLE_RESOURCE, titleResource);
+		bundle.putInt(PARAM_CONFIRM_BUTTON_RESOURCE, buttonResource);
+		bundle.putString(PARAM_TEXT_VALUE, textValue);
+		RequestInputDialogFragment fragment = new RequestInputDialogFragment();
+		fragment.setListener(listener);
+		fragment.setArguments(bundle);
+		try {
+			fragment.show(activity.getSupportFragmentManager(), fragment.getClass().toString());
+		}
+		catch (IllegalStateException e) {
+			// May appear if activity is not active any more - ignore.
+		}
 	}
 
 	/**
@@ -238,6 +275,106 @@ public final class DialogUtil {
 			default void onDialogNegativeClick(final DialogFragment dialog) {
 				// do nothing
 			}
+		}
+	}
+
+	/**
+	 * Fragment to request an input.
+	 */
+	public static class RequestInputDialogFragment extends DialogFragment {
+		/**
+		 * The listener called when the dialog is ended.
+		 */
+		private RequestInputDialogListener mListener = null;
+
+		/**
+		 * Set the listener.
+		 *
+		 * @param listener The listener.
+		 */
+		public final void setListener(final RequestInputDialogListener listener) {
+			mListener = listener;
+		}
+
+		@NonNull
+		@Override
+		public final Dialog onCreateDialog(final Bundle savedInstanceState) {
+			assert getArguments() != null;
+			final CharSequence message = getArguments().getCharSequence(PARAM_MESSAGE);
+			final int confirmButtonResource = getArguments().getInt(PARAM_CONFIRM_BUTTON_RESOURCE);
+			final int titleResource = getArguments().getInt(PARAM_TITLE_RESOURCE);
+
+			View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_input, null);
+			final EditText input = view.findViewById(R.id.editTextDialog);
+			input.setText(getArguments().getString(PARAM_TEXT_VALUE));
+
+			((TextView) view.findViewById(R.id.textViewInputDialog)).setText(message);
+
+			// Listeners cannot retain functionality when automatically recreated.
+			// Therefore, dialogs with listeners must be re-created by the activity on orientation change.
+			boolean preventRecreation = false;
+			if (savedInstanceState != null) {
+				preventRecreation = savedInstanceState.getBoolean(PREVENT_RECREATION);
+			}
+			if (preventRecreation) {
+				mListener = null;
+				dismiss();
+			}
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setTitle(titleResource) //
+					.setView(view) //
+					.setNegativeButton(R.string.button_cancel, (dialog, id) -> {
+						// Send the positive button event back to the host activity
+						if (mListener != null) {
+							mListener.onDialogNegativeClick(RequestInputDialogFragment.this);
+						}
+					}) //
+					.setPositiveButton(confirmButtonResource, (dialog, id) -> {
+						// Send the negative button event back to the host activity
+						if (mListener != null) {
+							mListener.onDialogPositiveClick(RequestInputDialogFragment.this, input.getText().toString());
+						}
+					});
+			return builder.create();
+		}
+
+		@Override
+		public final void onCancel(@NonNull final DialogInterface dialogInterface) {
+			if (mListener != null) {
+				mListener.onDialogNegativeClick(RequestInputDialogFragment.this);
+			}
+			super.onCancel(dialogInterface);
+		}
+
+		@Override
+		public final void onSaveInstanceState(@NonNull final Bundle outState) {
+			if (mListener != null) {
+				// Typically cannot serialize the listener due to its reference to the activity.
+				mListener = null;
+				outState.putBoolean(PREVENT_RECREATION, true);
+			}
+			super.onSaveInstanceState(outState);
+		}
+
+		/**
+		 * A callback handler for the dialog.
+		 */
+		public interface RequestInputDialogListener {
+			/**
+			 * Callback method for positive click from the input dialog.
+			 *
+			 * @param dialog the confirmation dialog fragment.
+			 * @param text   the text returned from the input.
+			 */
+			void onDialogPositiveClick(DialogFragment dialog, String text);
+
+			/**
+			 * Callback method for negative click from the input dialog.
+			 *
+			 * @param dialog the confirmation dialog fragment.
+			 */
+			void onDialogNegativeClick(DialogFragment dialog);
 		}
 	}
 }

@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.jeisfeld.breathtraining.R;
@@ -23,7 +24,10 @@ import de.jeisfeld.breathtraining.databinding.FragmentTrainingBinding;
 import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.ExerciseType;
 import de.jeisfeld.breathtraining.exercise.HoldPosition;
+import de.jeisfeld.breathtraining.repository.StoredExercisesRegistry;
 import de.jeisfeld.breathtraining.sound.SoundType;
+import de.jeisfeld.breathtraining.util.DialogUtil;
+import de.jeisfeld.breathtraining.util.DialogUtil.RequestInputDialogFragment.RequestInputDialogListener;
 
 /**
  * The fragment for managing basic breath control page.
@@ -64,6 +68,7 @@ public class TrainingFragment extends Fragment {
 		prepareSpinnerSoundType();
 		prepareSeekbarCurrentRepetition();
 		prepareButtons();
+		prepareButtonSave();
 
 		return mBinding.getRoot();
 	}
@@ -419,6 +424,30 @@ public class TrainingFragment extends Fragment {
 						mTrainingViewModel.updateExerciseStep(new ExerciseStep(exerciseStep.getStepType(), exerciseStep.getDuration(), progress + 1));
 					}
 				});
+	}
+
+	/**
+	 * Prepare the button to save the exercise.
+	 */
+	private void prepareButtonSave() {
+		mBinding.imageViewStore.setOnClickListener(v -> DialogUtil.displayInputDialog(requireActivity(), new RequestInputDialogListener() {
+					@Override
+					public void onDialogPositiveClick(final DialogFragment dialog, final String text) {
+						if (text == null || text.trim().isEmpty()) {
+							DialogUtil.displayConfirmationMessage(getActivity(),
+									R.string.title_did_not_save_empty_name, R.string.message_did_not_save_empty_name);
+						}
+						else {
+							StoredExercisesRegistry.getInstance().addOrUpdate(mTrainingViewModel.getExerciseData(), text);
+						}
+					}
+
+					@Override
+					public void onDialogNegativeClick(final DialogFragment dialog) {
+						// do nothing
+					}
+				}, R.string.title_dialog_save_exercise, R.string.button_save,
+				"", R.string.message_dialog_save_exercise));
 	}
 
 	/**

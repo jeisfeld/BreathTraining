@@ -12,5 +12,9 @@
             android:id="@+id/nav_measure"
             android:icon="@drawable/ic_menu_measure"
             android:title="@string/menu_measure" />
+        <item
+            android:id="@+id/nav_stored_exercises"
+            android:icon="@drawable/ic_menu_stored_exercises"
+            android:title="@string/menu_stored_exercises" />
     </group>
 </menu>

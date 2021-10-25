@@ -17,4 +17,9 @@
         android:label="@string/menu_measure"
         tools:layout="@layout/fragment_measure" />
 
+    <fragment
+        android:id="@+id/nav_stored_exercises"
+        android:name="de.jeisfeld.breathtraining.repository.StoredExercisesFragment"
+        android:label="@string/menu_stored_exercises"
+        tools:layout="@layout/fragment_stored_exercises" />
 </navigation>

@@ -5,7 +5,9 @@ import android.content.Intent;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.sound.SoundType;
+import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
 /**
  * Exercise data for hold exercise.
@@ -219,12 +221,29 @@ public class StandardExerciseData extends ExerciseData {
 		serviceIntent.putExtra(EXTRA_HOLD_VARIATION, mHoldVariation);
 	}
 
+	@Override
+	public final void store(final String name) {
+		super.store(name);
+		PreferenceUtil.setIndexedSharedPreferenceInt(R.string.key_stored_exercise_type, getId(), ExerciseType.STANDARD.ordinal());
+		PreferenceUtil.setIndexedSharedPreferenceLong(R.string.key_stored_breath_end_duration, getId(), mBreathEndDuration);
+		PreferenceUtil.setIndexedSharedPreferenceDouble(R.string.key_stored_in_out_relation, getId(), mInOutRelation);
+		PreferenceUtil.setIndexedSharedPreferenceBoolean(R.string.key_stored_hold_breath_in, getId(), mHoldBreathIn);
+		PreferenceUtil.setIndexedSharedPreferenceLong(R.string.key_stored_hold_in_start_duration, getId(), mHoldInStartDuration);
+		PreferenceUtil.setIndexedSharedPreferenceLong(R.string.key_stored_hold_in_end_duration, getId(), mHoldInEndDuration);
+		PreferenceUtil.setIndexedSharedPreferenceInt(R.string.key_stored_hold_in_position, getId(), mHoldInPosition.ordinal());
+		PreferenceUtil.setIndexedSharedPreferenceBoolean(R.string.key_stored_hold_breath_out, getId(), mHoldBreathOut);
+		PreferenceUtil.setIndexedSharedPreferenceLong(R.string.key_stored_hold_out_start_duration, getId(), mHoldOutStartDuration);
+		PreferenceUtil.setIndexedSharedPreferenceLong(R.string.key_stored_hold_out_end_duration, getId(), mHoldOutEndDuration);
+		PreferenceUtil.setIndexedSharedPreferenceInt(R.string.key_stored_hold_out_position, getId(), mHoldOutPosition.ordinal());
+		PreferenceUtil.setIndexedSharedPreferenceDouble(R.string.key_stored_hold_variation, getId(), mHoldVariation);
+	}
+
 	/**
 	 * Calculate the duration for a certain repetition.
 	 *
 	 * @param startDuration The start duration
-	 * @param endDuration The end duration
-	 * @param repetition The repetition number
+	 * @param endDuration   The end duration
+	 * @param repetition    The repetition number
 	 * @return The repetition duration
 	 */
 	private long calculateDuration(final long startDuration, final long endDuration, final int repetition) {

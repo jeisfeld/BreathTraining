@@ -1,11 +1,14 @@
 package de.jeisfeld.breathtraining.exercise;
 
-import java.io.Serializable;
-
 import android.content.Intent;
 
+import java.io.Serializable;
+import java.util.List;
+
+import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.sound.SoundType;
 import de.jeisfeld.breathtraining.ui.training.ServiceReceiver;
+import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
 /**
  * Class holding data representing an animation.
@@ -80,6 +83,14 @@ public abstract class ExerciseData implements Serializable {
 	 * Key for the hold variation within the intent.
 	 */
 	protected static final String EXTRA_HOLD_VARIATION = "de.jeisfeld.breathtraining.HOLD_VARIATION";
+	/**
+	 * The id (in case of storage).
+	 */
+	private int mId = 0;
+	/**
+	 * The name (in case of storage).
+	 */
+	private String mName;
 	/**
 	 * The number of repetitions.
 	 */
@@ -199,6 +210,33 @@ public abstract class ExerciseData implements Serializable {
 	}
 
 	/**
+	 * Get the id for storage.
+	 *
+	 * @return The id
+	 */
+	public int getId() {
+		return mId;
+	}
+
+	/**
+	 * Get the name for storage.
+	 *
+	 * @return The name
+	 */
+	public String getName() {
+		return mName;
+	}
+
+	/**
+	 * Set the name for storage.
+	 *
+	 * @param name The name
+	 */
+	public void setName(final String name) {
+		mName = name;
+	}
+
+	/**
 	 * Get the number of repetitions.
 	 *
 	 * @return The number of repetitions.
@@ -268,9 +306,68 @@ public abstract class ExerciseData implements Serializable {
 	}
 
 	/**
+	 * Restore exercise data from storage.
+	 *
+	 * @param storedExerciseId The stored exercise id.
+	 * @return The exercise data.
+	 */
+	public static ExerciseData fromId(final int storedExerciseId) {
+		int repetitions = PreferenceUtil.getIndexedSharedPreferenceInt(R.string.key_stored_repetitions, storedExerciseId, 0);
+		long breathStartDuration = PreferenceUtil.getIndexedSharedPreferenceLong(R.string.key_stored_breath_start_duration, storedExerciseId, 0);
+		long breathEndDuration = PreferenceUtil.getIndexedSharedPreferenceLong(R.string.key_stored_breath_end_duration, storedExerciseId, 0);
+		double inOutRelation = PreferenceUtil.getIndexedSharedPreferenceDouble(
+				R.string.key_stored_in_out_relation, storedExerciseId, 0.5); // MAGIC_NUMBER
+		boolean holdBreathIn = PreferenceUtil.getIndexedSharedPreferenceBoolean(R.string.key_stored_hold_breath_in, storedExerciseId, false);
+		long holdInStartDuration = PreferenceUtil.getIndexedSharedPreferenceLong(R.string.key_stored_hold_in_start_duration, storedExerciseId, 0);
+		long holdInEndDuration = PreferenceUtil.getIndexedSharedPreferenceLong(R.string.key_stored_hold_in_end_duration, storedExerciseId, 0);
+		HoldPosition holdInPosition =
+				HoldPosition.values()[PreferenceUtil.getIndexedSharedPreferenceInt(R.string.key_stored_hold_in_position, storedExerciseId,
+						HoldPosition.ONLY_END.ordinal())];
+		boolean holdBreathOut = PreferenceUtil.getIndexedSharedPreferenceBoolean(R.string.key_stored_hold_breath_out, storedExerciseId, false);
+		long holdOutStartDuration = PreferenceUtil.getIndexedSharedPreferenceLong(R.string.key_stored_hold_out_start_duration, storedExerciseId, 0);
+		long holdOutEndDuration = PreferenceUtil.getIndexedSharedPreferenceLong(R.string.key_stored_hold_out_end_duration, storedExerciseId, 0);
+		HoldPosition holdOutPosition =
+				HoldPosition.values()[PreferenceUtil.getIndexedSharedPreferenceInt(R.string.key_stored_hold_out_position, storedExerciseId,
+						HoldPosition.ONLY_END.ordinal())];
+		double holdVariation = PreferenceUtil.getIndexedSharedPreferenceDouble(R.string.key_stored_hold_variation, storedExerciseId, 0);
+		SoundType soundType = SoundType.values()[PreferenceUtil.getIndexedSharedPreferenceInt(R.string.key_stored_sound_type, storedExerciseId,
+				SoundType.WORDS.ordinal())];
+		ExerciseData result =
+				new StandardExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdBreathIn, holdInStartDuration,
+						holdInEndDuration, holdInPosition, holdBreathOut, holdOutStartDuration, holdOutEndDuration, holdOutPosition, holdVariation,
+						soundType, PlayStatus.STOPPED, 0);
+		result.mId = storedExerciseId;
+		result.mName = PreferenceUtil.getIndexedSharedPreferenceString(R.string.key_stored_exercise_name, storedExerciseId);
+		return result;
+	}
+
+	/**
+	 * Store this exercise.
+	 *
+	 * @param name The name for storage.
+	 */
+	// OVERRIDABLE
+	public void store(final String name) {
+		if (mId <= 0) {
+			int newId = PreferenceUtil.getSharedPreferenceInt(R.string.key_stored_exercise_max_id, 0) + 1;
+			PreferenceUtil.setSharedPreferenceInt(R.string.key_stored_exercise_max_id, newId);
+
+			List<Integer> exerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_stored_exercise_ids);
+			exerciseIds.add(newId);
+			PreferenceUtil.setSharedPreferenceIntList(R.string.key_stored_exercise_ids, exerciseIds);
+			mId = newId;
+		}
+		PreferenceUtil.setIndexedSharedPreferenceInt(R.string.key_stored_repetitions, mId, mRepetitions);
+		PreferenceUtil.setIndexedSharedPreferenceLong(R.string.key_stored_breath_start_duration, mId, mBreathStartDuration);
+		PreferenceUtil.setIndexedSharedPreferenceInt(R.string.key_stored_sound_type, mId, mSoundType.ordinal());
+		mName = name;
+		PreferenceUtil.setIndexedSharedPreferenceString(R.string.key_stored_exercise_name, mId, mName);
+	}
+
+	/**
 	 * Retrieve the status from other ExerciseData and upate the playStatus.
 	 *
-	 * @param origin     The other ExerciseData.
+	 * @param origin The other ExerciseData.
 	 * @param playStatus The new playStatus.
 	 */
 	public void retrieveStatus(final ExerciseData origin, final PlayStatus playStatus) {

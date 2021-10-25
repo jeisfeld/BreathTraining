@@ -21,8 +21,8 @@ import de.jeisfeld.breathtraining.exercise.ExerciseData;
 import de.jeisfeld.breathtraining.exercise.ExerciseService.ServiceQueryReceiver;
 import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.PlayStatus;
-import de.jeisfeld.breathtraining.sound.SoundPlayer;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
+import de.jeisfeld.breathtraining.sound.SoundPlayer;
 import de.jeisfeld.breathtraining.ui.training.ServiceReceiver;
 import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
 
@@ -51,10 +51,8 @@ public class MainActivity extends AppCompatActivity {
 		NavigationView navigationView = mBinding.navView;
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
-		mAppBarConfiguration = new AppBarConfiguration.Builder(
-				R.id.nav_training, R.id.nav_measure)
-						.setOpenableLayout(drawer)
-						.build();
+		mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_training, R.id.nav_measure, R.id.nav_stored_exercises)
+				.setOpenableLayout(drawer).build();
 		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 		NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 		NavigationUI.setupWithNavController(navigationView, navController);
