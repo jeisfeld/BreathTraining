@@ -168,6 +168,14 @@ public abstract class ExerciseData implements Serializable {
 	}
 
 	/**
+	 * Go back to the start of the repetition.
+	 */
+	public void goBackToRepetitionStart() {
+		mCurrentRepetitionNumber--;
+		mCurrentSteps = null;
+	}
+
+	/**
 	 * Add the data to an intent.
 	 *
 	 * @param serviceIntent The intent.

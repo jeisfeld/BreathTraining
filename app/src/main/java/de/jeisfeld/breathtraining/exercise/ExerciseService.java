@@ -167,14 +167,14 @@ public class ExerciseService extends Service {
 				mIsSkipping = true;
 				if (mRunningThreads.size() > 0) {
 					mRunningThreads.get(mRunningThreads.size() - 1).interrupt();
-					mRunningThreads.get(mRunningThreads.size() - 1).updateExerciseData(exerciseData, PlayStatus.PAUSED);
+					mRunningThreads.get(mRunningThreads.size() - 1).updateExerciseData(exerciseData, PlayStatus.PAUSED, false);
 				}
 			}
 			break;
 		case RESUME:
 			synchronized (mRunningThreads) {
 				if (mRunningThreads.size() > 0) {
-					mRunningThreads.get(mRunningThreads.size() - 1).updateExerciseData(exerciseData, PlayStatus.PLAYING);
+					mRunningThreads.get(mRunningThreads.size() - 1).updateExerciseData(exerciseData, PlayStatus.PLAYING, true);
 				}
 				mIsPausing = false;
 				mRunningThreads.notifyAll();
@@ -412,9 +412,13 @@ public class ExerciseService extends Service {
 		 *
 		 * @param exerciseData The new exercise data.
 		 * @param playStatus The new playStatus.
+		 * @param goToRepetitionStart Flag indicating if the repetition should be started from the beginning.
 		 */
-		private void updateExerciseData(final ExerciseData exerciseData, final PlayStatus playStatus) {
+		private void updateExerciseData(final ExerciseData exerciseData, final PlayStatus playStatus, final boolean goToRepetitionStart) {
 			exerciseData.retrieveStatus(mExerciseData, playStatus);
+			if (goToRepetitionStart) {
+				exerciseData.goBackToRepetitionStart();
+			}
 			mExerciseData = exerciseData;
 		}
 
