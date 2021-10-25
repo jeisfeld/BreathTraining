@@ -307,6 +307,23 @@
 
                 </TableRow>
 
+                <TableRow android:id="@+id/tableRowHoldInPosition">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_hold_in_position" />
+
+                    <Spinner
+                        android:id="@+id/spinnerHoldInPosition"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_spinner_width" />
+                </TableRow>
+
                 <TableRow android:id="@+id/tableRowHoldOutStartDuration">
 
                     <TextView
@@ -363,6 +380,23 @@
                         android:layout_weight="@integer/selector_text_width"
                         android:textAlignment="viewEnd" />
 
+                </TableRow>
+
+                <TableRow android:id="@+id/tableRowHoldOutPosition">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="@integer/selector_label_width"
+                        android:text="@string/text_hold_out_position" />
+
+                    <Spinner
+                        android:id="@+id/spinnerHoldOutPosition"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/seekbar_height"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="@integer/selector_spinner_width" />
                 </TableRow>
 
                 <TableRow android:id="@+id/tableRowHoldVariation">

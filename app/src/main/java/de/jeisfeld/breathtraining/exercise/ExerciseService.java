@@ -428,12 +428,12 @@ public class ExerciseService extends Service {
 			mExerciseStep = mExerciseData.getNextStep();
 
 			while (mExerciseStep != null) {
-				if (!(mIsSkipping && mExerciseStep.getStepType() == StepType.HOLD)) {
+				if (!(mIsSkipping && mExerciseStep.getStepType().isHold())) {
 					// Execute the step, except in case of hold while skipping
 					mIsSkipping = false;
 					try {
-						SoundPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE,
-								mExerciseData.getSoundType(), mExerciseStep.getStepType(), getDelay(mExerciseStep), mExerciseStep.getDuration());
+						SoundPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE, mExerciseData.getSoundType(),
+								mExerciseStep.getStepType(), getDelay(mExerciseStep), mExerciseStep.getSoundDuration());
 						sendBroadcast(ServiceReceiver.createIntent(null, mExerciseStep));
 						startNotification(mExerciseData, mExerciseStep, null);
 						// noinspection BusyWait

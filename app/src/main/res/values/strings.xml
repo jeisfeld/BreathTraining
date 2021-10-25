@@ -35,9 +35,11 @@
     <string name="text_checkbox_hold_in">In</string>
     <string name="text_hold_in_start_duration">H In Start Dur:</string>
     <string name="text_hold_in_end_duration">H In End Dur:</string>
+    <string name="text_hold_in_position">H In Position:</string>
     <string name="text_checkbox_hold_out">Out</string>
     <string name="text_hold_out_start_duration">H Out Start Dur:</string>
     <string name="text_hold_out_end_duration">H Out End Dur:</string>
+    <string name="text_hold_out_position">H Out Position:</string>
     <string name="text_hold_variation">Hold Variation:</string>
     <string name="text_sound_type">Sound:</string>
     <string name="text_current_repetition">Repetition:</string>
@@ -51,9 +53,11 @@
     <string name="key_hold_breath_in">hold_breath_in</string>
     <string name="key_hold_in_start_duration">hold_in_start_duration</string>
     <string name="key_hold_in_end_duration">hold_in_end_duration</string>
+    <string name="key_hold_in_position">hold_in_position</string>
     <string name="key_hold_breath_out">hold_breath_out</string>
     <string name="key_hold_out_start_duration">hold_out_start_duration</string>
     <string name="key_hold_out_end_duration">hold_out_end_duration</string>
+    <string name="key_hold_out_position">hold_out_position</string>
     <string name="key_hold_variation">hold_variation</string>
     <string name="key_sound_type">sound_type</string>
 
@@ -73,5 +77,11 @@
         <item>None</item>
         <item>Text</item>
         <item>Breath</item>
+    </string-array>
+    <string-array name="values_hold_position">
+        <item>Only at breath end</item>
+        <item>One intermittent hold</item>
+        <item>Two intermittent holds</item>
+        <item>Variable intermittent holds</item>
     </string-array>
 </resources>

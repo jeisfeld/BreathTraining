@@ -61,8 +61,10 @@ public enum SoundType {
 	public int getSoundResource(final StepType stepType) {
 		switch (stepType) {
 		case INHALE:
+		case CONTINUE_INHALE:
 			return mInhaleResource;
 		case EXHALE:
+		case CONTINUE_EXHALE:
 			return mExhaleResource;
 		case HOLD:
 			return mHoldResource;

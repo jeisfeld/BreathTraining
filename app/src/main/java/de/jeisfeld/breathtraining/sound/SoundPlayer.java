@@ -79,7 +79,7 @@ public class SoundPlayer extends android.media.MediaPlayer {
 			playBreath(context, trigger, stepType, delay, duration);
 		}
 		else //noinspection StatementWithEmptyBody
-			if (stepType == StepType.HOLD && duration < 300) { // MAGIC_NUMBER
+			if (stepType.isHold() && duration < 300) { // MAGIC_NUMBER
 			// do not play very short hold
 		}
 		else {
@@ -138,9 +138,11 @@ public class SoundPlayer extends android.media.MediaPlayer {
 	 */
 	private void playBreath(final Context context, final MediaTrigger trigger, final StepType stepType, final long delay, final long duration)
 			throws InterruptedException {
-		if (stepType == StepType.HOLD) {
-			stop();
-			reset();
+		if (stepType.isHold()) {
+			pause();
+		}
+		else if (stepType.isContinue()) {
+			start();
 		}
 		else {
 			BreathSoundInfo breathSoundInfo = BreathSound.getBreathSoundInfo(stepType, duration);

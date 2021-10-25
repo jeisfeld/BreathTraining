@@ -1,8 +1,5 @@
 package de.jeisfeld.breathtraining.ui.training;
 
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +11,10 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,6 +22,7 @@ import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.databinding.FragmentTrainingBinding;
 import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.ExerciseType;
+import de.jeisfeld.breathtraining.exercise.HoldPosition;
 import de.jeisfeld.breathtraining.sound.SoundType;
 
 /**
@@ -53,9 +55,11 @@ public class TrainingFragment extends Fragment {
 		prepareCheckBoxHoldBreathIn();
 		prepareSeekbarHoldInStartDuration();
 		prepareSeekbarHoldInEndDuration();
+		prepareSpinnerHoldInPosition();
 		prepareCheckBoxHoldBreathOut();
 		prepareSeekbarHoldOutStartDuration();
 		prepareSeekbarHoldOutEndDuration();
+		prepareSpinnerHoldOutPosition();
 		prepareSeekbarHoldVariation();
 		prepareSpinnerSoundType();
 		prepareSeekbarCurrentRepetition();
@@ -128,7 +132,18 @@ public class TrainingFragment extends Fragment {
 				getResources().getStringArray(R.array.values_exercise_type)));
 		mTrainingViewModel.getExerciseType().observe(getViewLifecycleOwner(),
 				exerciseType -> spinnerExerciseType.setSelection(exerciseType.ordinal()));
-		spinnerExerciseType.setOnItemSelectedListener(getOnExerciseTypeSelectedListener(mTrainingViewModel));
+		spinnerExerciseType.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
+				ExerciseType exerciseType = ExerciseType.values()[position];
+				mTrainingViewModel.updateExerciseType(exerciseType);
+			}
+
+			@Override
+			public void onNothingSelected(final AdapterView<?> parent) {
+				// do nothing
+			}
+		});
 	}
 
 	/**
@@ -211,11 +226,12 @@ public class TrainingFragment extends Fragment {
 		mTrainingViewModel.getHoldBreathIn().observe(getViewLifecycleOwner(), holdBreathIn -> {
 			mBinding.checkBoxHoldBreathIn.setChecked(holdBreathIn);
 			boolean isHoldBreathOut = Boolean.TRUE.equals(mTrainingViewModel.getHoldBreathOut().getValue());
-			int holdViewStatus1 = holdBreathIn ? View.VISIBLE : View.GONE;
-			int holdViewStatus2 = isHoldBreathOut || holdBreathIn ? View.VISIBLE : View.GONE;
+			final int holdViewStatus1 = holdBreathIn ? View.VISIBLE : View.GONE;
+			final int holdViewStatus2 = isHoldBreathOut || holdBreathIn ? View.VISIBLE : View.GONE;
 
 			mBinding.tableRowHoldInStartDuration.setVisibility(holdViewStatus1);
 			mBinding.tableRowHoldInEndDuration.setVisibility(holdViewStatus1);
+			mBinding.tableRowHoldInPosition.setVisibility(holdViewStatus1);
 			mBinding.tableRowHoldVariation.setVisibility(holdViewStatus2);
 		});
 		mBinding.checkBoxHoldBreathIn.setOnCheckedChangeListener((buttonView, isChecked) -> mTrainingViewModel.updateHoldBreathIn(isChecked));
@@ -252,17 +268,41 @@ public class TrainingFragment extends Fragment {
 	}
 
 	/**
+	 * Prepare the spinner for hold in position.
+	 */
+	private void prepareSpinnerHoldInPosition() {
+		final Spinner spinnerHoldInPosition = mBinding.spinnerHoldInPosition;
+		spinnerHoldInPosition.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
+				getResources().getStringArray(R.array.values_hold_position)));
+		mTrainingViewModel.getHoldInPosition().observe(getViewLifecycleOwner(),
+				holdInPosition -> spinnerHoldInPosition.setSelection(holdInPosition.ordinal()));
+		spinnerHoldInPosition.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
+				HoldPosition holdPosition = HoldPosition.values()[position];
+				mTrainingViewModel.updateHoldInPosition(holdPosition);
+			}
+
+			@Override
+			public void onNothingSelected(final AdapterView<?> parent) {
+				// do nothing
+			}
+		});
+	}
+
+	/**
 	 * Prepare the hold breath in checkbox.
 	 */
 	private void prepareCheckBoxHoldBreathOut() {
 		mTrainingViewModel.getHoldBreathOut().observe(getViewLifecycleOwner(), holdBreathOut -> {
 			mBinding.checkBoxHoldBreathOut.setChecked(holdBreathOut);
 			boolean isHoldBreathIn = Boolean.TRUE.equals(mTrainingViewModel.getHoldBreathIn().getValue());
-			int holdViewStatus1 = holdBreathOut ? View.VISIBLE : View.GONE;
-			int holdViewStatus2 = isHoldBreathIn || holdBreathOut ? View.VISIBLE : View.GONE;
+			final int holdViewStatus1 = holdBreathOut ? View.VISIBLE : View.GONE;
+			final int holdViewStatus2 = isHoldBreathIn || holdBreathOut ? View.VISIBLE : View.GONE;
 
 			mBinding.tableRowHoldOutStartDuration.setVisibility(holdViewStatus1);
 			mBinding.tableRowHoldOutEndDuration.setVisibility(holdViewStatus1);
+			mBinding.tableRowHoldOutPosition.setVisibility(holdViewStatus1);
 			mBinding.tableRowHoldVariation.setVisibility(holdViewStatus2);
 		});
 		mBinding.checkBoxHoldBreathOut.setOnCheckedChangeListener((buttonView, isChecked) -> mTrainingViewModel.updateHoldBreathOut(isChecked));
@@ -296,6 +336,29 @@ public class TrainingFragment extends Fragment {
 		});
 		mBinding.seekBarHoldOutEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mTrainingViewModel
 				.updateHoldOutEndDuration(TrainingViewModel.durationSeekbarToValue(progress, false)));
+	}
+
+	/**
+	 * Prepare the spinner for hold out position.
+	 */
+	private void prepareSpinnerHoldOutPosition() {
+		final Spinner spinnerHoldOutPosition = mBinding.spinnerHoldOutPosition;
+		spinnerHoldOutPosition.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_standard,
+				getResources().getStringArray(R.array.values_hold_position)));
+		mTrainingViewModel.getHoldOutPosition().observe(getViewLifecycleOwner(),
+				holdOutPosition -> spinnerHoldOutPosition.setSelection(holdOutPosition.ordinal()));
+		spinnerHoldOutPosition.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
+				HoldPosition holdPosition = HoldPosition.values()[position];
+				mTrainingViewModel.updateHoldOutPosition(holdPosition);
+			}
+
+			@Override
+			public void onNothingSelected(final AdapterView<?> parent) {
+				// do nothing
+			}
+		});
 	}
 
 	/**
@@ -356,27 +419,6 @@ public class TrainingFragment extends Fragment {
 						mTrainingViewModel.updateExerciseStep(new ExerciseStep(exerciseStep.getStepType(), exerciseStep.getDuration(), progress + 1));
 					}
 				});
-	}
-
-	/**
-	 * Get the listener on exercise type change.
-	 *
-	 * @param viewModel The view model.
-	 * @return The listener.
-	 */
-	protected final OnItemSelectedListener getOnExerciseTypeSelectedListener(final TrainingViewModel viewModel) {
-		return new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
-				ExerciseType exerciseType = ExerciseType.values()[position];
-				viewModel.updateExerciseType(exerciseType);
-			}
-
-			@Override
-			public void onNothingSelected(final AdapterView<?> parent) {
-				// do nothing
-			}
-		};
 	}
 
 	/**
