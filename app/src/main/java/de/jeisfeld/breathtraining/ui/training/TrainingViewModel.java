@@ -13,7 +13,7 @@ import de.jeisfeld.breathtraining.exercise.ExerciseService;
 import de.jeisfeld.breathtraining.exercise.ExerciseService.ServiceCommand;
 import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.ExerciseType;
-import de.jeisfeld.breathtraining.exercise.HoldExerciseData;
+import de.jeisfeld.breathtraining.exercise.StandardExerciseData;
 import de.jeisfeld.breathtraining.exercise.PlayStatus;
 import de.jeisfeld.breathtraining.exercise.StepType;
 import de.jeisfeld.breathtraining.sound.SoundType;
@@ -527,7 +527,7 @@ public class TrainingViewModel extends ViewModel {
 			return null;
 		}
 		int repetition = mExerciseStep.getValue() == null ? 0 : mExerciseStep.getValue().getRepetition();
-		return new HoldExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mBreathEndDuration.getValue(),
+		return new StandardExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mBreathEndDuration.getValue(),
 				mInOutRelation.getValue(), mHoldBreath.getValue(), mHoldInStartDuration.getValue(), mHoldInEndDuration.getValue(),
 				mHoldOutStartDuration.getValue(), mHoldOutEndDuration.getValue(), mHoldVariation.getValue(), mSoundType.getValue(),
 				mPlayStatus.getValue(), repetition);
@@ -554,7 +554,7 @@ public class TrainingViewModel extends ViewModel {
 		mSoundType.setValue(exerciseData.getSoundType());
 		mPlayStatus.setValue(exerciseData.getPlayStatus());
 
-		HoldExerciseData holdData = (HoldExerciseData) exerciseData;
+		StandardExerciseData holdData = (StandardExerciseData) exerciseData;
 		mBreathEndDuration.setValue(holdData.getBreathEndDuration());
 		mInOutRelation.setValue(holdData.getInOutRelation());
 		mHoldInStartDuration.setValue(holdData.getHoldInStartDuration());

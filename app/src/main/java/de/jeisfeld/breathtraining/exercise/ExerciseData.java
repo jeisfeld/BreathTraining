@@ -239,7 +239,7 @@ public abstract class ExerciseData implements Serializable {
 		double holdVariation = intent.getDoubleExtra(EXTRA_HOLD_VARIATION, 0);
 		SoundType soundType = (SoundType) intent.getSerializableExtra(EXTRA_SOUND_TYPE);
 		int currentRepetitionNumber = intent.getIntExtra(EXTRA_CURRENT_REPETITION, 0);
-		return new HoldExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdBreath, holdInStartDuration,
+		return new StandardExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdBreath, holdInStartDuration,
 				holdInEndDuration, holdOutStartDuration, holdOutEndDuration, holdVariation, soundType, playStatus, currentRepetitionNumber);
 	}
 

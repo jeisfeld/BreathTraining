@@ -10,7 +10,7 @@ import de.jeisfeld.breathtraining.sound.SoundType;
 /**
  * Exercise data for hold exercise.
  */
-public class HoldExerciseData extends ExerciseData {
+public class StandardExerciseData extends ExerciseData {
 	/**
 	 * The serial version UID.
 	 */
@@ -68,10 +68,10 @@ public class HoldExerciseData extends ExerciseData {
 	 * @param playStatus              The playing status
 	 * @param currentRepetitionNumber The current repetition number.
 	 */
-	public HoldExerciseData(final Integer repetitions, final Long breathStartDuration, final Long breathEndDuration, // SUPPRESS_CHECKSTYLE
-							final Double inOutRelation, final Boolean holdBreath, final Long holdInStartDuration, final Long holdInEndDuration,
-							final Long holdOutStartDuration, final Long holdOutEndDuration, final Double holdVariation,
-							final SoundType soundType, final PlayStatus playStatus, final int currentRepetitionNumber) {
+	public StandardExerciseData(final Integer repetitions, final Long breathStartDuration, final Long breathEndDuration, // SUPPRESS_CHECKSTYLE
+								final Double inOutRelation, final Boolean holdBreath, final Long holdInStartDuration, final Long holdInEndDuration,
+								final Long holdOutStartDuration, final Long holdOutEndDuration, final Double holdVariation,
+								final SoundType soundType, final PlayStatus playStatus, final int currentRepetitionNumber) {
 		super(repetitions, breathStartDuration, soundType, playStatus, currentRepetitionNumber);
 		mBreathEndDuration = breathEndDuration;
 		mInOutRelation = inOutRelation;
