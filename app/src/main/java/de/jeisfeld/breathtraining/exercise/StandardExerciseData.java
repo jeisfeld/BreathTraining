@@ -1,6 +1,8 @@
 package de.jeisfeld.breathtraining.exercise;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import android.content.Intent;
@@ -207,12 +209,19 @@ public class StandardExerciseData extends ExerciseData {
 				: getBreathStartDuration() + (mBreathEndDuration - getBreathStartDuration()) * (repetition - 1) / (getRepetitions() - 1);
 
 		if (mHoldBreath) {
-			return new ExerciseStep[]{
-					new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()), repetition),
-					new ExerciseStep(StepType.HOLD, getHoldInDuration(repetition) / 2, repetition),
-					new ExerciseStep(StepType.EXHALE, (long) (currentBreathDuration * (1 - getInOutRelation())), repetition),
-					new ExerciseStep(StepType.HOLD, getHoldOutDuration(repetition) / 2, repetition),
-			};
+			long holdInDuration = getHoldInDuration(repetition);
+			long holdOutDuration = getHoldOutDuration(repetition);
+
+			List<ExerciseStep> exerciseSteps = new ArrayList<>();
+			exerciseSteps.add(new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()), repetition));
+			if (holdInDuration > 0) {
+				exerciseSteps.add(new ExerciseStep(StepType.HOLD, holdInDuration, repetition));
+			}
+			exerciseSteps.add(new ExerciseStep(StepType.EXHALE, (long) (currentBreathDuration * (1 - getInOutRelation())), repetition));
+			if (holdOutDuration > 0) {
+				exerciseSteps.add(new ExerciseStep(StepType.HOLD, holdOutDuration, repetition));
+			}
+			return exerciseSteps.toArray(new ExerciseStep[0]);
 		}
 		else {
 			return new ExerciseStep[]{
