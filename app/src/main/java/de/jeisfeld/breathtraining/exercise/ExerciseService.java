@@ -443,6 +443,7 @@ public class ExerciseService extends Service {
 					}
 					synchronized (mRunningThreads) {
 						if (mIsPausing) {
+							SoundPlayer.getInstance().pause();
 							try {
 								mRunningThreads.wait();
 							}

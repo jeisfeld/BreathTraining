@@ -151,6 +151,16 @@ public class SoundPlayer extends android.media.MediaPlayer {
 	}
 
 	/**
+	 * Pause the player.
+	 */
+	@Override
+	public void pause() {
+		if (isPlaying()) {
+			super.pause();
+		}
+	}
+
+	/**
 	 * Stop the player.
 	 */
 	@Override

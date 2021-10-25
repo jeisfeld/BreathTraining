@@ -1,9 +1,8 @@
 package de.jeisfeld.breathtraining.ui.training;
 
-import android.content.Context;
-
 import java.util.Objects;
 
+import android.content.Context;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -13,8 +12,8 @@ import de.jeisfeld.breathtraining.exercise.ExerciseService;
 import de.jeisfeld.breathtraining.exercise.ExerciseService.ServiceCommand;
 import de.jeisfeld.breathtraining.exercise.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.ExerciseType;
-import de.jeisfeld.breathtraining.exercise.StandardExerciseData;
 import de.jeisfeld.breathtraining.exercise.PlayStatus;
+import de.jeisfeld.breathtraining.exercise.StandardExerciseData;
 import de.jeisfeld.breathtraining.exercise.StepType;
 import de.jeisfeld.breathtraining.sound.SoundType;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
@@ -470,7 +469,7 @@ public class TrainingViewModel extends ViewModel {
 	 * Convert seekbar value to value in ms for duration.
 	 *
 	 * @param seekbarValue the seekbar value
-	 * @param allowZero    flag indicating if value 0 is allowed
+	 * @param allowZero flag indicating if value 0 is allowed
 	 * @return The value
 	 */
 	protected static long durationSeekbarToValue(final int seekbarValue, final boolean allowZero) {
@@ -478,7 +477,7 @@ public class TrainingViewModel extends ViewModel {
 			return 0;
 		}
 
-		long value = Math.round(511 * Math.exp(0.025 * seekbarValue));
+		long value = Math.round(511 * Math.exp(0.025 * seekbarValue)); // MAGIC_NUMBER
 		// Rounding for better round value selection via seekbar
 		if (value > 152500) { // MAGIC_NUMBER
 			value = ((value + 5000) / 10000) * 10000; // MAGIC_NUMBER

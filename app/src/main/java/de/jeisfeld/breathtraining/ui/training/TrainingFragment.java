@@ -1,7 +1,6 @@
 package de.jeisfeld.breathtraining.ui.training;
 
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -160,7 +158,6 @@ public class TrainingFragment extends Fragment {
 		textView.setText(String.format(Locale.getDefault(), format, duration / MILLIS_PER_SECOND));
 	}
 
-
 	/**
 	 * Prepare the breath start duration seekbar.
 	 */
@@ -240,7 +237,7 @@ public class TrainingFragment extends Fragment {
 	}
 
 	/**
-	 * Prepare the hold in  end duration seekbar.
+	 * Prepare the hold in end duration seekbar.
 	 */
 	private void prepareSeekbarHoldInEndDuration() {
 		long holdInEndDuration = TrainingViewModel.durationSeekbarToValue(mBinding.seekBarHoldInEndDuration.getProgress(), false);
