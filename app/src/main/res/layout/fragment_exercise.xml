@@ -101,7 +101,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/seekbar_height" />
+                android:layout_height="@dimen/separator_height" />
 
             <TableRow android:id="@+id/tableRowRepetitions">
 
@@ -435,7 +435,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/seekbar_height" />
+                android:layout_height="@dimen/separator_height" />
 
             <TableRow android:id="@+id/tableRowSoundType">
 
@@ -457,7 +457,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/seekbar_height" />
+                android:layout_height="@dimen/separator_height" />
 
             <TableRow
                 android:id="@+id/tableRowCurrentRepetition"

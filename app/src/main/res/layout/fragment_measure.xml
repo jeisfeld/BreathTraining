@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/fragment_padding"
-    tools:context=".ui.measure.MeasureFragment">
+    tools:context=".measure.MeasureFragment">
 
     <Button
         android:id="@+id/button_start"
@@ -69,7 +69,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/seekbar_height" />
+                android:layout_height="@dimen/separator_height" />
 
             <TableRow android:id="@+id/tableRowSoundType">
 
