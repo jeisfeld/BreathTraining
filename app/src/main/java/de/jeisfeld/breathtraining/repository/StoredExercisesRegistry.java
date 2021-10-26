@@ -3,7 +3,9 @@ package de.jeisfeld.breathtraining.repository;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
@@ -21,14 +23,20 @@ public final class StoredExercisesRegistry {
 	 * The stored colors.
 	 */
 	private final SparseArray<ExerciseData> mStoredExercises = new SparseArray<>();
+	/**
+	 * Map from exercise name to exercise.
+	 */
+	private final Map<String, ExerciseData> mExerciseNameMap = new HashMap<>();
 
 	/**
 	 * Create the color registry and retrieve stored entries.
 	 */
 	private StoredExercisesRegistry() {
-		List<Integer> exercuseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_stored_exercise_ids);
-		for (int exerciseId : exercuseIds) {
-			mStoredExercises.put(exerciseId, ExerciseData.fromId(exerciseId));
+		List<Integer> exerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_stored_exercise_ids);
+		for (int exerciseId : exerciseIds) {
+			ExerciseData exerciseData = ExerciseData.fromId(exerciseId);
+			mStoredExercises.put(exerciseId, exerciseData);
+			mExerciseNameMap.put(exerciseData.getName(), exerciseData);
 		}
 	}
 
@@ -49,11 +57,21 @@ public final class StoredExercisesRegistry {
 	/**
 	 * Get a stored exercise by its id.
 	 *
-	 * @param storedExerciseId The stored color id.
+	 * @param storedExerciseId The stored exercise id.
 	 * @return The stored exercise.
 	 */
 	public ExerciseData getStoredExercise(final int storedExerciseId) {
 		return mStoredExercises.get(storedExerciseId);
+	}
+
+	/**
+	 * Get a stored exercise by its name.
+	 *
+	 * @param exerciseName The stored exercise name.
+	 * @return The stored exercise.
+	 */
+	public ExerciseData getStoredExercise(final String exerciseName) {
+		return mExerciseNameMap.get(exerciseName);
 	}
 
 	/**
@@ -63,8 +81,27 @@ public final class StoredExercisesRegistry {
 	 * @param name         the name for storage.
 	 */
 	public void addOrUpdate(final ExerciseData exerciseData, final String name) {
+		exerciseData.fillIdFromStoredExercise(name);
 		exerciseData.store(name);
 		mStoredExercises.put(exerciseData.getId(), exerciseData);
+		mExerciseNameMap.put(exerciseData.getName(), exerciseData);
+	}
+
+	/**
+	 * Rename a stored exercise in local store.
+	 *
+	 * @param exerciseData the stored exercise.
+	 * @param name         the new name for storage.
+	 */
+	public void rename(final ExerciseData exerciseData, final String name) {
+		String oldName = exerciseData.getName();
+		exerciseData.store(name);
+		mStoredExercises.put(exerciseData.getId(), exerciseData);
+		if (oldName != null && !oldName.equals(name)) {
+			// name change
+			mExerciseNameMap.remove(oldName);
+		}
+		mExerciseNameMap.put(name, exerciseData);
 	}
 
 	/**
@@ -96,6 +133,8 @@ public final class StoredExercisesRegistry {
 		PreferenceUtil.removeIndexedSharedPreference(R.string.key_stored_hold_out_position, exerciseId);
 		PreferenceUtil.removeIndexedSharedPreference(R.string.key_stored_hold_variation, exerciseId);
 		PreferenceUtil.removeIndexedSharedPreference(R.string.key_stored_sound_type, exerciseId);
+
+		mExerciseNameMap.remove(exerciseData.getName());
 	}
 
 	/**

@@ -65,6 +65,7 @@ public class StandardExerciseData extends ExerciseData {
 	/**
 	 * Constructor.
 	 *
+	 * @param name                    The name of the exercise
 	 * @param repetitions             The number of repetitions
 	 * @param breathStartDuration     The breath duration
 	 * @param breathEndDuration       The breath end duration.
@@ -82,12 +83,13 @@ public class StandardExerciseData extends ExerciseData {
 	 * @param playStatus              The playing status
 	 * @param currentRepetitionNumber The current repetition number.
 	 */
-	public StandardExerciseData(final Integer repetitions, final Long breathStartDuration, final Long breathEndDuration, // SUPPRESS_CHECKSTYLE
-								final Double inOutRelation, final Boolean holdBreathIn, final Long holdInStartDuration, final Long holdInEndDuration,
-								final HoldPosition holdInPosition, final Boolean holdBreathOut, final Long holdOutStartDuration,
-								final Long holdOutEndDuration, final HoldPosition holdOutPosition, final Double holdVariation,
-								final SoundType soundType, final PlayStatus playStatus, final int currentRepetitionNumber) {
-		super(repetitions, breathStartDuration, soundType, playStatus, currentRepetitionNumber);
+	public StandardExerciseData(final String name, final Integer repetitions, final Long breathStartDuration, // SUPPRESS_CHECKSTYLE
+								final Long breathEndDuration, final Double inOutRelation, final Boolean holdBreathIn, final Long holdInStartDuration,
+								final Long holdInEndDuration, final HoldPosition holdInPosition, final Boolean holdBreathOut,
+								final Long holdOutStartDuration, final Long holdOutEndDuration, final HoldPosition holdOutPosition,
+								final Double holdVariation, final SoundType soundType, final PlayStatus playStatus,
+								final int currentRepetitionNumber) {
+		super(name, repetitions, breathStartDuration, soundType, playStatus, currentRepetitionNumber);
 		mBreathEndDuration = breathEndDuration;
 		mInOutRelation = inOutRelation;
 		mHoldBreathIn = holdBreathIn;

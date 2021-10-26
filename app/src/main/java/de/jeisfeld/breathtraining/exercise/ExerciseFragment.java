@@ -52,6 +52,7 @@ public class ExerciseFragment extends Fragment {
 		mBinding = FragmentExerciseBinding.inflate(inflater, container, false);
 
 		prepareSpinnerExerciseType();
+		prepareTextViewExerciseName();
 		prepareSeekbarRepetitions();
 		prepareSeekbarBreathStartDuration();
 		prepareSeekbarBreathEndDuration();
@@ -147,6 +148,21 @@ public class ExerciseFragment extends Fragment {
 			@Override
 			public void onNothingSelected(final AdapterView<?> parent) {
 				// do nothing
+			}
+		});
+	}
+
+	/**
+	 * Prepare the text view displaying exercise name if existing.
+	 */
+	private void prepareTextViewExerciseName() {
+		mExerciseViewModel.getExerciseName().observe(getViewLifecycleOwner(), name -> {
+			if (name == null || name.trim().length() == 0) {
+				mBinding.tableRowExerciseName.setVisibility(View.GONE);
+			}
+			else {
+				mBinding.tableRowExerciseName.setVisibility(View.VISIBLE);
+				mBinding.textViewExerciseName.setText(name.trim());
 			}
 		});
 	}
@@ -437,8 +453,17 @@ public class ExerciseFragment extends Fragment {
 							DialogUtil.displayConfirmationMessage(getActivity(),
 									R.string.title_did_not_save_empty_name, R.string.message_did_not_save_empty_name);
 						}
+						else if (StoredExercisesRegistry.getInstance().getStoredExercise(text) != null) {
+							DialogUtil.displayConfirmationMessage(requireActivity(), dialog1 -> {
+										StoredExercisesRegistry.getInstance().addOrUpdate(mExerciseViewModel.getExerciseData(), text);
+										mExerciseViewModel.updateExerciseName(text);
+									},
+									null, R.string.button_cancel, R.string.button_overwrite,
+									R.string.message_confirm_overwrite_exercise, text);
+						}
 						else {
 							StoredExercisesRegistry.getInstance().addOrUpdate(mExerciseViewModel.getExerciseData(), text);
+							mExerciseViewModel.updateExerciseName(text);
 						}
 					}
 
@@ -447,7 +472,7 @@ public class ExerciseFragment extends Fragment {
 						// do nothing
 					}
 				}, R.string.title_dialog_save_exercise, R.string.button_save,
-				"", R.string.message_dialog_save_exercise));
+				mExerciseViewModel.getExerciseName().getValue(), R.string.message_dialog_save_exercise));
 	}
 
 	/**

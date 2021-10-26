@@ -31,6 +31,11 @@ public class ExerciseViewModel extends ViewModel {
 			ExerciseType.values()[PreferenceUtil.getSharedPreferenceInt(R.string.key_exercise_type, ExerciseType.STANDARD.ordinal())]);
 
 	/**
+	 * The name of the exercise.
+	 */
+	private final MutableLiveData<String> mExerciseName = new MutableLiveData<>(PreferenceUtil.getSharedPreferenceString(R.string.key_exercise_name));
+
+	/**
 	 * The number of repetitions.
 	 */
 	private final MutableLiveData<Integer> mRepetitions = new MutableLiveData<>(PreferenceUtil.getSharedPreferenceInt(R.string.key_repetitions, 10));
@@ -142,6 +147,25 @@ public class ExerciseViewModel extends ViewModel {
 	protected void updateExerciseType(final ExerciseType exerciseType) {
 		mExerciseType.setValue(exerciseType);
 		PreferenceUtil.setSharedPreferenceInt(R.string.key_exercise_type, exerciseType.ordinal());
+	}
+
+	/**
+	 * Get the exercise type.
+	 *
+	 * @return The exercise type.
+	 */
+	protected LiveData<String> getExerciseName() {
+		return mExerciseName;
+	}
+
+	/**
+	 * Set the exercise name.
+	 *
+	 * @param exerciseName The new exercise name.
+	 */
+	protected void updateExerciseName(final String exerciseName) {
+		mExerciseName.setValue(exerciseName);
+		PreferenceUtil.setSharedPreferenceString(R.string.key_exercise_name, exerciseName);
 	}
 
 	/**
@@ -605,10 +629,11 @@ public class ExerciseViewModel extends ViewModel {
 			return null;
 		}
 		int repetition = mExerciseStep.getValue() == null ? 0 : mExerciseStep.getValue().getRepetition();
-		return new StandardExerciseData(mRepetitions.getValue(), mBreathStartDuration.getValue(), mBreathEndDuration.getValue(),
-				mInOutRelation.getValue(), mHoldBreathIn.getValue(), mHoldInStartDuration.getValue(), mHoldInEndDuration.getValue(),
-				mHoldInPosition.getValue(), mHoldBreathOut.getValue(), mHoldOutStartDuration.getValue(), mHoldOutEndDuration.getValue(),
-				mHoldOutPosition.getValue(), mHoldVariation.getValue(), mSoundType.getValue(), mPlayStatus.getValue(), repetition);
+		return new StandardExerciseData(mExerciseName.getValue(), mRepetitions.getValue(), mBreathStartDuration.getValue(),
+				mBreathEndDuration.getValue(), mInOutRelation.getValue(), mHoldBreathIn.getValue(), mHoldInStartDuration.getValue(),
+				mHoldInEndDuration.getValue(), mHoldInPosition.getValue(), mHoldBreathOut.getValue(), mHoldOutStartDuration.getValue(),
+				mHoldOutEndDuration.getValue(), mHoldOutPosition.getValue(), mHoldVariation.getValue(), mSoundType.getValue(),
+				mPlayStatus.getValue(), repetition);
 	}
 
 	/**
@@ -626,6 +651,7 @@ public class ExerciseViewModel extends ViewModel {
 			return;
 		}
 		updateExerciseType(exerciseType);
+		updateExerciseName(exerciseData.getName());
 
 		updateRepetitions(exerciseData.getRepetitions());
 		updateBreathStartDuration(exerciseData.getBreathStartDuration());

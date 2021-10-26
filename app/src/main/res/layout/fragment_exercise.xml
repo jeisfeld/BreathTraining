@@ -99,6 +99,26 @@
                     android:src="@drawable/ic_menu_stored_exercises" />
             </TableRow>
 
+            <TableRow android:id="@+id/tableRowExerciseName">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|start"
+                    android:layout_weight="@integer/selector_label_width"
+                    android:text="@string/text_exercise_name" />
+
+                <TextView
+                    android:id="@+id/textViewExerciseName"
+                    android:layout_width="0dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/non_seekbar_left_padding"
+                    android:layout_height="@dimen/seekbar_height"
+                    android:layout_gravity="center_vertical|start"
+                    android:layout_weight="@integer/selector_spinner_width"
+                    tools:ignore="RtlSymmetry" />
+            </TableRow>
+
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/separator_height" />
@@ -226,7 +246,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="@integer/selector_seekbar_width"
                     android:orientation="horizontal"
-                    android:paddingStart="@dimen/non_seekbar_left_margin"
+                    android:paddingStart="@dimen/non_seekbar_left_padding"
                     tools:ignore="RtlSymmetry">
 
                     <CheckBox

@@ -1,6 +1,8 @@
 package de.jeisfeld.breathtraining.exercise.service;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -103,6 +105,22 @@ public class ExerciseService extends Service {
 	 */
 	public static void triggerExerciseService(final Context context, final ServiceCommand serviceCommand, final ExerciseData exerciseData) {
 		ContextCompat.startForegroundService(context, getTriggerIntent(context, serviceCommand, exerciseData));
+	}
+
+	/**
+	 * Check if ExerciseService is running.
+	 *
+	 * @param context The context.
+	 * @return true if running.
+	 */
+	public static boolean isServiceRunning(final Context context) {
+		ActivityManager am = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
+		for (RunningServiceInfo info : am.getRunningServices(Integer.MAX_VALUE)) {
+			if (info.service.getClassName().equals(ExerciseService.class.getName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

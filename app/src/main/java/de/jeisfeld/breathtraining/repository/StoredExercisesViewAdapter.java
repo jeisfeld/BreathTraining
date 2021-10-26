@@ -25,6 +25,8 @@ import de.jeisfeld.breathtraining.MainActivity;
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
+import de.jeisfeld.breathtraining.exercise.service.ExerciseService;
+import de.jeisfeld.breathtraining.exercise.service.ExerciseService.ServiceCommand;
 import de.jeisfeld.breathtraining.util.DialogUtil;
 import de.jeisfeld.breathtraining.util.DialogUtil.RequestInputDialogFragment.RequestInputDialogListener;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
@@ -94,7 +96,7 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 											R.string.title_did_not_save_empty_name, R.string.message_did_not_save_empty_name);
 								}
 								else {
-									StoredExercisesRegistry.getInstance().addOrUpdate(exerciseData, text);
+									StoredExercisesRegistry.getInstance().rename(exerciseData, text);
 									holder.mTitle.setText(text.trim());
 								}
 							}
@@ -137,6 +139,10 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 			if (fragment != null) {
 				Activity activity = fragment.getActivity();
 				if (activity instanceof MainActivity) {
+					// need to stop service as the stored exercise is opened in stopped state
+					if (ExerciseService.isServiceRunning(activity)) {
+						ExerciseService.triggerExerciseService(activity, ServiceCommand.STOP, exerciseData);
+					}
 					ExerciseViewModel exerciseViewModel = new ViewModelProvider((MainActivity) activity).get(ExerciseViewModel.class);
 					exerciseViewModel.updateFromExerciseData(exerciseData, null);
 					NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_content_main);

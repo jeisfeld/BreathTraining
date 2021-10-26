@@ -7,6 +7,7 @@ import java.util.List;
 
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.exercise.service.ServiceReceiver;
+import de.jeisfeld.breathtraining.repository.StoredExercisesRegistry;
 import de.jeisfeld.breathtraining.sound.SoundType;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
@@ -23,6 +24,10 @@ public abstract class ExerciseData implements Serializable {
 	 * Key for the exercise type within the intent.
 	 */
 	private static final String EXTRA_EXERCISE_TYPE = "de.jeisfeld.breathtraining.EXERCISE_TYPE";
+	/**
+	 * Key for the exercise name within the intent.
+	 */
+	private static final String EXTRA_EXERCISE_NAME = "de.jeisfeld.breathtraining.EXERCISE_NAME";
 	/**
 	 * Key for the breath start duration within the intent.
 	 */
@@ -123,14 +128,16 @@ public abstract class ExerciseData implements Serializable {
 	/**
 	 * Constructor.
 	 *
+	 * @param name                    The name of the exercise.
 	 * @param repetitions             The number of repetitions.
 	 * @param breathStartDuration     The breath start duration.
 	 * @param soundType               The sound type.
 	 * @param playStatus              The playing status.
 	 * @param currentRepetitionNumber The current repetition number.
 	 */
-	public ExerciseData(final Integer repetitions, final Long breathStartDuration, final SoundType soundType,
+	public ExerciseData(final String name, final Integer repetitions, final Long breathStartDuration, final SoundType soundType,
 						final PlayStatus playStatus, final int currentRepetitionNumber) {
+		mName = name;
 		mRepetitions = repetitions;
 		mBreathStartDuration = breathStartDuration;
 		mSoundType = soundType;
@@ -202,6 +209,7 @@ public abstract class ExerciseData implements Serializable {
 	// OVERRIDABLE
 	public void addToIntent(final Intent serviceIntent) {
 		serviceIntent.putExtra(EXTRA_EXERCISE_TYPE, getType());
+		serviceIntent.putExtra(EXTRA_EXERCISE_NAME, mName);
 		serviceIntent.putExtra(EXTRA_REPETITIONS, mRepetitions);
 		serviceIntent.putExtra(EXTRA_BREATH_START_DURATION, mBreathStartDuration);
 		serviceIntent.putExtra(EXTRA_SOUND_TYPE, mSoundType);
@@ -285,6 +293,7 @@ public abstract class ExerciseData implements Serializable {
 		}
 
 		int repetitions = intent.getIntExtra(EXTRA_REPETITIONS, 0);
+		String exerciseName = intent.getStringExtra(EXTRA_EXERCISE_NAME);
 		long breathStartDuration = intent.getLongExtra(EXTRA_BREATH_START_DURATION, 0);
 		long breathEndDuration = intent.getLongExtra(EXTRA_BREATH_END_DURATION, 0);
 		double inOutRelation = intent.getDoubleExtra(EXTRA_IN_OUT_RELATION, 0.5); // MAGIC_NUMBER
@@ -300,9 +309,9 @@ public abstract class ExerciseData implements Serializable {
 		double holdVariation = intent.getDoubleExtra(EXTRA_HOLD_VARIATION, 0);
 		SoundType soundType = (SoundType) intent.getSerializableExtra(EXTRA_SOUND_TYPE);
 		int currentRepetitionNumber = intent.getIntExtra(EXTRA_CURRENT_REPETITION, 0);
-		return new StandardExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdBreathIn, holdInStartDuration,
-				holdInEndDuration, holdInPosition, holdBreathOut, holdOutStartDuration, holdOutEndDuration, holdOutPosition, holdVariation, soundType,
-				playStatus, currentRepetitionNumber);
+		return new StandardExerciseData(exerciseName, repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdBreathIn,
+				holdInStartDuration, holdInEndDuration, holdInPosition, holdBreathOut, holdOutStartDuration, holdOutEndDuration, holdOutPosition,
+				holdVariation, soundType, playStatus, currentRepetitionNumber);
 	}
 
 	/**
@@ -312,6 +321,7 @@ public abstract class ExerciseData implements Serializable {
 	 * @return The exercise data.
 	 */
 	public static ExerciseData fromId(final int storedExerciseId) {
+		String name = PreferenceUtil.getIndexedSharedPreferenceString(R.string.key_stored_exercise_name, storedExerciseId);
 		int repetitions = PreferenceUtil.getIndexedSharedPreferenceInt(R.string.key_stored_repetitions, storedExerciseId, 0);
 		long breathStartDuration = PreferenceUtil.getIndexedSharedPreferenceLong(R.string.key_stored_breath_start_duration, storedExerciseId, 0);
 		long breathEndDuration = PreferenceUtil.getIndexedSharedPreferenceLong(R.string.key_stored_breath_end_duration, storedExerciseId, 0);
@@ -333,12 +343,33 @@ public abstract class ExerciseData implements Serializable {
 		SoundType soundType = SoundType.values()[PreferenceUtil.getIndexedSharedPreferenceInt(R.string.key_stored_sound_type, storedExerciseId,
 				SoundType.WORDS.ordinal())];
 		ExerciseData result =
-				new StandardExerciseData(repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdBreathIn, holdInStartDuration,
+				new StandardExerciseData(name, repetitions, breathStartDuration, breathEndDuration, inOutRelation, holdBreathIn, holdInStartDuration,
 						holdInEndDuration, holdInPosition, holdBreathOut, holdOutStartDuration, holdOutEndDuration, holdOutPosition, holdVariation,
 						soundType, PlayStatus.STOPPED, 0);
 		result.mId = storedExerciseId;
-		result.mName = PreferenceUtil.getIndexedSharedPreferenceString(R.string.key_stored_exercise_name, storedExerciseId);
 		return result;
+	}
+
+	/**
+	 * Fill the id from a stored exercise, if existing.
+	 *
+	 * @param name The stored exercise name.
+	 */
+	public void fillIdFromStoredExercise(final String name) {
+		ExerciseData storedExerciseData = StoredExercisesRegistry.getInstance().getStoredExercise(name);
+		if (storedExerciseData == null) {
+			mId = 0;
+		}
+		else {
+			mId = storedExerciseData.getId();
+		}
+	}
+
+	/**
+	 * Remove the id, so that this becomes unsaved exercise.
+	 */
+	public void cleanId() {
+		mId = 0;
 	}
 
 	/**
@@ -367,7 +398,7 @@ public abstract class ExerciseData implements Serializable {
 	/**
 	 * Retrieve the status from other ExerciseData and upate the playStatus.
 	 *
-	 * @param origin The other ExerciseData.
+	 * @param origin     The other ExerciseData.
 	 * @param playStatus The new playStatus.
 	 */
 	public void retrieveStatus(final ExerciseData origin, final PlayStatus playStatus) {

@@ -19,6 +19,7 @@
     <string name="button_rename">Rename</string>
     <string name="button_delete">Delete</string>
     <string name="button_save">Save</string>
+    <string name="button_overwrite">Overwrite</string>
 
     <string name="text_inhale">Inhale…</string>
     <string name="text_exhale">Exhale…</string>
@@ -32,6 +33,7 @@
 
     <string name="title_dialog_confirmation">Confirmation</string>
 
+    <string name="text_exercise_name">Exercise name:</string>
     <string name="text_repetitions">Repetitions:</string>
     <string name="text_breath_start_duration">Start Duration:</string>
     <string name="text_breath_end_duration">End Duration:</string>
@@ -51,6 +53,7 @@
     <string name="formatting_current_repetition">%1$s\n\n%2$s</string>
 
     <string name="key_exercise_type">exercise_type</string>
+    <string name="key_exercise_name">exercise_name</string>
     <string name="key_repetitions">repetitions</string>
     <string name="key_breath_start_duration">breath_start_duration</string>
     <string name="key_breath_end_duration">breath_end_duration</string>
@@ -96,7 +99,7 @@
     <string name="title_dialog_save_exercise">Save Exercise</string>
     <string name="message_dialog_save_exercise">Exercise Name:</string>
     <string name="message_confirm_delete_exercise">Do you want to delete the exercise “%1$s” from the storage?</string>
-
+    <string name="message_confirm_overwrite_exercise">Do you want to overwrite the exercise “%1$s” with new settings?</string>
 
     <string name="notification_channel">Breath Training</string>
     <string name="notification_title_exercise">Breath Training Exercise</string>
