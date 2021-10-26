@@ -1,4 +1,4 @@
 /**
- * Classes for performing exercise via service.
+ * Classes for the handling exercises.
  */
 package de.jeisfeld.breathtraining.exercise;

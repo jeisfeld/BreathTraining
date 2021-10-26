@@ -1,4 +1,4 @@
-package de.jeisfeld.breathtraining.exercise;
+package de.jeisfeld.breathtraining.exercise.data;
 
 import android.content.Intent;
 

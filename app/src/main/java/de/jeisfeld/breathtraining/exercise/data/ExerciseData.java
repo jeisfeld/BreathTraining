@@ -1,4 +1,4 @@
-package de.jeisfeld.breathtraining.exercise;
+package de.jeisfeld.breathtraining.exercise.data;
 
 import android.content.Intent;
 
@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import de.jeisfeld.breathtraining.R;
+import de.jeisfeld.breathtraining.exercise.service.ServiceReceiver;
 import de.jeisfeld.breathtraining.sound.SoundType;
-import de.jeisfeld.breathtraining.ui.training.ServiceReceiver;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
 /**

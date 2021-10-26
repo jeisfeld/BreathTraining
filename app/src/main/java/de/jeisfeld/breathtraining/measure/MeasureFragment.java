@@ -1,4 +1,4 @@
-package de.jeisfeld.breathtraining.ui.measure;
+package de.jeisfeld.breathtraining.measure;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,13 +10,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.databinding.FragmentMeasureBinding;
+import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
 import de.jeisfeld.breathtraining.sound.SoundType;
-import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
 
 /**
  * The fragment for measuring breath duration.
@@ -71,8 +72,8 @@ public class MeasureFragment extends Fragment {
 		});
 
 		buttonStop.setOnClickListener(v -> {
-			TrainingViewModel trainingViewModel = new ViewModelProvider(requireActivity()).get(TrainingViewModel.class);
-			mMeasureViewModel.stopMeasurement(getContext(), trainingViewModel);
+			ExerciseViewModel exerciseViewModel = new ViewModelProvider(requireActivity()).get(ExerciseViewModel.class);
+			mMeasureViewModel.stopMeasurement(getContext(), exerciseViewModel);
 			buttonStart.setVisibility(View.VISIBLE);
 			buttonStop.setVisibility(View.INVISIBLE);
 			buttonBreathe.setVisibility(View.INVISIBLE);

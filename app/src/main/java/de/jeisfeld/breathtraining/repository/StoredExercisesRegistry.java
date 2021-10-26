@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.jeisfeld.breathtraining.R;
-import de.jeisfeld.breathtraining.exercise.ExerciseData;
+import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
 /**

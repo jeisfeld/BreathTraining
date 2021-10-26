@@ -1,8 +1,4 @@
-package de.jeisfeld.breathtraining.exercise;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
+package de.jeisfeld.breathtraining.exercise.service;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -20,13 +16,21 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import de.jeisfeld.breathtraining.MainActivity;
 import de.jeisfeld.breathtraining.R;
+import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
+import de.jeisfeld.breathtraining.exercise.data.ExerciseStep;
+import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
+import de.jeisfeld.breathtraining.exercise.data.StepType;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
 import de.jeisfeld.breathtraining.sound.SoundPlayer;
-import de.jeisfeld.breathtraining.ui.training.ServiceReceiver;
 
 /**
  * A service handling Exercises in the background.

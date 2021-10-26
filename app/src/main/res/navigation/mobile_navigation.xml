@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_training">
+    app:startDestination="@+id/nav_exercise">
 
     <fragment
-        android:id="@+id/nav_training"
-        android:name="de.jeisfeld.breathtraining.ui.training.TrainingFragment"
-        android:label="@string/menu_training"
-        tools:layout="@layout/fragment_training" />
+        android:id="@+id/nav_exercise"
+        android:name="de.jeisfeld.breathtraining.exercise.ExerciseFragment"
+        android:label="@string/menu_exercise"
+        tools:layout="@layout/fragment_exercise" />
 
     <fragment
         android:id="@+id/nav_measure"
-        android:name="de.jeisfeld.breathtraining.ui.measure.MeasureFragment"
+        android:name="de.jeisfeld.breathtraining.measure.MeasureFragment"
         android:label="@string/menu_measure"
         tools:layout="@layout/fragment_measure" />
 

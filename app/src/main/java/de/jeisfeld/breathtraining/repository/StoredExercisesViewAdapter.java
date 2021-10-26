@@ -23,8 +23,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import de.jeisfeld.breathtraining.MainActivity;
 import de.jeisfeld.breathtraining.R;
-import de.jeisfeld.breathtraining.exercise.ExerciseData;
-import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
+import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
+import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
 import de.jeisfeld.breathtraining.util.DialogUtil;
 import de.jeisfeld.breathtraining.util.DialogUtil.RequestInputDialogFragment.RequestInputDialogListener;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
@@ -137,15 +137,15 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 			if (fragment != null) {
 				Activity activity = fragment.getActivity();
 				if (activity instanceof MainActivity) {
-					TrainingViewModel trainingViewModel = new ViewModelProvider((MainActivity) activity).get(TrainingViewModel.class);
-					trainingViewModel.updateFromExerciseData(exerciseData, null);
+					ExerciseViewModel exerciseViewModel = new ViewModelProvider((MainActivity) activity).get(ExerciseViewModel.class);
+					exerciseViewModel.updateFromExerciseData(exerciseData, null);
 					NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_content_main);
 					if (navController.getPreviousBackStackEntry() != null
-							&& navController.getPreviousBackStackEntry().getDestination().getId() == R.id.nav_training) {
+							&& navController.getPreviousBackStackEntry().getDestination().getId() == R.id.nav_exercise) {
 						navController.popBackStack();
 					}
 					navController.popBackStack();
-					navController.navigate(R.id.nav_training);
+					navController.navigate(R.id.nav_exercise);
 				}
 			}
 		});

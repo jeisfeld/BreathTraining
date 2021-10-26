@@ -1,12 +1,13 @@
 package de.jeisfeld.breathtraining.sound;
 
-import java.io.IOException;
-
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
+
+import java.io.IOException;
+
 import de.jeisfeld.breathtraining.Application;
-import de.jeisfeld.breathtraining.exercise.StepType;
+import de.jeisfeld.breathtraining.exercise.data.StepType;
 import de.jeisfeld.breathtraining.sound.BreathSound.BreathSoundInfo;
 
 /**

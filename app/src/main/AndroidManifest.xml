@@ -26,20 +26,20 @@
         </activity>
 
         <service
-            android:name="de.jeisfeld.breathtraining.exercise.ExerciseService"
+            android:name="de.jeisfeld.breathtraining.exercise.service.ExerciseService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
 
         <receiver
-            android:name="de.jeisfeld.breathtraining.ui.training.ServiceReceiver"
+            android:name="de.jeisfeld.breathtraining.exercise.service.ServiceReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="de.jeisfeld.breathtraining.SERVICE_RECEIVER" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="de.jeisfeld.breathtraining.exercise.ExerciseService$ServiceQueryReceiver"
+            android:name="de.jeisfeld.breathtraining.exercise.service.ExerciseService$ServiceQueryReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="de.jeisfeld.breathtraining.SERVICE_QUERY_RECEIVER" />

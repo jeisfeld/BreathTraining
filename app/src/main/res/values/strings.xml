@@ -6,7 +6,7 @@
     <string name="nav_header_subtitle">googleplay@jeisfeld.de</string>
     <string name="nav_header_desc">Navigation header</string>
 
-    <string name="menu_training">Training</string>
+    <string name="menu_exercise">Exercise</string>
     <string name="menu_measure">Measure</string>
     <string name="menu_stored_exercises">Stored Exercises</string>
 

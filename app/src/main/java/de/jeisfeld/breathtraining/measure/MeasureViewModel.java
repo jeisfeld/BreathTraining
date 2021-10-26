@@ -1,4 +1,4 @@
-package de.jeisfeld.breathtraining.ui.measure;
+package de.jeisfeld.breathtraining.measure;
 
 import android.content.Context;
 
@@ -10,11 +10,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import de.jeisfeld.breathtraining.R;
-import de.jeisfeld.breathtraining.exercise.StepType;
-import de.jeisfeld.breathtraining.sound.SoundPlayer;
+import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
+import de.jeisfeld.breathtraining.exercise.data.StepType;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
+import de.jeisfeld.breathtraining.sound.SoundPlayer;
 import de.jeisfeld.breathtraining.sound.SoundType;
-import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
 
 /**
  * The view model for the fragment.
@@ -110,11 +110,11 @@ public class MeasureViewModel extends ViewModel {
 	/**
 	 * Stop the measurement.
 	 *
-	 * @param trainingViewModel The view model of the home view.
-	 * @param context       the context.
+	 * @param exerciseViewModel The view model of the home view.
+	 * @param context           the context.
 	 * @return true if measurement was successful.
 	 */
-	protected boolean stopMeasurement(final Context context, final TrainingViewModel trainingViewModel) {
+	protected boolean stopMeasurement(final Context context, final ExerciseViewModel exerciseViewModel) {
 		if (context == null) {
 			return false;
 		}
@@ -163,10 +163,10 @@ public class MeasureViewModel extends ViewModel {
 
 		mText.setValue(context.getString(R.string.message_measurement_result, averageDurationSeconds, inOutRatio * 100)); // MAGIC_NUMBER
 
-		if (trainingViewModel != null) {
-			trainingViewModel.updateBreathStartDuration(averageDuration);
-			trainingViewModel.updateBreathEndDuration((long) (BREATH_DURATION_PROLONGATION * averageDuration));
-			trainingViewModel.updateInOutRelation(inOutRatio);
+		if (exerciseViewModel != null) {
+			exerciseViewModel.updateBreathStartDuration(averageDuration);
+			exerciseViewModel.updateBreathEndDuration((long) (BREATH_DURATION_PROLONGATION * averageDuration));
+			exerciseViewModel.updateInOutRelation(inOutRatio);
 			return true;
 		}
 		return false;

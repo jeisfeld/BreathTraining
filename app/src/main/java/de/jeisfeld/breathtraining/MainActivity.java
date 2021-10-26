@@ -17,14 +17,14 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import de.jeisfeld.breathtraining.databinding.ActivityMainBinding;
-import de.jeisfeld.breathtraining.exercise.ExerciseData;
-import de.jeisfeld.breathtraining.exercise.ExerciseService.ServiceQueryReceiver;
-import de.jeisfeld.breathtraining.exercise.ExerciseStep;
-import de.jeisfeld.breathtraining.exercise.PlayStatus;
+import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
+import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
+import de.jeisfeld.breathtraining.exercise.data.ExerciseStep;
+import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
+import de.jeisfeld.breathtraining.exercise.service.ExerciseService.ServiceQueryReceiver;
+import de.jeisfeld.breathtraining.exercise.service.ServiceReceiver;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
 import de.jeisfeld.breathtraining.sound.SoundPlayer;
-import de.jeisfeld.breathtraining.ui.training.ServiceReceiver;
-import de.jeisfeld.breathtraining.ui.training.TrainingViewModel;
 
 /**
  * Main activity of the app.
@@ -51,22 +51,22 @@ public class MainActivity extends AppCompatActivity {
 		NavigationView navigationView = mBinding.navView;
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
-		mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_training, R.id.nav_measure, R.id.nav_stored_exercises)
+		mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_exercise, R.id.nav_measure, R.id.nav_stored_exercises)
 				.setOpenableLayout(drawer).build();
 		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 		NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 		NavigationUI.setupWithNavController(navigationView, navController);
 
-		TrainingViewModel trainingViewModel = new ViewModelProvider(this).get(TrainingViewModel.class);
+		ExerciseViewModel exerciseViewModel = new ViewModelProvider(this).get(ExerciseViewModel.class);
 
-		mServiceReceiver = new ServiceReceiver(new Handler(), trainingViewModel);
+		mServiceReceiver = new ServiceReceiver(new Handler(), exerciseViewModel);
 		registerReceiver(mServiceReceiver, new IntentFilter(ServiceReceiver.RECEIVER_ACTION));
 
 		ExerciseData exerciseData = ExerciseData.fromIntent(getIntent());
 		if (exerciseData != null) {
 			ExerciseStep exerciseStep = (ExerciseStep) getIntent().getSerializableExtra(ServiceReceiver.EXTRA_EXERCISE_STEP);
-			trainingViewModel.updateFromExerciseData(exerciseData, exerciseStep);
-			navController.navigate(R.id.nav_training);
+			exerciseViewModel.updateFromExerciseData(exerciseData, exerciseStep);
+			navController.navigate(R.id.nav_exercise);
 		}
 
 		sendBroadcast(new Intent(ServiceQueryReceiver.RECEIVER_ACTION));
@@ -75,22 +75,22 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	public final boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
-		TrainingViewModel trainingViewModel = new ViewModelProvider(this).get(TrainingViewModel.class);
+		ExerciseViewModel exerciseViewModel = new ViewModelProvider(this).get(ExerciseViewModel.class);
 
 		MenuItem menuItemPlay = menu.findItem(R.id.action_play);
 		MenuItem menuItemPause = menu.findItem(R.id.action_pause);
 
 		menuItemPlay.setOnMenuItemClickListener(item -> {
-			trainingViewModel.play(MainActivity.this);
+			exerciseViewModel.play(MainActivity.this);
 			return true;
 		});
 
 		menuItemPause.setOnMenuItemClickListener(item -> {
-			trainingViewModel.pause(MainActivity.this);
+			exerciseViewModel.pause(MainActivity.this);
 			return true;
 		});
 
-		trainingViewModel.getPlayStatus().observe(MainActivity.this, playStatus -> {
+		exerciseViewModel.getPlayStatus().observe(MainActivity.this, playStatus -> {
 			menuItemPause.setVisible(playStatus == PlayStatus.PLAYING);
 			menuItemPlay.setVisible(playStatus != PlayStatus.PLAYING);
 		});

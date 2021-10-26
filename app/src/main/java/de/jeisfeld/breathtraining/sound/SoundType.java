@@ -1,7 +1,7 @@
 package de.jeisfeld.breathtraining.sound;
 
 import de.jeisfeld.breathtraining.R;
-import de.jeisfeld.breathtraining.exercise.StepType;
+import de.jeisfeld.breathtraining.exercise.data.StepType;
 
 /**
  * The type of sound to be played.

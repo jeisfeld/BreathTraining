@@ -1,4 +1,4 @@
-package de.jeisfeld.breathtraining.ui.training;
+package de.jeisfeld.breathtraining.exercise;
 
 import android.content.Context;
 
@@ -8,22 +8,22 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import de.jeisfeld.breathtraining.R;
-import de.jeisfeld.breathtraining.exercise.ExerciseData;
-import de.jeisfeld.breathtraining.exercise.ExerciseService;
-import de.jeisfeld.breathtraining.exercise.ExerciseService.ServiceCommand;
-import de.jeisfeld.breathtraining.exercise.ExerciseStep;
-import de.jeisfeld.breathtraining.exercise.ExerciseType;
-import de.jeisfeld.breathtraining.exercise.HoldPosition;
-import de.jeisfeld.breathtraining.exercise.PlayStatus;
-import de.jeisfeld.breathtraining.exercise.StandardExerciseData;
-import de.jeisfeld.breathtraining.exercise.StepType;
+import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
+import de.jeisfeld.breathtraining.exercise.data.ExerciseStep;
+import de.jeisfeld.breathtraining.exercise.data.ExerciseType;
+import de.jeisfeld.breathtraining.exercise.data.HoldPosition;
+import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
+import de.jeisfeld.breathtraining.exercise.data.StandardExerciseData;
+import de.jeisfeld.breathtraining.exercise.data.StepType;
+import de.jeisfeld.breathtraining.exercise.service.ExerciseService;
+import de.jeisfeld.breathtraining.exercise.service.ExerciseService.ServiceCommand;
 import de.jeisfeld.breathtraining.sound.SoundType;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
 /**
  * The view model for the fragment.
  */
-public class TrainingViewModel extends ViewModel {
+public class ExerciseViewModel extends ViewModel {
 	/**
 	 * The exercise type.
 	 */

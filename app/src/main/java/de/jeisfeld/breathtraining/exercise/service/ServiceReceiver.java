@@ -1,13 +1,14 @@
-package de.jeisfeld.breathtraining.ui.training;
+package de.jeisfeld.breathtraining.exercise.service;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 
-import de.jeisfeld.breathtraining.exercise.ExerciseData;
-import de.jeisfeld.breathtraining.exercise.ExerciseStep;
-import de.jeisfeld.breathtraining.exercise.PlayStatus;
+import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
+import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
+import de.jeisfeld.breathtraining.exercise.data.ExerciseStep;
+import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
 
 /**
  * A broadcast receiver for receiving messages from service to update UI.
@@ -32,7 +33,7 @@ public class ServiceReceiver extends BroadcastReceiver {
 	/**
 	 * The view model.
 	 */
-	private final TrainingViewModel mTrainingViewModel;
+	private final ExerciseViewModel mExerciseViewModel;
 
 	/**
 	 * Create a broadcast intent to send the playStatus and exerciseStep to this receiver.
@@ -53,38 +54,38 @@ public class ServiceReceiver extends BroadcastReceiver {
 	 */
 	public ServiceReceiver() {
 		mHandler = null;
-		mTrainingViewModel = null;
+		mExerciseViewModel = null;
 	}
 
 	/**
 	 * Constructor.
 	 *
 	 * @param handler           The handler.
-	 * @param trainingViewModel The UI model.
+	 * @param exerciseViewModel The UI model.
 	 */
-	public ServiceReceiver(final Handler handler, final TrainingViewModel trainingViewModel) {
+	public ServiceReceiver(final Handler handler, final ExerciseViewModel exerciseViewModel) {
 		mHandler = handler;
-		mTrainingViewModel = trainingViewModel;
+		mExerciseViewModel = exerciseViewModel;
 	}
 
 	@Override
 	public final void onReceive(final Context context, final Intent intent) {
-		if (mHandler == null || mTrainingViewModel == null) {
+		if (mHandler == null || mExerciseViewModel == null) {
 			return;
 		}
 
 		PlayStatus playStatus = (PlayStatus) intent.getSerializableExtra(EXTRA_PLAY_STATUS);
 		if (playStatus != null) {
-			mHandler.post(() -> mTrainingViewModel.updatePlayStatus(playStatus));
+			mHandler.post(() -> mExerciseViewModel.updatePlayStatus(playStatus));
 		}
 
 		ExerciseData exerciseData = ExerciseData.fromIntent(intent);
 		ExerciseStep exerciseStep = (ExerciseStep) intent.getSerializableExtra(EXTRA_EXERCISE_STEP);
 		if (exerciseData != null) {
-			mHandler.post(() -> mTrainingViewModel.updateFromExerciseData(exerciseData, exerciseStep));
+			mHandler.post(() -> mExerciseViewModel.updateFromExerciseData(exerciseData, exerciseStep));
 		}
 		else if (exerciseStep != null) {
-			mHandler.post(() -> mTrainingViewModel.updateExerciseStep(exerciseStep));
+			mHandler.post(() -> mExerciseViewModel.updateExerciseStep(exerciseStep));
 		}
 	}
 }
