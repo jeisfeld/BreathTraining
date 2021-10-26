@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_hold_in_start_duration">Hold In Start Dur:</string>
+    <string name="text_hold_in_end_duration">Hold In End Dur:</string>
+    <string name="text_hold_in_position">Hold In Position:</string>
+    <string name="text_checkbox_hold_out">Out</string>
+    <string name="text_hold_out_start_duration">Hold Out Start Dur:</string>
+    <string name="text_hold_out_end_duration">Hold Out End Dur:</string>
+    <string name="text_hold_out_position">Hold Out Position:</string>
+</resources>

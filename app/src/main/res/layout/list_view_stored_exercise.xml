@@ -11,8 +11,8 @@
 
     <ImageButton
         android:id="@+id/imageViewPlayExercise"
-        android:layout_width="@dimen/notification_button_size"
-        android:layout_height="@dimen/notification_button_size"
+        android:layout_width="@dimen/button_height"
+        android:layout_height="@dimen/button_height"
         android:layout_gravity="center_vertical|center_horizontal"
         android:layout_marginEnd="@dimen/list_horizontal_margin"
         android:contentDescription="@string/button_start"
@@ -29,7 +29,7 @@
         android:layout_marginEnd="@dimen/list_horizontal_margin"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="@dimen/text_large"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/imageViewEdit"
         app:layout_constraintHorizontal_bias="0"
@@ -38,8 +38,8 @@
 
     <ImageView
         android:id="@+id/imageViewEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/small_button_size"
+        android:layout_height="@dimen/small_button_size"
         android:layout_marginEnd="@dimen/list_horizontal_margin"
         android:contentDescription="@string/button_edit"
         android:src="@drawable/ic_button_edit"
@@ -49,8 +49,8 @@
 
     <ImageView
         android:id="@+id/imageViewDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/small_button_size"
+        android:layout_height="@dimen/small_button_size"
         android:layout_marginEnd="@dimen/list_horizontal_margin"
         android:contentDescription="@string/button_delete"
         android:src="@drawable/ic_button_delete"
@@ -60,8 +60,8 @@
 
     <ImageView
         android:id="@+id/imageViewDragHandle"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/small_button_size"
+        android:layout_height="@dimen/small_button_size"
         android:src="@drawable/ic_button_drag_handle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

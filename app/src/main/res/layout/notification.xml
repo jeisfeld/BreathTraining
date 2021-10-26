@@ -65,7 +65,7 @@
             android:layout_weight="2"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:textSize="@dimen/text_xlarge" />
+            android:textSize="@dimen/text_notification_xlarge" />
 
         <TextView
             android:id="@+id/text_step_number"
@@ -74,6 +74,6 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:textSize="@dimen/text_large" />
+            android:textSize="@dimen/text_notification_large" />
     </LinearLayout>
 </RelativeLayout>

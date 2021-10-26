@@ -286,7 +286,7 @@ public abstract class ExerciseData implements Serializable {
 	 *
 	 * @param playStatus The new play status.
 	 */
-	public void updatePlayStatus(PlayStatus playStatus) {
+	public void updatePlayStatus(final PlayStatus playStatus) {
 		mPlayStatus = playStatus;
 	}
 
@@ -408,7 +408,7 @@ public abstract class ExerciseData implements Serializable {
 	/**
 	 * Retrieve the status from other ExerciseData and upate the playStatus.
 	 *
-	 * @param origin     The other ExerciseData.
+	 * @param origin The other ExerciseData.
 	 * @param playStatus The new playStatus.
 	 */
 	public void retrieveStatus(final ExerciseData origin, final PlayStatus playStatus) {

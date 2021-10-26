@@ -11,7 +11,9 @@
         android:id="@+id/button_start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:height="@dimen/button_height"
         android:text="@string/button_start"
+        android:textSize="@dimen/text_normal"
         app:icon="@drawable/ic_button_start_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +24,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
+        android:height="@dimen/button_height"
         android:text="@string/button_stop"
+        android:textSize="@dimen/text_normal"
         android:visibility="invisible"
         app:icon="@drawable/ic_button_stop"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,7 +39,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
+        android:height="@dimen/button_height"
         android:text="@string/button_pause"
+        android:textSize="@dimen/text_normal"
         android:visibility="invisible"
         app:icon="@drawable/ic_button_pause"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -47,7 +53,9 @@
         android:id="@+id/button_resume"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:height="@dimen/button_height"
         android:text="@string/button_resume"
+        android:textSize="@dimen/text_normal"
         android:visibility="invisible"
         app:icon="@drawable/ic_button_start_light"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -58,6 +66,7 @@
         android:id="@+id/button_breathe"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:height="@dimen/button_height"
         android:text=""
         android:textSize="@dimen/text_xxlarge"
         android:visibility="invisible"
@@ -92,7 +101,7 @@
                 <ImageView
                     android:id="@+id/imageViewStore"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/small_button_size"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="11"
                     android:contentDescription="@string/button_save"
@@ -106,16 +115,18 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_exercise_name" />
+                    android:text="@string/text_exercise_name"
+                    android:textSize="@dimen/text_normal" />
 
                 <TextView
                     android:id="@+id/textViewExerciseName"
                     android:layout_width="0dp"
-                    android:gravity="center_vertical"
-                    android:paddingStart="@dimen/non_seekbar_left_padding"
                     android:layout_height="@dimen/seekbar_height"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_spinner_width"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/non_seekbar_left_padding"
+                    android:textSize="@dimen/text_normal"
                     tools:ignore="RtlSymmetry" />
             </TableRow>
 
@@ -130,7 +141,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_repetitions" />
+                    android:text="@string/text_repetitions"
+                    android:textSize="@dimen/text_normal" />
 
                 <SeekBar
                     android:id="@+id/seekBarRepetitions"
@@ -146,7 +158,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_weight="@integer/selector_text_width"
-                    android:textAlignment="viewEnd" />
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/text_normal" />
 
             </TableRow>
 
@@ -157,7 +170,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_breath_start_duration" />
+                    android:text="@string/text_breath_start_duration"
+                    android:textSize="@dimen/text_normal" />
 
                 <SeekBar
                     android:id="@+id/seekBarBreathStartDuration"
@@ -173,7 +187,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_weight="@integer/selector_text_width"
-                    android:textAlignment="viewEnd" />
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/text_normal" />
 
             </TableRow>
 
@@ -184,7 +199,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_breath_end_duration" />
+                    android:text="@string/text_breath_end_duration"
+                    android:textSize="@dimen/text_normal" />
 
                 <SeekBar
                     android:id="@+id/seekBarBreathEndDuration"
@@ -200,7 +216,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_weight="@integer/selector_text_width"
-                    android:textAlignment="viewEnd" />
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/text_normal" />
 
             </TableRow>
 
@@ -211,7 +228,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_in_out_relation" />
+                    android:text="@string/text_in_out_relation"
+                    android:textSize="@dimen/text_normal" />
 
                 <SeekBar
                     android:id="@+id/seek_bar_in_out_relation"
@@ -227,7 +245,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_weight="@integer/selector_text_width"
-                    android:textAlignment="viewEnd" />
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/text_normal" />
 
             </TableRow>
 
@@ -238,7 +257,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_hold_breath" />
+                    android:text="@string/text_hold_breath"
+                    android:textSize="@dimen/text_normal" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -255,7 +275,8 @@
                         android:layout_height="@dimen/seekbar_height"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
-                        android:text="@string/text_checkbox_hold_in" />
+                        android:text="@string/text_checkbox_hold_in"
+                        android:textSize="@dimen/text_normal" />
 
                     <CheckBox
                         android:id="@+id/checkBoxHoldBreathOut"
@@ -263,7 +284,8 @@
                         android:layout_height="@dimen/seekbar_height"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
-                        android:text="@string/text_checkbox_hold_out" />
+                        android:text="@string/text_checkbox_hold_out"
+                        android:textSize="@dimen/text_normal" />
 
                 </LinearLayout>
 
@@ -273,7 +295,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_weight="@integer/selector_text_width"
-                    android:textAlignment="viewEnd" />
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/text_normal" />
             </TableRow>
 
             <TableRow android:id="@+id/tableRowHoldInStartDuration">
@@ -284,7 +307,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_hold_in_start_duration" />
+                    android:text="@string/text_hold_in_start_duration"
+                    android:textSize="@dimen/text_normal" />
 
                 <SeekBar
                     android:id="@+id/seekBarHoldInStartDuration"
@@ -301,7 +325,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_weight="@integer/selector_text_width"
-                    android:textAlignment="viewEnd" />
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/text_normal" />
 
             </TableRow>
 
@@ -313,7 +338,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_hold_in_end_duration" />
+                    android:text="@string/text_hold_in_end_duration"
+                    android:textSize="@dimen/text_normal" />
 
                 <SeekBar
                     android:id="@+id/seekBarHoldInEndDuration"
@@ -330,7 +356,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_weight="@integer/selector_text_width"
-                    android:textAlignment="viewEnd" />
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/text_normal" />
 
             </TableRow>
 
@@ -341,7 +368,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_hold_in_position" />
+                    android:text="@string/text_hold_in_position"
+                    android:textSize="@dimen/text_normal" />
 
                 <Spinner
                     android:id="@+id/spinnerHoldInPosition"
@@ -359,7 +387,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_hold_out_start_duration" />
+                    android:text="@string/text_hold_out_start_duration"
+                    android:textSize="@dimen/text_normal" />
 
                 <SeekBar
                     android:id="@+id/seekBarHoldOutStartDuration"
@@ -376,7 +405,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_weight="@integer/selector_text_width"
-                    android:textAlignment="viewEnd" />
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/text_normal" />
 
             </TableRow>
 
@@ -388,7 +418,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_hold_out_end_duration" />
+                    android:text="@string/text_hold_out_end_duration"
+                    android:textSize="@dimen/text_normal" />
 
                 <SeekBar
                     android:id="@+id/seekBarHoldOutEndDuration"
@@ -405,7 +436,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_weight="@integer/selector_text_width"
-                    android:textAlignment="viewEnd" />
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/text_normal" />
 
             </TableRow>
 
@@ -416,7 +448,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_hold_out_position" />
+                    android:text="@string/text_hold_out_position"
+                    android:textSize="@dimen/text_normal" />
 
                 <Spinner
                     android:id="@+id/spinnerHoldOutPosition"
@@ -433,7 +466,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_hold_variation" />
+                    android:text="@string/text_hold_variation"
+                    android:textSize="@dimen/text_normal" />
 
                 <SeekBar
                     android:id="@+id/seekBarHoldVariation"
@@ -449,7 +483,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_weight="@integer/selector_text_width"
-                    android:textAlignment="viewEnd" />
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/text_normal" />
 
             </TableRow>
 
@@ -488,7 +523,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
-                    android:text="@string/text_current_repetition" />
+                    android:text="@string/text_current_repetition"
+                    android:textSize="@dimen/text_normal" />
 
                 <SeekBar
                     android:id="@+id/seekBarCurrentRepetition"
@@ -504,7 +540,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_weight="@integer/selector_text_width"
-                    android:textAlignment="viewEnd" />
+                    android:textAlignment="viewEnd"
+                    android:textSize="@dimen/text_normal" />
             </TableRow>
         </TableLayout>
     </ScrollView>
