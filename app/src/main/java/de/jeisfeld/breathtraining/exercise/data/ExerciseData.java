@@ -275,10 +275,19 @@ public abstract class ExerciseData implements Serializable {
 	/**
 	 * Get the play status.
 	 *
-	 * @return The play statis.
+	 * @return The play status.
 	 */
 	public PlayStatus getPlayStatus() {
 		return mPlayStatus;
+	}
+
+	/**
+	 * Update the play status.
+	 *
+	 * @param playStatus The new play status.
+	 */
+	public void updatePlayStatus(PlayStatus playStatus) {
+		mPlayStatus = playStatus;
 	}
 
 	/**

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ import de.jeisfeld.breathtraining.MainActivity;
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
+import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService.ServiceCommand;
 import de.jeisfeld.breathtraining.util.DialogUtil;
@@ -134,7 +136,7 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 			}
 		});
 
-		holder.mPlayExercise.setOnClickListener(v -> {
+		holder.mEditExercise.setOnClickListener(v -> {
 			Fragment fragment = mFragment.get();
 			if (fragment != null) {
 				Activity activity = fragment.getActivity();
@@ -152,6 +154,19 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 					}
 					navController.popBackStack();
 					navController.navigate(R.id.nav_exercise);
+				}
+			}
+		});
+
+		holder.mPlayExercise.setOnClickListener(v -> {
+			exerciseData.updatePlayStatus(PlayStatus.PLAYING);
+			ExerciseService.triggerExerciseService(v.getContext(), ServiceCommand.START, exerciseData);
+			Fragment fragment = mFragment.get();
+			if (fragment != null) {
+				Activity activity = fragment.getActivity();
+				if (activity instanceof MainActivity) {
+					ExerciseViewModel exerciseViewModel = new ViewModelProvider((MainActivity) activity).get(ExerciseViewModel.class);
+					exerciseViewModel.updateFromExerciseData(exerciseData, null);
 				}
 			}
 		});
@@ -203,7 +218,11 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 		/**
 		 * The button to play the exercise.
 		 */
-		private final ImageView mPlayExercise;
+		private final ImageButton mPlayExercise;
+		/**
+		 * The button to edit the exercise.
+		 */
+		private final ImageView mEditExercise;
 		/**
 		 * The title.
 		 */
@@ -229,6 +248,7 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 			mTitle = itemView.findViewById(R.id.textViewColorName);
 			mDragHandle = itemView.findViewById(R.id.imageViewDragHandle);
 			mDeleteButton = itemView.findViewById(R.id.imageViewDelete);
+			mEditExercise = itemView.findViewById(R.id.imageViewEdit);
 		}
 	}
 

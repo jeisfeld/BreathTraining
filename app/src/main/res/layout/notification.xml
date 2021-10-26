@@ -22,7 +22,7 @@
         android:layout_centerVertical="true"
         android:background="@color/color_primary"
         android:contentDescription="@string/button_resume"
-        android:src="@drawable/ic_button_start"
+        android:src="@drawable/ic_button_start_light"
         android:visibility="invisible" />
 
     <ImageButton

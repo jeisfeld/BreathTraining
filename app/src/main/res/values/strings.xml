@@ -20,6 +20,7 @@
     <string name="button_delete">Delete</string>
     <string name="button_save">Save</string>
     <string name="button_overwrite">Overwrite</string>
+    <string name="button_edit">Edit</string>
 
     <string name="text_inhale">Inhale…</string>
     <string name="text_exhale">Exhale…</string>

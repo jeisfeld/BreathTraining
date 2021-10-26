@@ -80,10 +80,6 @@ public class ExerciseService extends Service {
 	 */
 	private boolean mIsPausing = false;
 	/**
-	 * Flag indicating if exercise is pausing.
-	 */
-	private boolean mIsStopping = false;
-	/**
 	 * Flag indicating if exercise is skipping to next breath.
 	 */
 	private boolean mIsSkipping = false;
@@ -159,14 +155,12 @@ public class ExerciseService extends Service {
 		switch (serviceCommand) {
 		case START:
 			ExerciseAnimationThread newThread = new ExerciseAnimationThread(exerciseData);
-
 			synchronized (mRunningThreads) {
 				mIsPausing = false;
 				mIsSkipping = false;
-				mIsStopping = false;
 				mRunningThreads.notifyAll();
 				if (mRunningThreads.size() > 0) {
-					mRunningThreads.get(mRunningThreads.size() - 1).interrupt();
+					mRunningThreads.get(mRunningThreads.size() - 1).stopExercise();
 				}
 				mRunningThreads.add(newThread);
 			}
@@ -176,10 +170,9 @@ public class ExerciseService extends Service {
 			synchronized (mRunningThreads) {
 				mIsPausing = false;
 				mIsSkipping = false;
-				mIsStopping = true;
 				mRunningThreads.notifyAll();
 				if (mRunningThreads.size() > 0) {
-					mRunningThreads.get(mRunningThreads.size() - 1).interrupt();
+					mRunningThreads.get(mRunningThreads.size() - 1).stopExercise();
 				}
 			}
 			break;
@@ -419,6 +412,10 @@ public class ExerciseService extends Service {
 		 * the exercise data.
 		 */
 		private ExerciseData mExerciseData;
+		/**
+		 * Flag indicating if the thread is stopping.
+		 */
+		private boolean mIsStopping = false;
 
 		/**
 		 * Constructor.
@@ -442,6 +439,14 @@ public class ExerciseService extends Service {
 				exerciseData.goBackToRepetitionStart();
 			}
 			mExerciseData = exerciseData;
+		}
+
+		/**
+		 * Stop the exercise.
+		 */
+		private void stopExercise() {
+			mIsStopping = true;
+			interrupt();
 		}
 
 		@Override
