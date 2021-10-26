@@ -17,6 +17,7 @@ import de.jeisfeld.breathtraining.exercise.data.StandardExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.StepType;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService.ServiceCommand;
+import de.jeisfeld.breathtraining.repository.StoredExercisesRegistry;
 import de.jeisfeld.breathtraining.sound.SoundType;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
@@ -616,6 +617,20 @@ public class ExerciseViewModel extends ViewModel {
 			return 0;
 		}
 		return (int) Math.round(Math.log(value) * 144.77); // MAGIC_NUMBER
+	}
+
+	/**
+	 * Delete the exercise name if not matching the stored exercise.
+	 */
+	public void deleteNameIfNotMatching() {
+		String name = mExerciseName.getValue();
+		if (name != null && name.length() > 0) {
+			ExerciseData storedExerciseData = StoredExercisesRegistry.getInstance().getStoredExercise(name);
+			ExerciseData exerciseData = getExerciseData();
+			if (storedExerciseData == null || !storedExerciseData.equals(exerciseData)) {
+				mExerciseName.setValue(null);
+			}
+		}
 	}
 
 	/**

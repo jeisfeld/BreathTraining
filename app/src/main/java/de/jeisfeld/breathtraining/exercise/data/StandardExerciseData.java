@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.sound.SoundType;
@@ -244,8 +245,8 @@ public class StandardExerciseData extends ExerciseData {
 	 * Calculate the duration for a certain repetition.
 	 *
 	 * @param startDuration The start duration
-	 * @param endDuration   The end duration
-	 * @param repetition    The repetition number
+	 * @param endDuration The end duration
+	 * @param repetition The repetition number
 	 * @return The repetition duration
 	 */
 	private long calculateDuration(final long startDuration, final long endDuration, final int repetition) {
@@ -276,5 +277,31 @@ public class StandardExerciseData extends ExerciseData {
 		}
 
 		return exerciseSteps.toArray(new ExerciseStep[0]);
+	}
+
+	@Override
+	public final boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof StandardExerciseData)) {
+			return false;
+		}
+		if (!super.equals(o)) {
+			return false;
+		}
+		StandardExerciseData that = (StandardExerciseData) o;
+		return mBreathEndDuration == that.mBreathEndDuration && Double.compare(that.mInOutRelation, mInOutRelation) == 0
+				&& mHoldBreathIn == that.mHoldBreathIn && mHoldInStartDuration == that.mHoldInStartDuration
+				&& mHoldInEndDuration == that.mHoldInEndDuration && mHoldBreathOut == that.mHoldBreathOut
+				&& mHoldOutStartDuration == that.mHoldOutStartDuration && mHoldOutEndDuration == that.mHoldOutEndDuration
+				&& Double.compare(that.mHoldVariation, mHoldVariation) == 0 && mHoldInPosition == that.mHoldInPosition
+				&& mHoldOutPosition == that.mHoldOutPosition;
+	}
+
+	@Override
+	public final int hashCode() {
+		return Objects.hash(super.hashCode(), mBreathEndDuration, mInOutRelation, mHoldBreathIn, mHoldInStartDuration, mHoldInEndDuration,
+				mHoldInPosition, mHoldBreathOut, mHoldOutStartDuration, mHoldOutEndDuration, mHoldOutPosition, mHoldVariation);
 	}
 }

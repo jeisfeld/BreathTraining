@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.exercise.service.ServiceReceiver;
@@ -405,5 +406,24 @@ public abstract class ExerciseData implements Serializable {
 		mCurrentStepNumber = origin.mCurrentStepNumber;
 		mCurrentSteps = getStepsForRepetition(mCurrentRepetitionNumber);
 		mPlayStatus = playStatus;
+	}
+
+	// OVERRIDABLE
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof ExerciseData)) {
+			return false;
+		}
+		ExerciseData that = (ExerciseData) o;
+		return mRepetitions == that.mRepetitions && mBreathStartDuration == that.mBreathStartDuration && mSoundType == that.mSoundType;
+	}
+
+	// OVERRIDABLE
+	@Override
+	public int hashCode() {
+		return Objects.hash(mRepetitions, mBreathStartDuration, mSoundType);
 	}
 }

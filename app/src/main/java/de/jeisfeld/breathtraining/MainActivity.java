@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
 			navController.navigate(R.id.nav_exercise);
 		}
 
+		exerciseViewModel.deleteNameIfNotMatching();
+
 		sendBroadcast(new Intent(ServiceQueryReceiver.RECEIVER_ACTION));
 	}
 
