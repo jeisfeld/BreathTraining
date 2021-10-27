@@ -145,6 +145,8 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 					if (ExerciseService.isServiceRunning(activity)) {
 						ExerciseService.triggerExerciseService(activity, ServiceCommand.STOP, exerciseData);
 					}
+					// PlayStatus might get updated in repository, but should not be used here
+					exerciseData.updatePlayStatus(PlayStatus.STOPPED);
 					ExerciseViewModel exerciseViewModel = new ViewModelProvider((MainActivity) activity).get(ExerciseViewModel.class);
 					exerciseViewModel.updateFromExerciseData(exerciseData, null);
 					NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_content_main);
