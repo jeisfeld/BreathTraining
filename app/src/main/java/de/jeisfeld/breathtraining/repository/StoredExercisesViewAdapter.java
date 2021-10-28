@@ -2,6 +2,7 @@ package de.jeisfeld.breathtraining.repository;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,7 +31,6 @@ import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService.ServiceCommand;
 import de.jeisfeld.breathtraining.util.DialogUtil;
-import de.jeisfeld.breathtraining.util.DialogUtil.RequestInputDialogFragment.RequestInputDialogListener;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
 /**
@@ -91,25 +90,17 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 		holder.mTitle.setOnClickListener(v -> {
 			FragmentActivity activity = mFragment.get() == null ? null : mFragment.get().getActivity();
 			if (activity != null) {
-				DialogUtil.displayInputDialog(activity, new RequestInputDialogListener() {
-							@Override
-							public void onDialogPositiveClick(final DialogFragment dialog, final String text) {
-								if (text == null || text.trim().isEmpty()) {
-									DialogUtil.displayConfirmationMessage(activity,
-											R.string.title_did_not_save_empty_name, R.string.message_did_not_save_empty_name);
-								}
-								else {
-									StoredExercisesRegistry.getInstance().rename(exerciseData, text);
-									holder.mTitle.setText(text.trim());
-								}
+				DialogUtil.displayInputDialog(activity, (dialog, text) -> {
+							if (text == null || text.trim().isEmpty()) {
+								DialogUtil.displayConfirmationMessage(activity,
+										R.string.title_did_not_save_empty_name, R.string.message_did_not_save_empty_name);
 							}
-
-							@Override
-							public void onDialogNegativeClick(final DialogFragment dialog) {
-								// do nothing
+							else {
+								StoredExercisesRegistry.getInstance().rename(exerciseData, text);
+								holder.mTitle.setText(text.trim());
 							}
 						}, R.string.title_dialog_change_exercise_name, R.string.button_rename,
-						holder.mTitle.getText().toString(), R.string.message_dialog_new_exercise_name);
+						holder.mTitle.getText().toString(), InputType.TYPE_CLASS_TEXT, R.string.message_dialog_new_exercise_name);
 			}
 		});
 

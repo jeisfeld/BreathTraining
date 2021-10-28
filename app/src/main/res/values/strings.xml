@@ -21,6 +21,7 @@
     <string name="button_save">Save</string>
     <string name="button_overwrite">Overwrite</string>
     <string name="button_edit">Edit</string>
+    <string name="button_set_value">Set Value</string>
     <string name="button_user_measured_values">Use measured values</string>
 
     <string name="text_inhale">Inhale…</string>
@@ -53,6 +54,17 @@
     <string name="text_sound_type">Sound:</string>
     <string name="text_current_repetition">Repetition:</string>
     <string name="formatting_current_repetition">%1$s\n\n%2$s</string>
+
+    <string name="title_edit_value">Edit value</string>
+    <string name="text_edit_repetitions">Set number of repetitions</string>
+    <string name="text_edit_breath_start_duration">Set breath start duration (s)</string>
+    <string name="text_edit_breath_end_duration">Set breath end duration (s)</string>
+    <string name="text_edit_in_out_relation">Set in/out relation (%%)</string>
+    <string name="text_edit_hold_in_start_duration">Set hold in start duration (s)</string>
+    <string name="text_edit_hold_in_end_duration">Set hold in end duration (s)</string>
+    <string name="text_edit_hold_out_start_duration">Set hold out start duration (s)</string>
+    <string name="text_edit_hold_out_end_duration">Set hold out end duration (s)</string>
+    <string name="text_edit_hold_variation">Set hold variation (%%)</string>
 
     <string name="key_exercise_name">exercise_name</string>
     <string name="key_exercise_type">exercise_type</string>

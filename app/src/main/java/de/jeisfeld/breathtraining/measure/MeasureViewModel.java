@@ -25,7 +25,7 @@ import de.jeisfeld.breathtraining.sound.SoundType;
  */
 public class MeasureViewModel extends ViewModel {
 	/**
-	 * The display text, upper part
+	 * The display text, upper part.
 	 */
 	private final MutableLiveData<String> mText1 = new MutableLiveData<>();
 	/**
@@ -33,7 +33,7 @@ public class MeasureViewModel extends ViewModel {
 	 */
 	private final MutableLiveData<Boolean> mIsButtonUseValuesVisible = new MutableLiveData<>(false);
 	/**
-	 * The display text, lower part
+	 * The display text, lower part.
 	 */
 	private final MutableLiveData<String> mText2 = new MutableLiveData<>();
 	/**
@@ -62,7 +62,7 @@ public class MeasureViewModel extends ViewModel {
 	 */
 	private Long mAverageDuration = null;
 	/**
-	 * The measured average in/out relation
+	 * The measured average in/out relation.
 	 */
 	private Double mAverageInOutRelation = null;
 

@@ -1,6 +1,7 @@
 package de.jeisfeld.breathtraining.exercise;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,11 @@ import android.widget.TextView;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.databinding.FragmentExerciseBinding;
@@ -27,7 +29,6 @@ import de.jeisfeld.breathtraining.exercise.data.HoldPosition;
 import de.jeisfeld.breathtraining.repository.StoredExercisesRegistry;
 import de.jeisfeld.breathtraining.sound.SoundType;
 import de.jeisfeld.breathtraining.util.DialogUtil;
-import de.jeisfeld.breathtraining.util.DialogUtil.RequestInputDialogFragment.RequestInputDialogListener;
 
 /**
  * The fragment for managing basic breath control page.
@@ -199,6 +200,18 @@ public class ExerciseFragment extends Fragment {
 		mBinding.seekBarRepetitions.setOnSeekBarChangeListener(
 				(OnSeekBarProgressChangedListener) progress -> mExerciseViewModel
 						.updateRepetitions(ExerciseViewModel.repetitionsSeekbarToValue(progress)));
+		mBinding.textViewRepetitions.setOnClickListener(v -> {
+			Integer repetitions = mExerciseViewModel.getRepetitions().getValue();
+			DialogUtil.displayInputDialog(requireActivity(), (dialog, text) -> {
+						try {
+							mExerciseViewModel.updateRepetitions(Integer.parseInt(text));
+						}
+						catch (NumberFormatException e) {
+							// ignore
+						}
+					}, R.string.title_edit_value, R.string.button_set_value,
+					repetitions == null ? "" : Integer.toString(repetitions), InputType.TYPE_CLASS_NUMBER, R.string.text_edit_repetitions);
+		});
 	}
 
 	/**
@@ -210,6 +223,57 @@ public class ExerciseFragment extends Fragment {
 	private static void setDurationText(final TextView textView, final long duration) {
 		String format = duration > 14750 ? "%.0fs" : "%.1fs"; // MAGIC_NUMBER
 		textView.setText(String.format(Locale.getDefault(), format, duration / MILLIS_PER_SECOND));
+	}
+
+	/**
+	 * Prepare a seconds update dialog.
+	 *
+	 * @param view           The view which triggers the dialog.
+	 * @param dataField      The data field to be updated.
+	 * @param updateFunction The function used for updating the resource.
+	 * @param textResource   The text to be displayed for the update.
+	 */
+	private void prepareSecondsUpdateDialog(final View view, final MutableLiveData<Long> dataField,
+											final Consumer<Long> updateFunction, final int textResource) {
+		view.setOnClickListener(v -> {
+			Long dataValueLong = dataField.getValue();
+			double dataValue = dataValueLong == null ? 0 : dataValueLong / MILLIS_PER_SECOND;
+			DialogUtil.displayInputDialog(requireActivity(), (dialog, text) -> {
+						try {
+							updateFunction.accept(Math.round(MILLIS_PER_SECOND * Double.parseDouble(text)));
+						}
+						catch (NumberFormatException e) {
+							// ignore
+						}
+					}, R.string.title_edit_value, R.string.button_set_value,
+					String.format(Locale.ENGLISH, "%.1f", dataValue),
+					InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL, textResource);
+		});
+	}
+
+	/**
+	 * Prepare a percentage update dialog.
+	 *
+	 * @param view           The view which triggers the dialog.
+	 * @param dataField      The data field to be updated.
+	 * @param updateFunction The function used for updating the resource.
+	 * @param textResource   The text to be displayed for the update.
+	 */
+	private void preparePercentageUpdateDialog(final View view, final MutableLiveData<Double> dataField,
+											   final Consumer<Double> updateFunction, final int textResource) {
+		view.setOnClickListener(v -> {
+			Double dataValueDouble = dataField.getValue();
+			int dataValue = dataValueDouble == null ? 0 : (int) Math.round(dataValueDouble * 100); // MAGIC_NUMBER
+
+			DialogUtil.displayInputDialog(requireActivity(), (dialog, text) -> {
+				try {
+					updateFunction.accept(Integer.parseInt(text) / 100.0); // MAGIC_NUMBER
+				}
+				catch (NumberFormatException e) {
+					// ignore
+				}
+			}, R.string.title_edit_value, R.string.button_set_value, Integer.toString(dataValue), InputType.TYPE_CLASS_NUMBER, textResource);
+		});
 	}
 
 	/**
@@ -225,6 +289,8 @@ public class ExerciseFragment extends Fragment {
 		});
 		mBinding.seekBarBreathStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mExerciseViewModel
 				.updateBreathStartDuration(ExerciseViewModel.durationSeekbarToValue(progress, false)));
+		prepareSecondsUpdateDialog(mBinding.textViewBreathStartDuration, mExerciseViewModel.getBreathStartDuration(),
+				mExerciseViewModel::updateBreathStartDuration, R.string.text_edit_breath_start_duration);
 	}
 
 	/**
@@ -240,6 +306,8 @@ public class ExerciseFragment extends Fragment {
 		});
 		mBinding.seekBarBreathEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mExerciseViewModel
 				.updateBreathEndDuration(ExerciseViewModel.durationSeekbarToValue(progress, false)));
+		prepareSecondsUpdateDialog(mBinding.textViewBreathEndDuration, mExerciseViewModel.getBreathEndDuration(),
+				mExerciseViewModel::updateBreathEndDuration, R.string.text_edit_breath_end_duration);
 	}
 
 	/**
@@ -256,6 +324,8 @@ public class ExerciseFragment extends Fragment {
 				(OnSeekBarProgressChangedListener) progress -> {
 					mExerciseViewModel.updateInOutRelation(progress / 100.0); // MAGIC_NUMBER
 				});
+		preparePercentageUpdateDialog(mBinding.textViewInOutRelation, mExerciseViewModel.getInOutRelation(),
+				mExerciseViewModel::updateInOutRelation, R.string.text_edit_in_out_relation);
 	}
 
 	/**
@@ -289,6 +359,8 @@ public class ExerciseFragment extends Fragment {
 		});
 		mBinding.seekBarHoldInStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mExerciseViewModel
 				.updateHoldInStartDuration(ExerciseViewModel.durationSeekbarToValue(progress, false)));
+		prepareSecondsUpdateDialog(mBinding.textViewHoldInStartDuration, mExerciseViewModel.getHoldInStartDuration(),
+				mExerciseViewModel::updateHoldInStartDuration, R.string.text_edit_hold_in_start_duration);
 	}
 
 	/**
@@ -304,6 +376,8 @@ public class ExerciseFragment extends Fragment {
 		});
 		mBinding.seekBarHoldInEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mExerciseViewModel
 				.updateHoldInEndDuration(ExerciseViewModel.durationSeekbarToValue(progress, false)));
+		prepareSecondsUpdateDialog(mBinding.textViewHoldInEndDuration, mExerciseViewModel.getHoldInEndDuration(),
+				mExerciseViewModel::updateHoldInEndDuration, R.string.text_edit_hold_in_end_duration);
 	}
 
 	/**
@@ -360,6 +434,8 @@ public class ExerciseFragment extends Fragment {
 		});
 		mBinding.seekBarHoldOutStartDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mExerciseViewModel
 				.updateHoldOutStartDuration(ExerciseViewModel.durationSeekbarToValue(progress, false)));
+		prepareSecondsUpdateDialog(mBinding.textViewHoldOutStartDuration, mExerciseViewModel.getHoldOutStartDuration(),
+				mExerciseViewModel::updateHoldOutStartDuration, R.string.text_edit_hold_out_start_duration);
 	}
 
 	/**
@@ -375,6 +451,8 @@ public class ExerciseFragment extends Fragment {
 		});
 		mBinding.seekBarHoldOutEndDuration.setOnSeekBarChangeListener((OnSeekBarProgressChangedListener) progress -> mExerciseViewModel
 				.updateHoldOutEndDuration(ExerciseViewModel.durationSeekbarToValue(progress, false)));
+		prepareSecondsUpdateDialog(mBinding.textViewHoldOutEndDuration, mExerciseViewModel.getHoldOutEndDuration(),
+				mExerciseViewModel::updateHoldOutEndDuration, R.string.text_edit_hold_out_end_duration);
 	}
 
 	/**
@@ -414,6 +492,8 @@ public class ExerciseFragment extends Fragment {
 				(OnSeekBarProgressChangedListener) progress -> {
 					mExerciseViewModel.updateHoldVariation(progress / 100.0); // MAGIC_NUMBER
 				});
+		preparePercentageUpdateDialog(mBinding.textViewHoldVariation, mExerciseViewModel.getHoldVariation(),
+				mExerciseViewModel::updateHoldVariation, R.string.text_edit_hold_variation);
 	}
 
 	/**
@@ -464,33 +544,25 @@ public class ExerciseFragment extends Fragment {
 	 * Prepare the button to save the exercise.
 	 */
 	private void prepareButtonSave() {
-		mBinding.imageViewStore.setOnClickListener(v -> DialogUtil.displayInputDialog(requireActivity(), new RequestInputDialogListener() {
-					@Override
-					public void onDialogPositiveClick(final DialogFragment dialog, final String text) {
-						if (text == null || text.trim().isEmpty()) {
-							DialogUtil.displayConfirmationMessage(getActivity(),
-									R.string.title_did_not_save_empty_name, R.string.message_did_not_save_empty_name);
-						}
-						else if (StoredExercisesRegistry.getInstance().getStoredExercise(text) != null) {
-							DialogUtil.displayConfirmationMessage(requireActivity(), dialog1 -> {
-										StoredExercisesRegistry.getInstance().addOrUpdate(mExerciseViewModel.getExerciseData(), text);
-										mExerciseViewModel.updateExerciseName(text);
-									},
-									null, R.string.button_cancel, R.string.button_overwrite,
-									R.string.message_confirm_overwrite_exercise, text);
-						}
-						else {
-							StoredExercisesRegistry.getInstance().addOrUpdate(mExerciseViewModel.getExerciseData(), text);
-							mExerciseViewModel.updateExerciseName(text);
-						}
+		mBinding.imageViewStore.setOnClickListener(v -> DialogUtil.displayInputDialog(requireActivity(), (dialog, text) -> {
+					if (text == null || text.trim().isEmpty()) {
+						DialogUtil.displayConfirmationMessage(getActivity(),
+								R.string.title_did_not_save_empty_name, R.string.message_did_not_save_empty_name);
 					}
-
-					@Override
-					public void onDialogNegativeClick(final DialogFragment dialog) {
-						// do nothing
+					else if (StoredExercisesRegistry.getInstance().getStoredExercise(text) != null) {
+						DialogUtil.displayConfirmationMessage(requireActivity(), dialog1 -> {
+									StoredExercisesRegistry.getInstance().addOrUpdate(mExerciseViewModel.getExerciseData(), text);
+									mExerciseViewModel.updateExerciseName(text);
+								},
+								null, R.string.button_cancel, R.string.button_overwrite,
+								R.string.message_confirm_overwrite_exercise, text);
+					}
+					else {
+						StoredExercisesRegistry.getInstance().addOrUpdate(mExerciseViewModel.getExerciseData(), text);
+						mExerciseViewModel.updateExerciseName(text);
 					}
 				}, R.string.title_dialog_save_exercise, R.string.button_save,
-				mExerciseViewModel.getExerciseName().getValue(), R.string.message_dialog_save_exercise));
+				mExerciseViewModel.getExerciseName().getValue(), InputType.TYPE_CLASS_TEXT, R.string.message_dialog_save_exercise));
 	}
 
 	/**
@@ -502,12 +574,12 @@ public class ExerciseFragment extends Fragment {
 		 *
 		 * @param progress The progress.
 		 */
-		void onProgessChanged(int progress);
+		void onProgressChanged(int progress);
 
 		@Override
 		default void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
 			if (fromUser) {
-				onProgessChanged(progress);
+				onProgressChanged(progress);
 			}
 		}
 

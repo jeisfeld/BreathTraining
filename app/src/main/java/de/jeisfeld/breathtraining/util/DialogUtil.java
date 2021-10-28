@@ -45,6 +45,11 @@ public final class DialogUtil {
 	 */
 	private static final String PARAM_CANCEL_BUTTON_RESOURCE = "cancelButtonResource";
 	/**
+	 * Parameter to pass the text resource for the input type.
+	 */
+	private static final String PARAM_INPUT_TYPE = "inputType";
+
+	/**
 	 * Instance state flag indicating if a dialog should not be recreated after orientation change.
 	 */
 	private static final String PREVENT_RECREATION = "preventRecreation";
@@ -136,18 +141,20 @@ public final class DialogUtil {
 	 * @param titleResource   the resource with the title string
 	 * @param buttonResource  the display on the positive button
 	 * @param textValue       the text to be displayed in the input field
+	 * @param inputType       the input type of the input field.
 	 * @param messageResource the confirmation message
 	 * @param args            arguments for the confirmation message
 	 */
-	public static void displayInputDialog(final FragmentActivity activity,
+	public static void displayInputDialog(final FragmentActivity activity, // SUPPRESS_CHECKSTYLE
 										  final RequestInputDialogListener listener, final int titleResource, final int buttonResource,
-										  final String textValue, final int messageResource, final Object... args) {
+										  final String textValue, final int inputType, final int messageResource, final Object... args) {
 		String message = capitalizeFirst(activity.getString(messageResource, args));
 		Bundle bundle = new Bundle();
 		bundle.putCharSequence(PARAM_MESSAGE, message);
 		bundle.putInt(PARAM_TITLE_RESOURCE, titleResource);
 		bundle.putInt(PARAM_CONFIRM_BUTTON_RESOURCE, buttonResource);
 		bundle.putString(PARAM_TEXT_VALUE, textValue);
+		bundle.putInt(PARAM_INPUT_TYPE, inputType);
 		RequestInputDialogFragment fragment = new RequestInputDialogFragment();
 		fragment.setListener(listener);
 		fragment.setArguments(bundle);
@@ -300,15 +307,12 @@ public final class DialogUtil {
 		@Override
 		public final Dialog onCreateDialog(final Bundle savedInstanceState) {
 			assert getArguments() != null;
-			final CharSequence message = getArguments().getCharSequence(PARAM_MESSAGE);
-			final int confirmButtonResource = getArguments().getInt(PARAM_CONFIRM_BUTTON_RESOURCE);
-			final int titleResource = getArguments().getInt(PARAM_TITLE_RESOURCE);
-
 			View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_input, null);
 			final EditText input = view.findViewById(R.id.editTextDialog);
 			input.setText(getArguments().getString(PARAM_TEXT_VALUE));
+			input.setInputType(getArguments().getInt(PARAM_INPUT_TYPE));
 
-			((TextView) view.findViewById(R.id.textViewInputDialog)).setText(message);
+			((TextView) view.findViewById(R.id.textViewInputDialog)).setText(getArguments().getCharSequence(PARAM_MESSAGE));
 
 			// Listeners cannot retain functionality when automatically recreated.
 			// Therefore, dialogs with listeners must be re-created by the activity on orientation change.
@@ -322,7 +326,7 @@ public final class DialogUtil {
 			}
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setTitle(titleResource) //
+			builder.setTitle(getArguments().getInt(PARAM_TITLE_RESOURCE)) //
 					.setView(view) //
 					.setNegativeButton(R.string.button_cancel, (dialog, id) -> {
 						// Send the positive button event back to the host activity
@@ -330,7 +334,7 @@ public final class DialogUtil {
 							mListener.onDialogNegativeClick(RequestInputDialogFragment.this);
 						}
 					}) //
-					.setPositiveButton(confirmButtonResource, (dialog, id) -> {
+					.setPositiveButton(getArguments().getInt(PARAM_CONFIRM_BUTTON_RESOURCE), (dialog, id) -> {
 						// Send the negative button event back to the host activity
 						if (mListener != null) {
 							mListener.onDialogPositiveClick(RequestInputDialogFragment.this, input.getText().toString());
@@ -365,7 +369,7 @@ public final class DialogUtil {
 			 * Callback method for positive click from the input dialog.
 			 *
 			 * @param dialog the confirmation dialog fragment.
-			 * @param text   the text returned from the input.
+			 * @param text the text returned from the input.
 			 */
 			void onDialogPositiveClick(DialogFragment dialog, String text);
 
@@ -374,7 +378,9 @@ public final class DialogUtil {
 			 *
 			 * @param dialog the confirmation dialog fragment.
 			 */
-			void onDialogNegativeClick(DialogFragment dialog);
+			default void onDialogNegativeClick(final DialogFragment dialog) {
+				// do nothing
+			}
 		}
 	}
 }
