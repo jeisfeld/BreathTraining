@@ -6,9 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
 import de.jeisfeld.breathtraining.exercise.data.StepType;
@@ -21,9 +25,17 @@ import de.jeisfeld.breathtraining.sound.SoundType;
  */
 public class MeasureViewModel extends ViewModel {
 	/**
-	 * The display text.
+	 * The display text, upper part
 	 */
-	private final MutableLiveData<String> mText = new MutableLiveData<>();
+	private final MutableLiveData<String> mText1 = new MutableLiveData<>();
+	/**
+	 * The flag indicating if the "use values" button should be visible.
+	 */
+	private final MutableLiveData<Boolean> mIsButtonUseValuesVisible = new MutableLiveData<>(false);
+	/**
+	 * The display text, lower part
+	 */
+	private final MutableLiveData<String> mText2 = new MutableLiveData<>();
 	/**
 	 * Flag indicating if the current phase is breathing out.
 	 */
@@ -46,12 +58,39 @@ public class MeasureViewModel extends ViewModel {
 	private final List<Long> mMeasurementTimes = new ArrayList<>();
 
 	/**
-	 * Get the measurement text.
-	 *
-	 * @return The measurement text.
+	 * The measured average duration.
 	 */
-	protected LiveData<String> getText() {
-		return mText;
+	private Long mAverageDuration = null;
+	/**
+	 * The measured average in/out relation
+	 */
+	private Double mAverageInOutRelation = null;
+
+	/**
+	 * Get the measurement text, upper part.
+	 *
+	 * @return The measurement text, upper part.
+	 */
+	protected LiveData<String> getText1() {
+		return mText1;
+	}
+
+	/**
+	 * Get the flag if "use values" button is visible.
+	 *
+	 * @return The flag if "use values" button is visible.
+	 */
+	protected LiveData<Boolean> getIsButtonUseValuesVisible() {
+		return mIsButtonUseValuesVisible;
+	}
+
+	/**
+	 * Get the measurement text, lower part.
+	 *
+	 * @return The measurement text, lower part.
+	 */
+	protected LiveData<String> getText2() {
+		return mText2;
 	}
 
 	/**
@@ -95,7 +134,7 @@ public class MeasureViewModel extends ViewModel {
 		mBreatheOutDurations.clear();
 		mMeasurementTimes.clear();
 		mMeasurementTimes.add(System.currentTimeMillis());
-		mText.setValue(context.getString(R.string.message_measure));
+		mText1.setValue(context.getString(R.string.message_measure));
 
 		SoundType soundType = mSoundType.getValue();
 		if (soundType != null) {
@@ -106,20 +145,22 @@ public class MeasureViewModel extends ViewModel {
 	/**
 	 * Stop the measurement.
 	 *
-	 * @param exerciseViewModel The view model of the home view.
-	 * @param context           the context.
-	 * @return true if measurement was successful.
+	 * @param context the context.
 	 */
-	protected boolean stopMeasurement(final Context context, final ExerciseViewModel exerciseViewModel) {
+	protected void stopMeasurement(final Context context) {
 		if (context == null) {
-			return false;
+			return;
 		}
 		doChangeBreathCalculations();
 		SoundPlayer.getInstance().stop();
 
 		if (mBreatheInDurations.size() < 1 || mBreatheOutDurations.size() < 1) {
-			mText.setValue(context.getString(R.string.message_measurement_too_short));
-			return false;
+			mText1.setValue(context.getString(R.string.message_measurement_too_short));
+			mText2.setValue(null);
+			mIsButtonUseValuesVisible.setValue(false);
+			mAverageDuration = null;
+			mAverageInOutRelation = null;
+			return;
 		}
 
 		// Ensure only full breathe in/out cycles are counted.
@@ -153,19 +194,31 @@ public class MeasureViewModel extends ViewModel {
 		long averageInDuration = mBreatheInDurations.stream().reduce(0L, Long::sum) / size;
 		long averageOutDuration = mBreatheOutDurations.stream().reduce(0L, Long::sum) / size;
 
-		long averageDuration = averageInDuration + averageOutDuration;
-		double averageDurationSeconds = averageDuration / (double) TimeUnit.SECONDS.toMillis(1);
-		double inOutRatio = (double) averageInDuration / averageDuration;
+		mAverageDuration = averageInDuration + averageOutDuration;
+		double averageDurationSeconds = mAverageDuration / (double) TimeUnit.SECONDS.toMillis(1);
+		mAverageInOutRelation = (double) averageInDuration / mAverageDuration;
 
-		mText.setValue(context.getString(R.string.message_measurement_result, averageDurationSeconds, inOutRatio * 100)); // MAGIC_NUMBER
+		mText1.setValue(
+				context.getString(R.string.message_measurement_result_1, averageDurationSeconds, mAverageInOutRelation * 100)); // MAGIC_NUMBER
+		mText2.setValue(context.getString(R.string.message_measurement_result_2));
+		mIsButtonUseValuesVisible.setValue(true);
+	}
 
-		if (exerciseViewModel != null) {
-			exerciseViewModel.updateBreathStartDuration(averageDuration);
-			exerciseViewModel.updateBreathEndDuration(averageDuration);
-			exerciseViewModel.updateInOutRelation(inOutRatio);
-			return true;
+	/**
+	 * Use the measured values.
+	 *
+	 * @param activity The triggering activity.
+	 */
+	protected void useValues(final FragmentActivity activity) {
+		ExerciseViewModel exerciseViewModel = new ViewModelProvider(activity).get(ExerciseViewModel.class);
+		if (mAverageDuration != null && mAverageInOutRelation != null) {
+			exerciseViewModel.updateBreathStartDuration(mAverageDuration);
+			exerciseViewModel.updateBreathEndDuration(mAverageDuration);
+			exerciseViewModel.updateInOutRelation(mAverageInOutRelation);
+
+			NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_content_main);
+			navController.popBackStack(R.id.nav_exercise, false);
 		}
-		return false;
 	}
 
 	/**

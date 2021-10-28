@@ -21,6 +21,7 @@
     <string name="button_save">Save</string>
     <string name="button_overwrite">Overwrite</string>
     <string name="button_edit">Edit</string>
+    <string name="button_user_measured_values">Use measured values</string>
 
     <string name="text_inhale">Inhale…</string>
     <string name="text_exhale">Exhale…</string>
@@ -91,7 +92,8 @@
 
     <string name="message_measure">Press “Start” after exhaling to start the measurement of breath duration.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
     <string name="message_measurement_too_short">Measurement was too short.\n\nInhale and exhale at least once before stopping the measurement.</string>
-    <string name="message_measurement_result">Last measurement result:\n\nAverage breath duration: %1$.1fs\n\nIn-out relation: %2$.0f%%\n\nFor another measurement, press “Start” after breathing out.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
+    <string name="message_measurement_result_1">Last measurement result:\n\nAverage breath duration: %1$.1fs\n\nIn-out relation: %2$.0f%%</string>
+    <string name="message_measurement_result_2">For another measurement, press “Start” after breathing out.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
 
     <string name="title_did_not_save_empty_name">Missing Name</string>
     <string name="message_did_not_save_empty_name">Did not save - name was empty.</string>

@@ -9,14 +9,12 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.databinding.FragmentMeasureBinding;
-import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
 import de.jeisfeld.breathtraining.sound.SoundType;
 
 /**
@@ -38,8 +36,15 @@ public class MeasureFragment extends Fragment {
 
 		mBinding = FragmentMeasureBinding.inflate(inflater, container, false);
 
-		final TextView textView = mBinding.textMeasurement;
-		mMeasureViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+		mMeasureViewModel.getText1().observe(getViewLifecycleOwner(), mBinding.textMeasurement1::setText);
+		mMeasureViewModel.getText2().observe(getViewLifecycleOwner(), text -> {
+			mBinding.textMeasurement2.setText(text);
+			mBinding.textMeasurement2.setVisibility(text == null ? View.GONE : View.VISIBLE);
+		});
+
+		mMeasureViewModel.getIsButtonUseValuesVisible().observe(getViewLifecycleOwner(), isVisible ->
+				mBinding.buttonUseValues.setVisibility(isVisible ? View.VISIBLE : View.GONE));
+		mBinding.buttonUseValues.setOnClickListener(v -> mMeasureViewModel.useValues(requireActivity()));
 
 		final Spinner spinnerSoundType = mBinding.spinnerSoundType;
 		spinnerSoundType.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.spinner_item_largetext,
@@ -72,8 +77,7 @@ public class MeasureFragment extends Fragment {
 		});
 
 		buttonStop.setOnClickListener(v -> {
-			ExerciseViewModel exerciseViewModel = new ViewModelProvider(requireActivity()).get(ExerciseViewModel.class);
-			mMeasureViewModel.stopMeasurement(getContext(), exerciseViewModel);
+			mMeasureViewModel.stopMeasurement(getContext());
 			buttonStart.setVisibility(View.VISIBLE);
 			buttonStop.setVisibility(View.INVISIBLE);
 			buttonBreathe.setVisibility(View.INVISIBLE);
