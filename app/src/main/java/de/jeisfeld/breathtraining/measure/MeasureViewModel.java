@@ -21,10 +21,6 @@ import de.jeisfeld.breathtraining.sound.SoundType;
  */
 public class MeasureViewModel extends ViewModel {
 	/**
-	 * Factor by which the end duration is bigger than the start duration.
-	 */
-	private static final double BREATH_DURATION_PROLONGATION = 1.2;
-	/**
 	 * The display text.
 	 */
 	private final MutableLiveData<String> mText = new MutableLiveData<>();
@@ -165,7 +161,7 @@ public class MeasureViewModel extends ViewModel {
 
 		if (exerciseViewModel != null) {
 			exerciseViewModel.updateBreathStartDuration(averageDuration);
-			exerciseViewModel.updateBreathEndDuration((long) (BREATH_DURATION_PROLONGATION * averageDuration));
+			exerciseViewModel.updateBreathEndDuration(averageDuration);
 			exerciseViewModel.updateInOutRelation(inOutRatio);
 			return true;
 		}

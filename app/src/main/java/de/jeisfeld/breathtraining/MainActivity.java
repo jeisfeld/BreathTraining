@@ -51,8 +51,7 @@ public class MainActivity extends AppCompatActivity {
 		NavigationView navigationView = mBinding.navView;
 		// Passing each menu ID as a set of Ids because each
 		// menu should be considered as top level destinations.
-		mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_exercise, R.id.nav_measure, R.id.nav_stored_exercises)
-				.setOpenableLayout(drawer).build();
+		mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_exercise).setOpenableLayout(drawer).build();
 		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 		NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 		NavigationUI.setupWithNavController(navigationView, navController);
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
 		if (exerciseData != null) {
 			ExerciseStep exerciseStep = (ExerciseStep) getIntent().getSerializableExtra(ServiceReceiver.EXTRA_EXERCISE_STEP);
 			exerciseViewModel.updateFromExerciseData(exerciseData, exerciseStep);
-			navController.navigate(R.id.nav_exercise);
 		}
 
 		exerciseViewModel.deleteNameIfNotMatching();

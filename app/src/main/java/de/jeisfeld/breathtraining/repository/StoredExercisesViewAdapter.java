@@ -24,6 +24,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import de.jeisfeld.breathtraining.MainActivity;
 import de.jeisfeld.breathtraining.R;
+import de.jeisfeld.breathtraining.exercise.EditExerciseViewModel;
 import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
@@ -146,29 +147,30 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 						ExerciseService.triggerExerciseService(activity, ServiceCommand.STOP, exerciseData);
 					}
 					// PlayStatus might get updated in repository, but should not be used here
-					exerciseData.updatePlayStatus(PlayStatus.STOPPED);
-					ExerciseViewModel exerciseViewModel = new ViewModelProvider((MainActivity) activity).get(ExerciseViewModel.class);
-					exerciseViewModel.updateFromExerciseData(exerciseData, null);
 					NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_content_main);
-					if (navController.getPreviousBackStackEntry() != null
-							&& navController.getPreviousBackStackEntry().getDestination().getId() == R.id.nav_exercise) {
-						navController.popBackStack();
-					}
-					navController.popBackStack();
-					navController.navigate(R.id.nav_exercise);
+					navController.navigate(R.id.nav_edit_exercise);
+					exerciseData.updatePlayStatus(PlayStatus.STOPPED);
+					ExerciseViewModel exerciseViewModel = new ViewModelProvider((MainActivity) activity).get(EditExerciseViewModel.class);
+					exerciseViewModel.updateFromExerciseData(exerciseData, null);
 				}
 			}
 		});
 
 		holder.mPlayExercise.setOnClickListener(v -> {
-			exerciseData.updatePlayStatus(PlayStatus.PLAYING);
-			ExerciseService.triggerExerciseService(v.getContext(), ServiceCommand.START, exerciseData);
 			Fragment fragment = mFragment.get();
 			if (fragment != null) {
 				Activity activity = fragment.getActivity();
 				if (activity instanceof MainActivity) {
+					NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_content_main);
+					// delete and re-create fragment, in order to prevent recovery of old screen status
+					navController.popBackStack(R.id.nav_exercise, true);
+					navController.navigate(R.id.nav_exercise);
+
 					ExerciseViewModel exerciseViewModel = new ViewModelProvider((MainActivity) activity).get(ExerciseViewModel.class);
+					exerciseData.updatePlayStatus(PlayStatus.PLAYING);
 					exerciseViewModel.updateFromExerciseData(exerciseData, null);
+
+					ExerciseService.triggerExerciseService(v.getContext(), ServiceCommand.START, exerciseData);
 				}
 			}
 		});

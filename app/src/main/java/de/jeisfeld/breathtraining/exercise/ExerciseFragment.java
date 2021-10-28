@@ -48,7 +48,7 @@ public class ExerciseFragment extends Fragment {
 
 	@Override
 	public final View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		mExerciseViewModel = new ViewModelProvider(requireActivity()).get(ExerciseViewModel.class);
+		mExerciseViewModel = getViewModel();
 		mBinding = FragmentExerciseBinding.inflate(inflater, container, false);
 
 		prepareSpinnerExerciseType();
@@ -74,6 +74,24 @@ public class ExerciseFragment extends Fragment {
 		return mBinding.getRoot();
 	}
 
+	/**
+	 * Get the view model.
+	 *
+	 * @return The view model.
+	 */
+	protected ExerciseViewModel getViewModel() {
+		return new ViewModelProvider(requireActivity()).get(ExerciseViewModel.class);
+	}
+
+	/**
+	 * get the binding.
+	 *
+	 * @return The binding.
+	 */
+	protected FragmentExerciseBinding getBinding() {
+		return mBinding;
+	}
+
 	@Override
 	public final void onDestroyView() {
 		super.onDestroyView();
@@ -83,7 +101,7 @@ public class ExerciseFragment extends Fragment {
 	/**
 	 * Prepare the buttons.
 	 */
-	private void prepareButtons() {
+	protected void prepareButtons() {
 		mExerciseViewModel.getPlayStatus().observe(getViewLifecycleOwner(), playStatus -> {
 			switch (playStatus) {
 			case STOPPED:

@@ -9,7 +9,14 @@
         android:id="@+id/nav_exercise"
         android:name="de.jeisfeld.breathtraining.exercise.ExerciseFragment"
         android:label="@string/menu_exercise"
-        tools:layout="@layout/fragment_exercise" />
+        tools:layout="@layout/fragment_exercise">
+        <action
+            android:id="@+id/action_nav_exercise_to_nav_stored_exercises"
+            app:destination="@id/nav_stored_exercises" />
+        <action
+            android:id="@+id/action_nav_exercise_to_nav_measure"
+            app:destination="@id/nav_measure" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_measure"
@@ -21,5 +28,16 @@
         android:id="@+id/nav_stored_exercises"
         android:name="de.jeisfeld.breathtraining.repository.StoredExercisesFragment"
         android:label="@string/menu_stored_exercises"
-        tools:layout="@layout/fragment_stored_exercises" />
+        tools:layout="@layout/fragment_stored_exercises">
+        <action
+            android:id="@+id/action_nav_stored_exercises_to_nav_exercise_2"
+            app:destination="@id/nav_edit_exercise" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_edit_exercise"
+        android:name="de.jeisfeld.breathtraining.exercise.EditExerciseFragment"
+        android:label="@string/menu_exercise"
+        tools:layout="@layout/fragment_exercise" />
+
 </navigation>

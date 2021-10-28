@@ -53,8 +53,8 @@
     <string name="text_current_repetition">Repetition:</string>
     <string name="formatting_current_repetition">%1$s\n\n%2$s</string>
 
-    <string name="key_exercise_type">exercise_type</string>
     <string name="key_exercise_name">exercise_name</string>
+    <string name="key_exercise_type">exercise_type</string>
     <string name="key_repetitions">repetitions</string>
     <string name="key_breath_start_duration">breath_start_duration</string>
     <string name="key_breath_end_duration">breath_end_duration</string>
