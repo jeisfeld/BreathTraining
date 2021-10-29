@@ -3,7 +3,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Breath Training</string>
-    <string name="nav_header_subtitle">googleplay@jeisfeld.de</string>
+    <string name="nav_header_subtitle">breathtraining@jeisfeld.de</string>
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="menu_exercise">Exercise</string>
