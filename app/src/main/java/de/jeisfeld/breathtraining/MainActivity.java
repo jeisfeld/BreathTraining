@@ -111,5 +111,4 @@ public class MainActivity extends AppCompatActivity {
 		unregisterReceiver(mServiceReceiver);
 		SoundPlayer.releaseInstance(MediaTrigger.ACTIVITY);
 	}
-
 }

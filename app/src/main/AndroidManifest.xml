@@ -30,6 +30,7 @@
             android:name="de.jeisfeld.breathtraining.exercise.service.ExerciseService"
             android:enabled="true"
             android:exported="false"
+            android:process=":de.jeisfeld.breathtraining.ExerciseService"
             android:foregroundServiceType="mediaPlayback" />
 
         <receiver

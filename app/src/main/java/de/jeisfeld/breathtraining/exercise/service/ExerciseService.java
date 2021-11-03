@@ -74,23 +74,11 @@ public class ExerciseService extends Service {
 	/**
 	 * The running threads.
 	 */
-	private final List<ExerciseAnimationThread> mRunningThreads = new ArrayList<>();
-	/**
-	 * Flag indicating if exercise is pausing.
-	 */
-	private boolean mIsPausing = false;
-	/**
-	 * Flag indicating if exercise is skipping to next breath.
-	 */
-	private boolean mIsSkipping = false;
-	/**
-	 * The current exercise step.
-	 */
-	private ExerciseStep mExerciseStep = null;
+	private final static List<ExerciseAnimationThread> RUNNING_THREADS = new ArrayList<>();
 	/**
 	 * The service query receiver.
 	 */
-	private ServiceQueryReceiver mServiceQueryReceiver;
+	private ServiceQueryReceiver mServiceQueryReceiver = null;
 
 	/**
 	 * Trigger the exercise service.
@@ -151,61 +139,52 @@ public class ExerciseService extends Service {
 		final ServiceCommand serviceCommand = (ServiceCommand) intent.getSerializableExtra(EXTRA_SERVICE_COMMAND);
 		final ExerciseData exerciseData = ExerciseData.fromIntent(intent);
 		assert exerciseData != null;
-
 		switch (serviceCommand) {
 		case START:
 			ExerciseAnimationThread newThread = new ExerciseAnimationThread(exerciseData);
-			synchronized (mRunningThreads) {
-				mIsPausing = false;
-				mIsSkipping = false;
-				mRunningThreads.notifyAll();
-				if (mRunningThreads.size() > 0) {
-					mRunningThreads.get(mRunningThreads.size() - 1).stopExercise();
+			synchronized (RUNNING_THREADS) {
+				RUNNING_THREADS.notifyAll();
+				if (RUNNING_THREADS.size() > 0) {
+					RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).stopExercise();
 				}
-				mRunningThreads.add(newThread);
+				RUNNING_THREADS.add(newThread);
 			}
 			newThread.start();
 			break;
 		case STOP:
-			synchronized (mRunningThreads) {
-				mIsPausing = false;
-				mIsSkipping = false;
-				mRunningThreads.notifyAll();
-				if (mRunningThreads.size() > 0) {
-					mRunningThreads.get(mRunningThreads.size() - 1).stopExercise();
+			synchronized (RUNNING_THREADS) {
+				RUNNING_THREADS.notifyAll();
+				if (RUNNING_THREADS.size() > 0) {
+					RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).stopExercise();
 				}
 			}
 			break;
 		case PAUSE:
-			synchronized (mRunningThreads) {
-				mIsPausing = true;
-				mIsSkipping = true;
-				if (mRunningThreads.size() > 0) {
-					mRunningThreads.get(mRunningThreads.size() - 1).interrupt();
-					mRunningThreads.get(mRunningThreads.size() - 1).updateExerciseData(exerciseData, PlayStatus.PAUSED, false);
+			synchronized (RUNNING_THREADS) {
+				if (RUNNING_THREADS.size() > 0) {
+					RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).pause(exerciseData);
+					RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).updateExerciseData(exerciseData, PlayStatus.PAUSED, false);
 				}
 			}
 			break;
 		case RESUME:
-			synchronized (mRunningThreads) {
-				if (mRunningThreads.size() > 0) {
-					mRunningThreads.get(mRunningThreads.size() - 1).updateExerciseData(exerciseData, PlayStatus.PLAYING, true);
+			synchronized (RUNNING_THREADS) {
+				if (RUNNING_THREADS.size() > 0) {
+					RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).resume(exerciseData);
 				}
-				mIsPausing = false;
-				mRunningThreads.notifyAll();
+				RUNNING_THREADS.notifyAll();
 			}
 			break;
 		case SKIP:
-			synchronized (mRunningThreads) {
-				if (mRunningThreads.size() > 0) {
-					mIsSkipping = true;
-					mRunningThreads.get(mRunningThreads.size() - 1).interrupt();
+			synchronized (RUNNING_THREADS) {
+				if (RUNNING_THREADS.size() > 0) {
+					RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).skipStep();
 				}
 			}
 			break;
 		default:
 		}
-		startNotification(exerciseData, mExerciseStep, serviceCommand);
+		startNotification(exerciseData, null, serviceCommand, serviceCommand == ServiceCommand.PAUSE);
 		return START_STICKY;
 	}
 
@@ -251,11 +230,13 @@ public class ExerciseService extends Service {
 	/**
 	 * Start the notification.
 	 *
-	 * @param exerciseData The exercise data.
-	 * @param exerciseStep The current exercise step.
+	 * @param exerciseData   The exercise data.
+	 * @param exerciseStep   The current exercise step.
 	 * @param serviceCommand The service command.
+	 * @param isPausing      Flag indicating if the exercise is pausing.
 	 */
-	private void startNotification(final ExerciseData exerciseData, final ExerciseStep exerciseStep, final ServiceCommand serviceCommand) {
+	private void startNotification(final ExerciseData exerciseData, final ExerciseStep exerciseStep,
+								   final ServiceCommand serviceCommand, final boolean isPausing) {
 		Intent notificationIntent = new Intent(this, MainActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		exerciseData.addToIntent(notificationIntent);
@@ -273,8 +254,8 @@ public class ExerciseService extends Service {
 		remoteViews.setTextViewText(R.id.text_step_name, getString(contentTextResource));
 		remoteViews.setTextViewText(R.id.text_step_number,
 				exerciseStep == null || exerciseStep.getRepetition() == 0 ? "" : exerciseStep.getRepetition() + "/" + exerciseData.getRepetitions());
-		remoteViews.setViewVisibility(R.id.button_resume, mIsPausing ? View.VISIBLE : View.INVISIBLE);
-		remoteViews.setViewVisibility(R.id.button_pause, mIsPausing ? View.INVISIBLE : View.VISIBLE);
+		remoteViews.setViewVisibility(R.id.button_resume, isPausing ? View.VISIBLE : View.INVISIBLE);
+		remoteViews.setViewVisibility(R.id.button_pause, isPausing ? View.INVISIBLE : View.VISIBLE);
 
 		PendingIntent pendingIntentStop;
 		PendingIntent pendingIntentPause;
@@ -326,10 +307,10 @@ public class ExerciseService extends Service {
 		if (wakeLock != null && wakeLock.isHeld()) {
 			wakeLock.release();
 		}
-		synchronized (mRunningThreads) {
+		synchronized (RUNNING_THREADS) {
 			// noinspection SuspiciousMethodCalls
-			mRunningThreads.remove(thread);
-			if (mRunningThreads.size() == 0) {
+			RUNNING_THREADS.remove(thread);
+			if (RUNNING_THREADS.size() == 0) {
 				SoundPlayer.releaseInstance(MediaTrigger.SERVICE);
 				stopService(new Intent(this, ExerciseService.class));
 				sendBroadcast(ServiceReceiver.createIntent(PlayStatus.STOPPED, null));
@@ -416,6 +397,18 @@ public class ExerciseService extends Service {
 		 * Flag indicating if the thread is stopping.
 		 */
 		private boolean mIsStopping = false;
+		/**
+		 * Flag indicating if exercise is skipping to next breath.
+		 */
+		private boolean mIsSkipping = false;
+		/**
+		 * Flag indicating if exercise is pausing.
+		 */
+		private boolean mIsPausing = false;
+		/**
+		 * The current exercise step.
+		 */
+		private ExerciseStep mExerciseStep = null;
 
 		/**
 		 * Constructor.
@@ -446,7 +439,42 @@ public class ExerciseService extends Service {
 		 */
 		private void stopExercise() {
 			mIsStopping = true;
+			mIsPausing = false;
+			mIsSkipping = false;
 			interrupt();
+		}
+
+		/**
+		 * Skip a step.
+		 */
+		private void skipStep() {
+			mIsSkipping = true;
+			interrupt();
+		}
+
+		/**
+		 * Pause the thread
+		 *
+		 * @param exerciseData The new exercise data.
+		 */
+		private void pause(ExerciseData exerciseData) {
+			mIsPausing = true;
+			mIsSkipping = true;
+			interrupt();
+			updateExerciseData(exerciseData, PlayStatus.PAUSED, false);
+			sendBroadcast(ServiceReceiver.createIntent(PlayStatus.PAUSED, mExerciseStep));
+		}
+
+		/**
+		 * Resume the thread
+		 *
+		 * @param exerciseData The new exercise data.
+		 */
+		private void resume(ExerciseData exerciseData) {
+			interrupt();
+			updateExerciseData(exerciseData, PlayStatus.PLAYING, true);
+			mIsPausing = false;
+			sendBroadcast(ServiceReceiver.createIntent(PlayStatus.PLAYING, mExerciseStep));
 		}
 
 		@Override
@@ -462,7 +490,7 @@ public class ExerciseService extends Service {
 						SoundPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE, mExerciseData.getSoundType(),
 								mExerciseStep.getStepType(), getDelay(mExerciseStep), mExerciseStep.getSoundDuration());
 						sendBroadcast(ServiceReceiver.createIntent(null, mExerciseStep));
-						startNotification(mExerciseData, mExerciseStep, null);
+						startNotification(mExerciseData, mExerciseStep, null, mIsPausing);
 						// noinspection BusyWait
 						Thread.sleep(mExerciseStep.getDuration() - getDelay(mExerciseStep));
 					}
@@ -472,11 +500,11 @@ public class ExerciseService extends Service {
 							return;
 						}
 					}
-					synchronized (mRunningThreads) {
+					synchronized (RUNNING_THREADS) {
 						if (mIsPausing) {
 							SoundPlayer.getInstance().pause();
 							try {
-								mRunningThreads.wait();
+								RUNNING_THREADS.wait();
 							}
 							catch (InterruptedException e) {
 								if (mIsStopping) {
@@ -494,7 +522,7 @@ public class ExerciseService extends Service {
 				SoundPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE, mExerciseData.getSoundType(), StepType.RELAX);
 				mExerciseStep = new ExerciseStep(StepType.RELAX, 0, 0);
 				sendBroadcast(ServiceReceiver.createIntent(PlayStatus.PLAYING, mExerciseStep));
-				startNotification(mExerciseData, mExerciseStep, null);
+				startNotification(mExerciseData, mExerciseStep, null, mIsPausing);
 				Thread.sleep(END_WAIT_DURATION);
 			}
 			catch (InterruptedException e) {
@@ -540,10 +568,11 @@ public class ExerciseService extends Service {
 			}
 			ExerciseService exerciseService = mExerciseService.get();
 			if (exerciseService != null) {
-				synchronized (exerciseService.mRunningThreads) {
-					if (exerciseService.mRunningThreads.size() > 0) {
-						ExerciseData exerciseData = exerciseService.mRunningThreads.get(exerciseService.mRunningThreads.size() - 1).mExerciseData;
-						Intent serviceIntent = ServiceReceiver.createIntent(exerciseData.getPlayStatus(), exerciseService.mExerciseStep);
+				synchronized (RUNNING_THREADS) {
+					if (RUNNING_THREADS.size() > 0) {
+						ExerciseData exerciseData = RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).mExerciseData;
+						ExerciseStep exerciseStep = RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).mExerciseStep;
+						Intent serviceIntent = ServiceReceiver.createIntent(exerciseData.getPlayStatus(), exerciseStep);
 						exerciseData.addToIntent(serviceIntent);
 						exerciseService.sendBroadcast(serviceIntent);
 					}

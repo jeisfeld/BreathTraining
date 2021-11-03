@@ -15,6 +15,7 @@
     <string name="button_pause">Pause</string>
     <string name="button_resume">Resume</string>
     <string name="button_ok">OK</string>
+    <string name="button_continue">Continue</string>
     <string name="button_cancel">Cancel</string>
     <string name="button_rename">Rename</string>
     <string name="button_delete">Delete</string>
@@ -106,6 +107,8 @@
     <string name="message_measurement_too_short">Measurement was too short.\n\nInhale and exhale at least once before stopping the measurement.</string>
     <string name="message_measurement_result_1">Last measurement result:\n\nAverage breath duration: %1$.1fs\n\nIn-out relation: %2$.0f%%</string>
     <string name="message_measurement_result_2">For another measurement, press “Start” after breathing out.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
+    <string name="message_disable_doze">Please disable doze mode for this app. This allows the exercises running reliably in background.</string>
+    <string name="title_disable_doze">Disable doze</string>
 
     <string name="title_did_not_save_empty_name">Missing Name</string>
     <string name="message_did_not_save_empty_name">Did not save - name was empty.</string>
