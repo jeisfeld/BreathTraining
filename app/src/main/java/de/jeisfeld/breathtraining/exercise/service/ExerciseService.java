@@ -67,10 +67,6 @@ public class ExerciseService extends Service {
 	 * The id of the notification channel.
 	 */
 	public static final String CHANNEL_ID = "BreathTrainingChannel";
-	/**
-	 * The wait duration at the end, before closing.
-	 */
-	private static final long END_WAIT_DURATION = 2000;
 
 	/**
 	 * The running threads.
@@ -529,7 +525,7 @@ public class ExerciseService extends Service {
 				mExerciseStep = new ExerciseStep(StepType.RELAX, 0, 0);
 				sendBroadcast(ServiceReceiver.createIntent(PlayStatus.PLAYING, mExerciseStep));
 				startNotification(mExerciseData, mExerciseStep, null, mIsPausing);
-				Thread.sleep(END_WAIT_DURATION);
+				Thread.sleep(mExerciseData.getSoundType().getRelaxDuration());
 			}
 			catch (InterruptedException e) {
 				// Ignore

@@ -10,15 +10,15 @@ public enum SoundType {
 	/**
 	 * No sound.
 	 */
-	NONE(0, 0, 0, 0),
+	NONE(0, 0, 0, 0, 0),
 	/**
 	 * Words.
 	 */
-	WORDS(R.raw.a_inhale, R.raw.a_exhale, R.raw.a_hold, R.raw.a_relax),
+	WORDS(R.raw.a_inhale, R.raw.a_exhale, R.raw.a_hold, R.raw.a_relax, 2000),
 	/**
 	 * Breath.
 	 */
-	BREATH(R.raw.br_inhale, R.raw.br_exhale, R.raw.br_hold, R.raw.a_relax);
+	BREATH(R.raw.br_inhale, R.raw.br_exhale, R.raw.br_hold, R.raw.br_relax, 6000);
 
 	/**
 	 * The sound resource for inhale.
@@ -36,6 +36,10 @@ public enum SoundType {
 	 * The sound resource for relax.
 	 */
 	private final int mRelaxResource;
+	/**
+	 * The relax duration.
+	 */
+	private final long mRelaxDuration;
 
 	/**
 	 * Constructor.
@@ -43,13 +47,15 @@ public enum SoundType {
 	 * @param inhaleResource The inhale resource.
 	 * @param exhaleResource The exhale resource.
 	 * @param holdResource   The hold resource.
-	 * @param relaxResource The relax resource.
+	 * @param relaxResource  The relax resource.
+	 * @param relaxDuration  The relax duration.
 	 */
-	SoundType(final int inhaleResource, final int exhaleResource, final int holdResource, final int relaxResource) {
+	SoundType(final int inhaleResource, final int exhaleResource, final int holdResource, final int relaxResource, final long relaxDuration) {
 		mInhaleResource = inhaleResource;
 		mExhaleResource = exhaleResource;
 		mHoldResource = holdResource;
 		mRelaxResource = relaxResource;
+		mRelaxDuration = relaxDuration;
 	}
 
 	/**
@@ -73,5 +79,14 @@ public enum SoundType {
 		default:
 			return 0;
 		}
+	}
+
+	/**
+	 * Get the relax duration.
+	 *
+	 * @return The relax duration.
+	 */
+	public long getRelaxDuration() {
+		return mRelaxDuration;
 	}
 }
