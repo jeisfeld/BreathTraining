@@ -7,5 +7,9 @@ public enum ExerciseType {
 	/**
 	 * Standard breath training.
 	 */
-	STANDARD
+	STANDARD,
+	/**
+	 * Combination of exercises.
+	 */
+	COMBINED
 }

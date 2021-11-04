@@ -19,12 +19,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import de.jeisfeld.breathtraining.databinding.ActivityMainBinding;
-import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
+import de.jeisfeld.breathtraining.exercise.combined.CombinedExerciseViewModel;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService.ServiceQueryReceiver;
 import de.jeisfeld.breathtraining.exercise.service.ServiceReceiver;
+import de.jeisfeld.breathtraining.exercise.single.SingleExerciseViewModel;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
 import de.jeisfeld.breathtraining.sound.SoundPlayer;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
@@ -53,25 +54,30 @@ public class MainActivity extends AppCompatActivity {
 				PreferenceUtil.getSharedPreferenceIntString(R.string.key_pref_night_mode, R.string.pref_default_night_mode));
 		DrawerLayout drawer = mBinding.drawerLayout;
 		NavigationView navigationView = mBinding.navView;
-		// Passing each menu ID as a set of Ids because each
-		// menu should be considered as top level destinations.
-		mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_exercise).setOpenableLayout(drawer).build();
+
+		mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_single_exercise, R.id.nav_combined_exercise)
+				.setOpenableLayout(drawer).build();
 		NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 		NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 		NavigationUI.setupWithNavController(navigationView, navController);
 
-		ExerciseViewModel exerciseViewModel = new ViewModelProvider(this).get(ExerciseViewModel.class);
+		SingleExerciseViewModel singleExerciseViewModel = new ViewModelProvider(this).get(SingleExerciseViewModel.class);
+		CombinedExerciseViewModel combinedExerciseViewModel = new ViewModelProvider(this).get(CombinedExerciseViewModel.class);
 
-		mServiceReceiver = new ServiceReceiver(new Handler(), exerciseViewModel);
+		mServiceReceiver = new ServiceReceiver(new Handler(), singleExerciseViewModel, combinedExerciseViewModel);
 		registerReceiver(mServiceReceiver, new IntentFilter(ServiceReceiver.RECEIVER_ACTION));
 
-		ExerciseData exerciseData = ExerciseData.fromIntent(getIntent());
+		ExerciseData exerciseData = (ExerciseData) getIntent().getSerializableExtra(ServiceReceiver.EXTRA_EXERCISE_DATA);
 		if (exerciseData != null) {
 			ExerciseStep exerciseStep = (ExerciseStep) getIntent().getSerializableExtra(ServiceReceiver.EXTRA_EXERCISE_STEP);
-			exerciseViewModel.updateFromExerciseData(exerciseData, exerciseStep);
+			singleExerciseViewModel.updateFromExerciseData(exerciseData);
+			singleExerciseViewModel.updateExerciseStep(exerciseStep);
+			combinedExerciseViewModel.updateFromExerciseData(exerciseData);
+			combinedExerciseViewModel.updateExerciseStep(exerciseStep);
 		}
 
-		exerciseViewModel.deleteNameIfNotMatching();
+		singleExerciseViewModel.deleteNameIfNotMatching();
+		combinedExerciseViewModel.deleteNameIfNotMatching();
 
 		sendBroadcast(new Intent(ServiceQueryReceiver.RECEIVER_ACTION));
 	}
@@ -79,22 +85,22 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	public final boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
-		ExerciseViewModel exerciseViewModel = new ViewModelProvider(this).get(ExerciseViewModel.class);
+		SingleExerciseViewModel singleExerciseViewModel = new ViewModelProvider(this).get(SingleExerciseViewModel.class);
 
 		MenuItem menuItemPlay = menu.findItem(R.id.action_play);
 		MenuItem menuItemPause = menu.findItem(R.id.action_pause);
 
 		menuItemPlay.setOnMenuItemClickListener(item -> {
-			exerciseViewModel.play(MainActivity.this);
+			singleExerciseViewModel.play(MainActivity.this);
 			return true;
 		});
 
 		menuItemPause.setOnMenuItemClickListener(item -> {
-			exerciseViewModel.pause(MainActivity.this);
+			singleExerciseViewModel.pause(MainActivity.this);
 			return true;
 		});
 
-		exerciseViewModel.getPlayStatus().observe(MainActivity.this, playStatus -> {
+		singleExerciseViewModel.getPlayStatus().observe(MainActivity.this, playStatus -> {
 			menuItemPause.setVisible(playStatus == PlayStatus.PLAYING);
 			menuItemPlay.setVisible(playStatus != PlayStatus.PLAYING);
 		});

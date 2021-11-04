@@ -1,7 +1,5 @@
 package de.jeisfeld.breathtraining.exercise.data;
 
-import android.content.Intent;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,9 +9,9 @@ import de.jeisfeld.breathtraining.sound.SoundType;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
 /**
- * Exercise data for hold exercise.
+ * Exercise data for standard breath exercise.
  */
-public class StandardExerciseData extends ExerciseData {
+public class StandardExerciseData extends SingleExerciseData {
 	/**
 	 * The serial version UID.
 	 */
@@ -209,25 +207,8 @@ public class StandardExerciseData extends ExerciseData {
 	}
 
 	@Override
-	public final void addToIntent(final Intent serviceIntent) {
-		super.addToIntent(serviceIntent);
-		serviceIntent.putExtra(EXTRA_BREATH_END_DURATION, mBreathEndDuration);
-		serviceIntent.putExtra(EXTRA_IN_OUT_RELATION, mInOutRelation);
-		serviceIntent.putExtra(EXTRA_HOLD_BREATH_IN, mHoldBreathIn);
-		serviceIntent.putExtra(EXTRA_HOLD_IN_START_DURATION, mHoldInStartDuration);
-		serviceIntent.putExtra(EXTRA_HOLD_IN_END_DURATION, mHoldInEndDuration);
-		serviceIntent.putExtra(EXTRA_HOLD_IN_POSITION, mHoldInPosition);
-		serviceIntent.putExtra(EXTRA_HOLD_BREATH_OUT, mHoldBreathOut);
-		serviceIntent.putExtra(EXTRA_HOLD_OUT_START_DURATION, mHoldOutStartDuration);
-		serviceIntent.putExtra(EXTRA_HOLD_OUT_END_DURATION, mHoldOutEndDuration);
-		serviceIntent.putExtra(EXTRA_HOLD_OUT_POSITION, mHoldOutPosition);
-		serviceIntent.putExtra(EXTRA_HOLD_VARIATION, mHoldVariation);
-	}
-
-	@Override
-	public final void store(final String name) {
-		super.store(name);
-		PreferenceUtil.setIndexedSharedPreferenceInt(R.string.key_stored_exercise_type, getId(), ExerciseType.STANDARD.ordinal());
+	public final boolean store(final String name) {
+		final boolean isNew = super.store(name);
 		PreferenceUtil.setIndexedSharedPreferenceLong(R.string.key_stored_breath_end_duration, getId(), mBreathEndDuration);
 		PreferenceUtil.setIndexedSharedPreferenceDouble(R.string.key_stored_in_out_relation, getId(), mInOutRelation);
 		PreferenceUtil.setIndexedSharedPreferenceBoolean(R.string.key_stored_hold_breath_in, getId(), mHoldBreathIn);
@@ -239,6 +220,7 @@ public class StandardExerciseData extends ExerciseData {
 		PreferenceUtil.setIndexedSharedPreferenceLong(R.string.key_stored_hold_out_end_duration, getId(), mHoldOutEndDuration);
 		PreferenceUtil.setIndexedSharedPreferenceInt(R.string.key_stored_hold_out_position, getId(), mHoldOutPosition.ordinal());
 		PreferenceUtil.setIndexedSharedPreferenceDouble(R.string.key_stored_hold_variation, getId(), mHoldVariation);
+		return isNew;
 	}
 
 	/**
@@ -255,6 +237,9 @@ public class StandardExerciseData extends ExerciseData {
 
 	@Override
 	protected final ExerciseStep[] getStepsForRepetition(final int repetition) {
+		if (repetition > getRepetitions()) {
+			return null;
+		}
 		long currentBreathDuration = calculateDuration(getBreathStartDuration(), mBreathEndDuration, repetition);
 		List<ExerciseStep> exerciseSteps = new ArrayList<>();
 

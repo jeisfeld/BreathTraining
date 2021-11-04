@@ -9,18 +9,6 @@
     android:paddingTop="@dimen/list_vertical_margin"
     android:paddingBottom="@dimen/list_vertical_margin">
 
-    <ImageButton
-        android:id="@+id/imageViewPlayExercise"
-        android:layout_width="@dimen/button_height"
-        android:layout_height="@dimen/button_height"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:layout_marginEnd="@dimen/list_horizontal_margin"
-        android:contentDescription="@string/button_start"
-        android:src="@drawable/ic_button_start"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/textViewColorName"
         android:layout_width="0dp"
@@ -33,7 +21,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/imageViewEdit"
         app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/imageViewPlayExercise"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/fragment_padding"
+    tools:ignore="RtlSymmetry">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:height="@dimen/button_height"
+        android:text="@string/button_start"
+        android:textColor="@color/color_button_text"
+        android:textSize="@dimen/text_normal"
+        app:icon="@drawable/ic_button_start"
+        app:iconTint="@color/color_button_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_stop"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:height="@dimen/button_height"
+        android:text="@string/button_stop"
+        android:textColor="@color/color_button_text"
+        android:textSize="@dimen/text_normal"
+        android:visibility="invisible"
+        app:icon="@drawable/ic_button_stop"
+        app:iconTint="@color/color_button_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/button_pause"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_pause"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:height="@dimen/button_height"
+        android:text="@string/button_pause"
+        android:textColor="@color/color_button_text"
+        android:textSize="@dimen/text_normal"
+        android:visibility="invisible"
+        app:icon="@drawable/ic_button_pause"
+        app:iconTint="@color/color_button_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/button_stop" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_resume"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:height="@dimen/button_height"
+        android:text="@string/button_resume"
+        android:textColor="@color/color_button_text"
+        android:textSize="@dimen/text_normal"
+        android:visibility="invisible"
+        app:icon="@drawable/ic_button_start"
+        app:iconTint="@color/color_button_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/button_pause" />
+
+    <TableRow
+        android:id="@+id/tableRowSoundType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/button_start"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|start"
+            android:layout_weight="@integer/selector_label_width"
+            android:text="@string/text_sound_type"
+            android:textSize="@dimen/text_large" />
+
+        <Spinner
+            android:id="@+id/spinnerSoundType"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/seekbar_height"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="@integer/selector_spinner_width" />
+    </TableRow>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:height="@dimen/button_height"
+        android:text="@string/button_add_step"
+        android:textColor="@color/color_button_text"
+        android:textSize="@dimen/text_normal"
+        app:icon="@drawable/ic_button_add_step"
+        app:iconTint="@color/color_button_text"
+        app:layout_constraintBottom_toTopOf="@id/tableRowSoundType"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_breathe"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:height="@dimen/button_height"
+        android:text=""
+        android:textColor="@color/color_button_text"
+        android:textSize="@dimen/text_xxlarge"
+        android:visibility="invisible"
+        app:iconTint="@color/color_button_text"
+        app:layout_constraintBottom_toTopOf="@id/button_start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewExerciseName"
+        android:layout_width="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="@dimen/seekbar_height"
+        android:layout_gravity="center_vertical|start"
+        android:layout_weight="@integer/selector_spinner_width"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/non_seekbar_left_padding"
+        android:textSize="@dimen/text_normal"
+        tools:ignore="RtlSymmetry" />
+
+    <ImageView
+        android:id="@+id/imageViewStore"
+        android:layout_width="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="@dimen/seekbar_height"
+        android:layout_gravity="center_vertical|start"
+        android:layout_weight="11"
+        android:contentDescription="@string/button_save"
+        android:src="@drawable/ic_menu_stored_exercises" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewStoredExercises"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/button_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageViewStore"
+        app:layout_constraintVertical_bias="0" />
+</androidx.constraintlayout.widget.ConstraintLayout>

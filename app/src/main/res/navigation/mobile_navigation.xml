@@ -3,23 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_exercise">
+    app:startDestination="@+id/nav_single_exercise">
 
     <fragment
-        android:id="@+id/nav_exercise"
-        android:name="de.jeisfeld.breathtraining.exercise.ExerciseFragment"
-        android:label="@string/menu_exercise"
-        tools:layout="@layout/fragment_exercise">
-        <action
-            android:id="@+id/action_nav_exercise_to_nav_stored_exercises"
-            app:destination="@id/nav_stored_exercises" />
-        <action
-            android:id="@+id/action_nav_exercise_to_nav_measure"
-            app:destination="@id/nav_measure" />
-        <action
-            android:id="@+id/action_nav_exercise_to_nav_settings"
-            app:destination="@id/nav_settings" />
-    </fragment>
+        android:id="@+id/nav_single_exercise"
+        android:name="de.jeisfeld.breathtraining.exercise.single.SingleExerciseFragment"
+        android:label="@string/menu_single_exercise"
+        tools:layout="@layout/fragment_single_exercise" />
+
+    <fragment
+        android:id="@+id/nav_combined_exercise"
+        android:name="de.jeisfeld.breathtraining.exercise.combined.CombinedExerciseFragment"
+        android:label="@string/menu_combined_exercise"
+        tools:layout="@layout/fragment_single_exercise" />
 
     <fragment
         android:id="@+id/nav_measure"
@@ -32,9 +28,6 @@
         android:name="de.jeisfeld.breathtraining.repository.StoredExercisesFragment"
         android:label="@string/menu_stored_exercises"
         tools:layout="@layout/fragment_stored_exercises">
-        <action
-            android:id="@+id/action_nav_stored_exercises_to_nav_exercise_2"
-            app:destination="@id/nav_edit_exercise" />
     </fragment>
 
     <fragment
@@ -43,9 +36,15 @@
         android:label="@string/menu_settings" />
 
     <fragment
-        android:id="@+id/nav_edit_exercise"
-        android:name="de.jeisfeld.breathtraining.exercise.EditExerciseFragment"
-        android:label="@string/menu_exercise"
-        tools:layout="@layout/fragment_exercise" />
+        android:id="@+id/nav_edit_single_exercise"
+        android:name="de.jeisfeld.breathtraining.exercise.single.EditSingleExerciseFragment"
+        android:label="@string/menu_single_exercise"
+        tools:layout="@layout/fragment_single_exercise" />
+
+    <fragment
+        android:id="@+id/nav_edit_combined_exercise"
+        android:name="de.jeisfeld.breathtraining.exercise.combined.EditCombinedExerciseFragment"
+        android:label="@string/menu_combined_exercise"
+        tools:layout="@layout/fragment_combined_exercise" />
 
 </navigation>

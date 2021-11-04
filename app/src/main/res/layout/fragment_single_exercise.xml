@@ -5,18 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/fragment_padding"
-    tools:context=".exercise.ExerciseFragment">
+    tools:context=".exercise.single.SingleExerciseFragment">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:height="@dimen/button_height"
-        android:textColor="@color/color_button_text"
-        app:iconTint="@color/color_button_text"
         android:text="@string/button_start"
+        android:textColor="@color/color_button_text"
         android:textSize="@dimen/text_normal"
-        app:icon="@drawable/ic_button_start_light"
+        app:icon="@drawable/ic_button_start"
+        app:iconTint="@color/color_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -28,11 +28,11 @@
         android:layout_marginEnd="4dp"
         android:height="@dimen/button_height"
         android:text="@string/button_stop"
-        android:textSize="@dimen/text_normal"
         android:textColor="@color/color_button_text"
-        app:iconTint="@color/color_button_text"
+        android:textSize="@dimen/text_normal"
         android:visibility="invisible"
         app:icon="@drawable/ic_button_stop"
+        app:iconTint="@color/color_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/button_pause"
         app:layout_constraintHorizontal_weight="1"
@@ -42,14 +42,14 @@
         android:id="@+id/button_pause"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/color_button_text"
-        app:iconTint="@color/color_button_text"
         android:layout_marginStart="4dp"
         android:height="@dimen/button_height"
         android:text="@string/button_pause"
+        android:textColor="@color/color_button_text"
         android:textSize="@dimen/text_normal"
         android:visibility="invisible"
         app:icon="@drawable/ic_button_pause"
+        app:iconTint="@color/color_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
@@ -62,13 +62,44 @@
         android:height="@dimen/button_height"
         android:text="@string/button_resume"
         android:textColor="@color/color_button_text"
-        app:iconTint="@color/color_button_text"
         android:textSize="@dimen/text_normal"
         android:visibility="invisible"
-        app:icon="@drawable/ic_button_start_light"
+        app:icon="@drawable/ic_button_start"
+        app:iconTint="@color/color_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/button_pause" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_cancel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:height="@dimen/button_height"
+        android:text="@string/button_cancel"
+        android:textColor="@color/color_button_text"
+        android:textSize="@dimen/text_normal"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/button_save"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_save"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:height="@dimen/button_height"
+        android:text="@string/button_save"
+        android:textColor="@color/color_button_text"
+        android:textSize="@dimen/text_normal"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/button_cancel" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_breathe"
@@ -76,9 +107,9 @@
         android:layout_height="0dp"
         android:height="@dimen/button_height"
         android:text=""
+        android:textColor="@color/color_button_text"
         android:textSize="@dimen/text_xxlarge"
         android:visibility="invisible"
-        android:textColor="@color/color_button_text"
         app:iconTint="@color/color_button_text"
         app:layout_constraintBottom_toTopOf="@id/button_start"
         app:layout_constraintEnd_toEndOf="parent"
@@ -125,6 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_label_width"
+                    android:labelFor="@id/editTextExerciseName"
                     android:text="@string/text_exercise_name"
                     android:textSize="@dimen/text_normal" />
 
@@ -135,6 +167,33 @@
                     android:layout_gravity="center_vertical|start"
                     android:layout_weight="@integer/selector_spinner_width"
                     android:gravity="center_vertical"
+                    android:paddingStart="@dimen/non_seekbar_left_padding"
+                    android:textSize="@dimen/text_normal"
+                    tools:ignore="RtlSymmetry" />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRowExerciseNameEdit"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|start"
+                    android:layout_weight="@integer/selector_label_width"
+                    android:labelFor="@id/editTextExerciseName"
+                    android:text="@string/text_step_name"
+                    android:textSize="@dimen/text_normal" />
+
+                <EditText
+                    android:id="@+id/editTextExerciseName"
+                    android:layout_width="0dp"
+                    android:layout_gravity="center_vertical|start"
+                    android:layout_weight="@integer/selector_spinner_width"
+                    android:autofillHints=""
+                    android:gravity="center_vertical"
+                    android:inputType="text"
                     android:paddingStart="@dimen/non_seekbar_left_padding"
                     android:textSize="@dimen/text_normal"
                     tools:ignore="RtlSymmetry" />

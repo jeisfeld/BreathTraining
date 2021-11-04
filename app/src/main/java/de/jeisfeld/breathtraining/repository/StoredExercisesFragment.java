@@ -5,21 +5,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import de.jeisfeld.breathtraining.R;
+import de.jeisfeld.breathtraining.databinding.FragmentStoredExercisesBinding;
 
 /**
  * Fragment for management of stored exercises.
  */
 public class StoredExercisesFragment extends Fragment {
+	/**
+	 * The fragment binding.
+	 */
+	private FragmentStoredExercisesBinding mBinding;
+
 	@Override
-	public final View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-		View root = inflater.inflate(R.layout.fragment_stored_exercises, container, false);
-		final RecyclerView recyclerView = root.findViewById(R.id.recyclerViewStoredExercises);
+	public final View onCreateView(@NonNull final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+		mBinding = FragmentStoredExercisesBinding.inflate(inflater, container, false);
+		final RecyclerView recyclerView = mBinding.recyclerViewStoredExercises;
 		populateRecyclerView(recyclerView);
-		return root;
+		return mBinding.getRoot();
 	}
 
 	/**

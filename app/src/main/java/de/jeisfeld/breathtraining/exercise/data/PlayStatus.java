@@ -15,5 +15,9 @@ public enum PlayStatus {
 	/**
 	 * Paused.
 	 */
-	PAUSED
+	PAUSED,
+	/**
+	 * Other exercise type is playing.
+	 */
+	OTHER
 }

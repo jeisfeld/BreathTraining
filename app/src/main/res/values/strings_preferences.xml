@@ -28,6 +28,7 @@
     <string name="key_hold_out_position">hold_out_position</string>
     <string name="key_hold_variation">hold_variation</string>
     <string name="key_sound_type">sound_type</string>
+    <string name="key_single_exercise_ids">single_exercise_ids</string>
 
     <!-- Keys for stored exercise settings -->
     <string name="key_stored_exercise_max_id">stored_exercise_max_id</string>
@@ -48,6 +49,7 @@
     <string name="key_stored_hold_out_position">stored_hold_out_position</string>
     <string name="key_stored_hold_variation">stored_hold_variation</string>
     <string name="key_stored_sound_type">stored_sound_type</string>
+    <string name="key_stored_single_exercise_ids">stored_single_exercise_ids</string>
 
 
     <!-- Titles and defaults of preferences -->

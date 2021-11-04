@@ -14,8 +14,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import de.jeisfeld.breathtraining.R;
-import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
 import de.jeisfeld.breathtraining.exercise.data.StepType;
+import de.jeisfeld.breathtraining.exercise.single.SingleExerciseViewModel;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
 import de.jeisfeld.breathtraining.sound.SoundPlayer;
 import de.jeisfeld.breathtraining.sound.SoundType;
@@ -210,14 +210,14 @@ public class MeasureViewModel extends ViewModel {
 	 * @param activity The triggering activity.
 	 */
 	protected void useValues(final FragmentActivity activity) {
-		ExerciseViewModel exerciseViewModel = new ViewModelProvider(activity).get(ExerciseViewModel.class);
+		SingleExerciseViewModel singleExerciseViewModel = new ViewModelProvider(activity).get(SingleExerciseViewModel.class);
 		if (mAverageDuration != null && mAverageInOutRelation != null) {
-			exerciseViewModel.updateBreathStartDuration(mAverageDuration);
-			exerciseViewModel.updateBreathEndDuration(mAverageDuration);
-			exerciseViewModel.updateInOutRelation(mAverageInOutRelation);
+			singleExerciseViewModel.updateBreathStartDuration(mAverageDuration);
+			singleExerciseViewModel.updateBreathEndDuration(mAverageDuration);
+			singleExerciseViewModel.updateInOutRelation(mAverageInOutRelation);
 
 			NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_content_main);
-			navController.popBackStack(R.id.nav_exercise, false);
+			navController.popBackStack(R.id.nav_single_exercise, false);
 		}
 	}
 

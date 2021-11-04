@@ -2,6 +2,7 @@ package de.jeisfeld.breathtraining.repository;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,14 +25,21 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import de.jeisfeld.breathtraining.MainActivity;
 import de.jeisfeld.breathtraining.R;
-import de.jeisfeld.breathtraining.exercise.EditExerciseViewModel;
-import de.jeisfeld.breathtraining.exercise.ExerciseViewModel;
+import de.jeisfeld.breathtraining.exercise.combined.CombinedExerciseViewModel;
+import de.jeisfeld.breathtraining.exercise.combined.EditCombinedExerciseFragment;
+import de.jeisfeld.breathtraining.exercise.combined.EditCombinedExerciseViewModel;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
+import de.jeisfeld.breathtraining.exercise.data.ExerciseType;
 import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService.ServiceCommand;
+import de.jeisfeld.breathtraining.exercise.single.EditSingleExerciseFragment;
+import de.jeisfeld.breathtraining.exercise.single.EditSingleExerciseViewModel;
+import de.jeisfeld.breathtraining.exercise.single.SingleExerciseViewModel;
 import de.jeisfeld.breathtraining.util.DialogUtil;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
+
+import static de.jeisfeld.breathtraining.exercise.single.EditSingleExerciseFragment.EXTRA_EXERCISE_ID;
 
 /**
  * Adapter for the RecyclerView that allows to sort stored exercises.
@@ -138,11 +146,22 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 						ExerciseService.triggerExerciseService(activity, ServiceCommand.STOP, exerciseData);
 					}
 					// PlayStatus might get updated in repository, but should not be used here
-					NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_content_main);
-					navController.navigate(R.id.nav_edit_exercise);
 					exerciseData.updatePlayStatus(PlayStatus.STOPPED);
-					ExerciseViewModel exerciseViewModel = new ViewModelProvider((MainActivity) activity).get(EditExerciseViewModel.class);
-					exerciseViewModel.updateFromExerciseData(exerciseData, null);
+
+					if (exerciseData.getType() == ExerciseType.COMBINED) {
+						EditCombinedExerciseFragment.navigate(v, exerciseData.getId());
+						CombinedExerciseViewModel combinedExerciseViewModel =
+								new ViewModelProvider((MainActivity) activity).get(EditCombinedExerciseViewModel.class);
+						combinedExerciseViewModel.updateFromExerciseData(exerciseData);
+					}
+					else {
+						EditSingleExerciseFragment.navigate(v, false, exerciseData.getId(), 0);
+						SingleExerciseViewModel singleExerciseViewModel =
+								new ViewModelProvider((MainActivity) activity).get(EditSingleExerciseViewModel.class);
+						singleExerciseViewModel.updateFromExerciseData(exerciseData);
+					}
+
+
 				}
 			}
 		});
@@ -152,14 +171,26 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 			if (fragment != null) {
 				Activity activity = fragment.getActivity();
 				if (activity instanceof MainActivity) {
-					NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment_content_main);
+					NavController navController = Navigation.findNavController(v);
 					// delete and re-create fragment, in order to prevent recovery of old screen status
-					navController.popBackStack(R.id.nav_exercise, true);
-					navController.navigate(R.id.nav_exercise);
-
-					ExerciseViewModel exerciseViewModel = new ViewModelProvider((MainActivity) activity).get(ExerciseViewModel.class);
 					exerciseData.updatePlayStatus(PlayStatus.PLAYING);
-					exerciseViewModel.updateFromExerciseData(exerciseData, null);
+
+					if (exerciseData.getType() == ExerciseType.COMBINED) {
+						navController.popBackStack(R.id.nav_combined_exercise, true);
+						Bundle bundle = new Bundle();
+						bundle.putInt(EXTRA_EXERCISE_ID, exerciseData.getId());
+						navController.navigate(R.id.nav_combined_exercise, bundle);
+						CombinedExerciseViewModel combinedExerciseViewModel =
+								new ViewModelProvider((MainActivity) activity).get(CombinedExerciseViewModel.class);
+						combinedExerciseViewModel.updateFromExerciseData(exerciseData);
+					}
+					else {
+						navController.popBackStack(R.id.nav_single_exercise, true);
+						navController.navigate(R.id.nav_single_exercise);
+						SingleExerciseViewModel singleExerciseViewModel =
+								new ViewModelProvider((MainActivity) activity).get(SingleExerciseViewModel.class);
+						singleExerciseViewModel.updateFromExerciseData(exerciseData);
+					}
 
 					ExerciseService.triggerExerciseService(v.getContext(), ServiceCommand.START, exerciseData);
 				}
@@ -205,7 +236,7 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 	/**
 	 * The view holder of the items.
 	 */
-	public class MyViewHolder extends RecyclerView.ViewHolder {
+	public static class MyViewHolder extends RecyclerView.ViewHolder {
 		/**
 		 * The whole item.
 		 */

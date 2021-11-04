@@ -16,7 +16,7 @@
         android:textColor="@color/color_button_text"
         app:iconTint="@color/color_button_text"
         android:textSize="@dimen/text_normal"
-        app:icon="@drawable/ic_button_start_light"
+        app:icon="@drawable/ic_button_start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -1,4 +1,4 @@
-package de.jeisfeld.breathtraining.exercise;
+package de.jeisfeld.breathtraining.exercise.single;
 
 import android.content.Context;
 
@@ -13,6 +13,7 @@ import de.jeisfeld.breathtraining.exercise.data.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseType;
 import de.jeisfeld.breathtraining.exercise.data.HoldPosition;
 import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
+import de.jeisfeld.breathtraining.exercise.data.SingleExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.StandardExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.StepType;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService;
@@ -24,7 +25,7 @@ import de.jeisfeld.breathtraining.util.PreferenceUtil;
 /**
  * The view model for the fragment.
  */
-public class ExerciseViewModel extends ViewModel {
+public class SingleExerciseViewModel extends ViewModel {
 	/**
 	 * The exercise type.
 	 */
@@ -147,7 +148,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	protected void updateExerciseType(final ExerciseType exerciseType) {
 		mExerciseType.setValue(exerciseType);
-		PreferenceUtil.setSharedPreferenceInt(R.string.key_exercise_type, exerciseType.ordinal());
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceInt(R.string.key_exercise_type, exerciseType.ordinal());
+		}
 	}
 
 	/**
@@ -166,7 +169,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	protected void updateExerciseName(final String exerciseName) {
 		mExerciseName.setValue(exerciseName);
-		PreferenceUtil.setSharedPreferenceString(R.string.key_exercise_name, exerciseName);
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceString(R.string.key_exercise_name, exerciseName);
+		}
 	}
 
 	/**
@@ -185,7 +190,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	protected void updateRepetitions(final int repetitions) {
 		mRepetitions.setValue(repetitions);
-		PreferenceUtil.setSharedPreferenceInt(R.string.key_repetitions, repetitions);
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceInt(R.string.key_repetitions, repetitions);
+		}
 	}
 
 	/**
@@ -205,7 +212,9 @@ public class ExerciseViewModel extends ViewModel {
 	public void updateBreathStartDuration(final long breathStartDuration) {
 		final Long oldStartDuration = mBreathStartDuration.getValue();
 		mBreathStartDuration.setValue(breathStartDuration);
-		PreferenceUtil.setSharedPreferenceLong(R.string.key_breath_start_duration, breathStartDuration);
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceLong(R.string.key_breath_start_duration, breathStartDuration);
+		}
 		if (Objects.equals(mBreathStartDuration.getValue(), mBreathEndDuration.getValue())
 				|| Objects.equals(oldStartDuration, mBreathEndDuration.getValue())) {
 			updateBreathEndDuration(breathStartDuration);
@@ -228,7 +237,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	public void updateBreathEndDuration(final long breathEndDuration) {
 		mBreathEndDuration.setValue(breathEndDuration);
-		PreferenceUtil.setSharedPreferenceLong(R.string.key_breath_end_duration, breathEndDuration);
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceLong(R.string.key_breath_end_duration, breathEndDuration);
+		}
 	}
 
 	/**
@@ -247,7 +258,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	public void updateInOutRelation(final double inOutRelation) {
 		mInOutRelation.setValue(inOutRelation);
-		PreferenceUtil.setSharedPreferenceDouble(R.string.key_in_out_relation, inOutRelation);
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceDouble(R.string.key_in_out_relation, inOutRelation);
+		}
 	}
 
 	/**
@@ -266,7 +279,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	protected void updateHoldBreathIn(final boolean holdBreathIn) {
 		mHoldBreathIn.setValue(holdBreathIn);
-		PreferenceUtil.setSharedPreferenceBoolean(R.string.key_hold_breath_in, holdBreathIn);
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceBoolean(R.string.key_hold_breath_in, holdBreathIn);
+		}
 	}
 
 	/**
@@ -286,7 +301,9 @@ public class ExerciseViewModel extends ViewModel {
 	protected void updateHoldInStartDuration(final long holdInStartDuration) {
 		final Long oldStartDuration = mHoldInStartDuration.getValue();
 		mHoldInStartDuration.setValue(holdInStartDuration);
-		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_in_start_duration, holdInStartDuration);
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_in_start_duration, holdInStartDuration);
+		}
 		if (Objects.equals(mHoldInStartDuration.getValue(), mHoldInEndDuration.getValue())
 				|| Objects.equals(oldStartDuration, mHoldInEndDuration.getValue())) {
 			updateHoldInEndDuration(holdInStartDuration);
@@ -309,7 +326,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	protected void updateHoldInEndDuration(final long holdInEndDuration) {
 		mHoldInEndDuration.setValue(holdInEndDuration);
-		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_in_end_duration, holdInEndDuration);
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_in_end_duration, holdInEndDuration);
+		}
 	}
 
 	/**
@@ -328,7 +347,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	protected void updateHoldInPosition(final HoldPosition holdInPosition) {
 		mHoldInPosition.setValue(holdInPosition);
-		PreferenceUtil.setSharedPreferenceInt(R.string.key_hold_in_position, holdInPosition.ordinal());
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceInt(R.string.key_hold_in_position, holdInPosition.ordinal());
+		}
 	}
 
 	/**
@@ -347,7 +368,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	protected void updateHoldBreathOut(final boolean holdBreathOut) {
 		mHoldBreathOut.setValue(holdBreathOut);
-		PreferenceUtil.setSharedPreferenceBoolean(R.string.key_hold_breath_out, holdBreathOut);
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceBoolean(R.string.key_hold_breath_out, holdBreathOut);
+		}
 	}
 
 	/**
@@ -367,7 +390,9 @@ public class ExerciseViewModel extends ViewModel {
 	protected void updateHoldOutStartDuration(final long holdOutStartDuration) {
 		final Long oldStartDuration = mHoldOutStartDuration.getValue();
 		mHoldOutStartDuration.setValue(holdOutStartDuration);
-		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_out_start_duration, holdOutStartDuration);
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_out_start_duration, holdOutStartDuration);
+		}
 		if (Objects.equals(mHoldOutStartDuration.getValue(), mHoldOutEndDuration.getValue())
 				|| Objects.equals(oldStartDuration, mHoldOutEndDuration.getValue())) {
 			updateHoldOutEndDuration(holdOutStartDuration);
@@ -390,7 +415,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	protected void updateHoldOutEndDuration(final long holdOutEndDuration) {
 		mHoldOutEndDuration.setValue(holdOutEndDuration);
-		PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_out_end_duration, holdOutEndDuration);
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceLong(R.string.key_hold_out_end_duration, holdOutEndDuration);
+		}
 	}
 
 	/**
@@ -409,7 +436,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	protected void updateHoldOutPosition(final HoldPosition holdOutPosition) {
 		mHoldOutPosition.setValue(holdOutPosition);
-		PreferenceUtil.setSharedPreferenceInt(R.string.key_hold_out_position, holdOutPosition.ordinal());
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceInt(R.string.key_hold_out_position, holdOutPosition.ordinal());
+		}
 	}
 
 	/**
@@ -428,7 +457,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	protected void updateHoldVariation(final double holdVariation) {
 		mHoldVariation.setValue(holdVariation);
-		PreferenceUtil.setSharedPreferenceDouble(R.string.key_hold_variation, holdVariation);
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceDouble(R.string.key_hold_variation, holdVariation);
+		}
 	}
 
 	/**
@@ -447,7 +478,9 @@ public class ExerciseViewModel extends ViewModel {
 	 */
 	protected void updateSoundType(final SoundType soundType) {
 		mSoundType.setValue(soundType);
-		PreferenceUtil.setSharedPreferenceInt(R.string.key_sound_type, soundType.ordinal());
+		if (cacheValues()) {
+			PreferenceUtil.setSharedPreferenceInt(R.string.key_sound_type, soundType.ordinal());
+		}
 	}
 
 	/**
@@ -505,6 +538,15 @@ public class ExerciseViewModel extends ViewModel {
 	}
 
 	/**
+	 * Method giving information if selected values should be cached.
+	 *
+	 * @return True if cached.
+	 */
+	protected boolean cacheValues() {
+		return true;
+	}
+
+	/**
 	 * Start playing.
 	 *
 	 * @param context The context.
@@ -548,7 +590,7 @@ public class ExerciseViewModel extends ViewModel {
 	 * Convert seekbar value to value in ms for duration.
 	 *
 	 * @param seekbarValue the seekbar value
-	 * @param allowZero flag indicating if value 0 is allowed
+	 * @param allowZero    flag indicating if value 0 is allowed
 	 * @return The value
 	 */
 	protected static long durationSeekbarToValue(final int seekbarValue, final boolean allowZero) {
@@ -638,7 +680,7 @@ public class ExerciseViewModel extends ViewModel {
 	 *
 	 * @return the exercise data.
 	 */
-	public ExerciseData getExerciseData() {
+	public SingleExerciseData getExerciseData() {
 		ExerciseType exerciseType = mExerciseType.getValue();
 		if (exerciseType == null) {
 			return null;
@@ -655,40 +697,36 @@ public class ExerciseViewModel extends ViewModel {
 	 * Update the model from exercise data.
 	 *
 	 * @param exerciseData The exercise data.
-	 * @param exerciseStep The exercise step.
 	 */
-	public void updateFromExerciseData(final ExerciseData exerciseData, final ExerciseStep exerciseStep) {
+	public void updateFromExerciseData(final ExerciseData exerciseData) {
 		if (exerciseData == null) {
 			return;
 		}
 		ExerciseType exerciseType = exerciseData.getType();
-		if (exerciseType == null) {
+		if (exerciseType == null || exerciseType == ExerciseType.COMBINED) {
+			updatePlayStatus(exerciseData.getPlayStatus() == PlayStatus.STOPPED ? PlayStatus.STOPPED : PlayStatus.OTHER);
 			return;
 		}
 		updateExerciseType(exerciseType);
 		updateExerciseName(exerciseData.getName());
 
 		updateRepetitions(exerciseData.getRepetitions());
-		updateBreathStartDuration(exerciseData.getBreathStartDuration());
 		updateSoundType(exerciseData.getSoundType());
 		updatePlayStatus(exerciseData.getPlayStatus());
 
-		StandardExerciseData holdData = (StandardExerciseData) exerciseData;
-		updateBreathEndDuration(holdData.getBreathEndDuration());
-		updateInOutRelation(holdData.getInOutRelation());
-		updateHoldBreathIn(holdData.isHoldBreathIn());
-		updateHoldInStartDuration(holdData.getHoldInStartDuration());
-		updateHoldInEndDuration(holdData.getHoldInEndDuration());
-		updateHoldInPosition(holdData.getHoldInPosition());
-		updateHoldBreathOut(holdData.isHoldBreathOut());
-		updateHoldOutStartDuration(holdData.getHoldOutStartDuration());
-		updateHoldOutEndDuration(holdData.getHoldOutEndDuration());
-		updateHoldOutPosition(holdData.getHoldOutPosition());
-		updateHoldVariation(holdData.getHoldVariation());
-
-		if (exerciseStep != null) {
-			updateExerciseStep(exerciseStep);
-		}
+		StandardExerciseData standardExerciseData = (StandardExerciseData) exerciseData;
+		updateBreathStartDuration(standardExerciseData.getBreathStartDuration());
+		updateBreathEndDuration(standardExerciseData.getBreathEndDuration());
+		updateInOutRelation(standardExerciseData.getInOutRelation());
+		updateHoldBreathIn(standardExerciseData.isHoldBreathIn());
+		updateHoldInStartDuration(standardExerciseData.getHoldInStartDuration());
+		updateHoldInEndDuration(standardExerciseData.getHoldInEndDuration());
+		updateHoldInPosition(standardExerciseData.getHoldInPosition());
+		updateHoldBreathOut(standardExerciseData.isHoldBreathOut());
+		updateHoldOutStartDuration(standardExerciseData.getHoldOutStartDuration());
+		updateHoldOutEndDuration(standardExerciseData.getHoldOutEndDuration());
+		updateHoldOutPosition(standardExerciseData.getHoldOutPosition());
+		updateHoldVariation(standardExerciseData.getHoldVariation());
 	}
 
 }

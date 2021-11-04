@@ -9,6 +9,7 @@ import java.util.Map;
 
 import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
+import de.jeisfeld.breathtraining.exercise.data.SingleExerciseData;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
 /**
@@ -20,9 +21,13 @@ public final class StoredExercisesRegistry {
 	 */
 	private static StoredExercisesRegistry mInstance = null;
 	/**
-	 * The stored colors.
+	 * The stored exercises.
 	 */
 	private final SparseArray<ExerciseData> mStoredExercises = new SparseArray<>();
+	/**
+	 * The current single exercises as part of combined exercise.
+	 */
+	private final SparseArray<SingleExerciseData> mSingleExercises = new SparseArray<>();
 	/**
 	 * Map from exercise name to exercise.
 	 */
@@ -35,8 +40,15 @@ public final class StoredExercisesRegistry {
 		List<Integer> exerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_stored_exercise_ids);
 		for (int exerciseId : exerciseIds) {
 			ExerciseData exerciseData = ExerciseData.fromId(exerciseId);
-			mStoredExercises.put(exerciseId, exerciseData);
-			mExerciseNameMap.put(exerciseData.getName(), exerciseData);
+			if (exerciseData != null) {
+				mStoredExercises.put(exerciseId, exerciseData);
+				mExerciseNameMap.put(exerciseData.getName(), exerciseData);
+			}
+		}
+		List<Integer> singleExerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_single_exercise_ids);
+		for (int exerciseId : singleExerciseIds) {
+			SingleExerciseData exerciseData = (SingleExerciseData) ExerciseData.fromId(exerciseId);
+			mSingleExercises.put(exerciseId, exerciseData);
 		}
 	}
 
@@ -65,6 +77,16 @@ public final class StoredExercisesRegistry {
 	}
 
 	/**
+	 * Get a single exercise by its id.
+	 *
+	 * @param singleExerciseId The single exercise id.
+	 * @return The single exercise.
+	 */
+	public SingleExerciseData getSingleExercise(final int singleExerciseId) {
+		return mSingleExercises.get(singleExerciseId);
+	}
+
+	/**
 	 * Get a stored exercise by its name.
 	 *
 	 * @param exerciseName The stored exercise name.
@@ -88,6 +110,44 @@ public final class StoredExercisesRegistry {
 	}
 
 	/**
+	 * Store exerciseData as current child exercise.
+	 *
+	 * @param exerciseData     The exercise data.
+	 * @param exerciseId       The exercise id.
+	 * @param parentExerciseId The parent exercise id.
+	 */
+	public void storeAsChild(final SingleExerciseData exerciseData, final int exerciseId, final int parentExerciseId) {
+		exerciseData.setId(exerciseId);
+		exerciseData.store(exerciseData.getName());
+		int newExerciseId = exerciseData.getId();
+
+		if (parentExerciseId == 0) {
+			List<Integer> singleExerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_single_exercise_ids);
+			if (!singleExerciseIds.contains(newExerciseId)) {
+				singleExerciseIds.add(newExerciseId);
+				PreferenceUtil.setSharedPreferenceIntList(R.string.key_single_exercise_ids, singleExerciseIds);
+			}
+		}
+		else {
+			List<Integer> singleExerciseIds =
+					PreferenceUtil.getIndexedSharedPreferenceIntList(R.string.key_stored_single_exercise_ids, parentExerciseId);
+			if (!singleExerciseIds.contains(newExerciseId)) {
+				singleExerciseIds.add(newExerciseId);
+				PreferenceUtil.setIndexedSharedPreferenceIntList(R.string.key_stored_single_exercise_ids, parentExerciseId, singleExerciseIds);
+			}
+		}
+
+		List<Integer> storedExerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_stored_exercise_ids);
+		if (storedExerciseIds.contains(newExerciseId)) {
+			storedExerciseIds.remove((Integer) newExerciseId);
+			PreferenceUtil.setSharedPreferenceIntList(R.string.key_stored_exercise_ids, storedExerciseIds);
+		}
+
+		mSingleExercises.put(newExerciseId, exerciseData);
+	}
+
+
+	/**
 	 * Rename a stored exercise in local store.
 	 *
 	 * @param exerciseData the stored exercise.
@@ -105,17 +165,24 @@ public final class StoredExercisesRegistry {
 	}
 
 	/**
-	 * Remove a stored exercise from local store.
+	 * Remove the exercise of a certain id.
 	 *
-	 * @param exerciseData The stored exercise to be deleted.
+	 * @param exerciseId The id.
+	 * @param isChild    Flag indicating if this is child exercise.
 	 */
-	public void remove(final ExerciseData exerciseData) {
-		int exerciseId = exerciseData.getId();
+	public void removeExerciseOfId(final int exerciseId, final boolean isChild) {
 		mStoredExercises.remove(exerciseId);
 
-		List<Integer> exerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_stored_exercise_ids);
-		exerciseIds.remove((Integer) exerciseId);
-		PreferenceUtil.setSharedPreferenceIntList(R.string.key_stored_exercise_ids, exerciseIds);
+		if (isChild) {
+			List<Integer> exerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_single_exercise_ids);
+			exerciseIds.remove((Integer) exerciseId);
+			PreferenceUtil.setSharedPreferenceIntList(R.string.key_single_exercise_ids, exerciseIds);
+		}
+		else {
+			List<Integer> exerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_stored_exercise_ids);
+			exerciseIds.remove((Integer) exerciseId);
+			PreferenceUtil.setSharedPreferenceIntList(R.string.key_stored_exercise_ids, exerciseIds);
+		}
 
 		PreferenceUtil.removeIndexedSharedPreference(R.string.key_stored_exercise_name, exerciseId);
 		PreferenceUtil.removeIndexedSharedPreference(R.string.key_stored_exercise_type, exerciseId);
@@ -134,6 +201,22 @@ public final class StoredExercisesRegistry {
 		PreferenceUtil.removeIndexedSharedPreference(R.string.key_stored_hold_variation, exerciseId);
 		PreferenceUtil.removeIndexedSharedPreference(R.string.key_stored_sound_type, exerciseId);
 
+		List<Integer> childIds = PreferenceUtil.getIndexedSharedPreferenceIntList(R.string.key_stored_single_exercise_ids, exerciseId);
+		for (Integer childId : childIds) {
+			if (childId != null) {
+				removeExerciseOfId(childId, true);
+			}
+		}
+		PreferenceUtil.removeIndexedSharedPreference(R.string.key_stored_single_exercise_ids, exerciseId);
+	}
+
+	/**
+	 * Remove a stored exercise from local store.
+	 *
+	 * @param exerciseData The stored exercise to be deleted.
+	 */
+	public void remove(final ExerciseData exerciseData) {
+		removeExerciseOfId(exerciseData.getId(), false);
 		mExerciseNameMap.remove(exerciseData.getName());
 	}
 

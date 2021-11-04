@@ -1,13 +1,13 @@
-package de.jeisfeld.breathtraining.repository;
+package de.jeisfeld.breathtraining.exercise.combined;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * Callback for handling drag of stored exercises.
+ * Callback for handling drag of combined exercise parts.
  */
-public class StoredExercisesItemMoveCallback extends ItemTouchHelper.Callback {
+public class CombinedExerciseItemMoveCallback extends ItemTouchHelper.Callback {
 	/**
 	 * The adapter.
 	 */
@@ -18,7 +18,7 @@ public class StoredExercisesItemMoveCallback extends ItemTouchHelper.Callback {
 	 *
 	 * @param adapter The adapter.
 	 */
-	public StoredExercisesItemMoveCallback(final ItemTouchHelperContract adapter) {
+	public CombinedExerciseItemMoveCallback(final ItemTouchHelperContract adapter) {
 		mAdapter = adapter;
 	}
 
@@ -53,8 +53,8 @@ public class StoredExercisesItemMoveCallback extends ItemTouchHelper.Callback {
 	@Override
 	public final void onSelectedChanged(final RecyclerView.ViewHolder viewHolder, final int actionState) {
 		if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-			if (viewHolder instanceof StoredExercisesViewAdapter.MyViewHolder) {
-				StoredExercisesViewAdapter.MyViewHolder myViewHolder = (StoredExercisesViewAdapter.MyViewHolder) viewHolder;
+			if (viewHolder instanceof CombinedExerciseViewAdapter.MyViewHolder) {
+				CombinedExerciseViewAdapter.MyViewHolder myViewHolder = (CombinedExerciseViewAdapter.MyViewHolder) viewHolder;
 				mAdapter.onRowSelected(myViewHolder);
 			}
 		}
@@ -64,8 +64,8 @@ public class StoredExercisesItemMoveCallback extends ItemTouchHelper.Callback {
 	@Override
 	public final void clearView(@NonNull final RecyclerView recyclerView, @NonNull final RecyclerView.ViewHolder viewHolder) {
 		super.clearView(recyclerView, viewHolder);
-		if (viewHolder instanceof StoredExercisesViewAdapter.MyViewHolder) {
-			StoredExercisesViewAdapter.MyViewHolder myViewHolder = (StoredExercisesViewAdapter.MyViewHolder) viewHolder;
+		if (viewHolder instanceof CombinedExerciseViewAdapter.MyViewHolder) {
+			CombinedExerciseViewAdapter.MyViewHolder myViewHolder = (CombinedExerciseViewAdapter.MyViewHolder) viewHolder;
 			mAdapter.onRowClear(myViewHolder);
 		}
 	}
@@ -87,14 +87,14 @@ public class StoredExercisesItemMoveCallback extends ItemTouchHelper.Callback {
 		 *
 		 * @param myViewHolder The holder of the selected view.
 		 */
-		void onRowSelected(StoredExercisesViewAdapter.MyViewHolder myViewHolder);
+		void onRowSelected(CombinedExerciseViewAdapter.MyViewHolder myViewHolder);
 
 		/**
 		 * Callback called when a row is deselected.
 		 *
 		 * @param myViewHolder The holder of the selected view.
 		 */
-		void onRowClear(StoredExercisesViewAdapter.MyViewHolder myViewHolder);
+		void onRowClear(CombinedExerciseViewAdapter.MyViewHolder myViewHolder);
 	}
 
 }

@@ -3,11 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/nav_main"
+        android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_exercise"
-            android:icon="@drawable/ic_menu_training"
-            android:title="@string/menu_exercise" />
+            android:id="@+id/nav_single_exercise"
+            android:icon="@drawable/ic_menu_single_exercise"
+            android:title="@string/menu_single_exercise" />
+        <item
+            android:id="@+id/nav_combined_exercise"
+            android:icon="@drawable/ic_menu_combined_exercise"
+            android:title="@string/menu_combined_exercise" />
+    </group>
+    <group
+        android:id="@+id/nav_secondary"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_measure"
             android:icon="@drawable/ic_menu_measure"
@@ -21,4 +31,5 @@
             android:icon="@drawable/ic_menu_settings"
             android:title="@string/menu_settings" />
     </group>
+
 </menu>
