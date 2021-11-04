@@ -1,5 +1,6 @@
 package de.jeisfeld.breathtraining;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -25,6 +27,7 @@ import de.jeisfeld.breathtraining.exercise.service.ExerciseService.ServiceQueryR
 import de.jeisfeld.breathtraining.exercise.service.ServiceReceiver;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
 import de.jeisfeld.breathtraining.sound.SoundPlayer;
+import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
 /**
  * Main activity of the app.
@@ -45,8 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
 		ActivityMainBinding mBinding = ActivityMainBinding.inflate(getLayoutInflater());
 		setContentView(mBinding.getRoot());
-
 		setSupportActionBar(mBinding.appBarMain.toolbar);
+		AppCompatDelegate.setDefaultNightMode(
+				PreferenceUtil.getSharedPreferenceIntString(R.string.key_pref_night_mode, R.string.pref_default_night_mode));
 		DrawerLayout drawer = mBinding.drawerLayout;
 		NavigationView navigationView = mBinding.navView;
 		// Passing each menu ID as a set of Ids because each
@@ -110,5 +114,10 @@ public class MainActivity extends AppCompatActivity {
 		super.onDestroy();
 		unregisterReceiver(mServiceReceiver);
 		SoundPlayer.releaseInstance(MediaTrigger.ACTIVITY);
+	}
+
+	@Override
+	protected final void attachBaseContext(final Context newBase) {
+		super.attachBaseContext(Application.createContextWrapperForLocale(newBase));
 	}
 }

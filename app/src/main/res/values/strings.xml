@@ -9,6 +9,7 @@
     <string name="menu_exercise">Exercise</string>
     <string name="menu_measure">Measure</string>
     <string name="menu_stored_exercises">Stored Exercises</string>
+    <string name="menu_settings">Settings</string>
 
     <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>
@@ -67,42 +68,6 @@
     <string name="text_edit_hold_out_end_duration">Set hold out end duration (s)</string>
     <string name="text_edit_hold_variation">Set hold variation (%%)</string>
 
-    <string name="key_exercise_name">exercise_name</string>
-    <string name="key_exercise_type">exercise_type</string>
-    <string name="key_repetitions">repetitions</string>
-    <string name="key_breath_start_duration">breath_start_duration</string>
-    <string name="key_breath_end_duration">breath_end_duration</string>
-    <string name="key_in_out_relation">in_out_relation</string>
-    <string name="key_hold_breath_in">hold_breath_in</string>
-    <string name="key_hold_in_start_duration">hold_in_start_duration</string>
-    <string name="key_hold_in_end_duration">hold_in_end_duration</string>
-    <string name="key_hold_in_position">hold_in_position</string>
-    <string name="key_hold_breath_out">hold_breath_out</string>
-    <string name="key_hold_out_start_duration">hold_out_start_duration</string>
-    <string name="key_hold_out_end_duration">hold_out_end_duration</string>
-    <string name="key_hold_out_position">hold_out_position</string>
-    <string name="key_hold_variation">hold_variation</string>
-    <string name="key_sound_type">sound_type</string>
-
-    <string name="key_stored_exercise_max_id">stored_exercise_max_id</string>
-    <string name="key_stored_exercise_ids">stored_exercise_ids</string>
-    <string name="key_stored_exercise_name">stored_exercise_name</string>
-    <string name="key_stored_exercise_type">stored_exercise_type</string>
-    <string name="key_stored_repetitions">stored_repetitions</string>
-    <string name="key_stored_breath_start_duration">stored_breath_start_duration</string>
-    <string name="key_stored_breath_end_duration">stored_breath_end_duration</string>
-    <string name="key_stored_in_out_relation">stored_in_out_relation</string>
-    <string name="key_stored_hold_breath_in">stored_hold_breath_in</string>
-    <string name="key_stored_hold_in_start_duration">stored_hold_in_start_duration</string>
-    <string name="key_stored_hold_in_end_duration">stored_hold_in_end_duration</string>
-    <string name="key_stored_hold_in_position">stored_hold_in_position</string>
-    <string name="key_stored_hold_breath_out">stored_hold_breath_out</string>
-    <string name="key_stored_hold_out_start_duration">stored_hold_out_start_duration</string>
-    <string name="key_stored_hold_out_end_duration">stored_hold_out_end_duration</string>
-    <string name="key_stored_hold_out_position">stored_hold_out_position</string>
-    <string name="key_stored_hold_variation">stored_hold_variation</string>
-    <string name="key_stored_sound_type">stored_sound_type</string>
-
     <string name="message_measure">Press “Start” after exhaling to start the measurement of breath duration.\n\nThen press the big full-screen button whenever changing between inhaling and exhaling.</string>
     <string name="message_measurement_too_short">Measurement was too short.\n\nInhale and exhale at least once before stopping the measurement.</string>
     <string name="message_measurement_result_1">Last measurement result:\n\nAverage breath duration: %1$.1fs\n\nIn-out relation: %2$.0f%%</string>
@@ -118,6 +83,21 @@
     <string name="message_dialog_save_exercise">Exercise Name:</string>
     <string name="message_confirm_delete_exercise">Do you want to delete the exercise “%1$s” from the storage?</string>
     <string name="message_confirm_overwrite_exercise">Do you want to overwrite the exercise “%1$s” with new settings?</string>
+
+    <string name="title_dialog_export">Export of preferences</string>
+    <string name="message_dialog_export_overwrite">The export file %1$s is already existing. Do you want to overwrite it?</string>
+    <string name="title_dialog_import">Import of settings</string>
+    <string name="message_dialog_import_missing_file">The settings cannot be imported, because no settings file was found at %1$s</string>
+    <string name="message_dialog_import_overwrite">This will delete all existing settings (devices, stored colors, alarms) and replace them by the imported ones. Do you want to continue?</string>
+    <string name="title_dialog_delete_stored_settings">Delete stored settings</string>
+    <string name="message_dialog_delete_stored_settings">Do you really want to delete stored settings from %1$s?</string>
+    <string name="title_dialog_select_date_for_import">Select date of settings for import</string>
+    <string name="toast_settings_exported">All settings have been exported to file %1$s</string>
+    <string name="toast_settings_export_canceled">The export of settings was canceled</string>
+    <string name="toast_settings_import_canceled">The import of settings was canceled</string>
+    <string name="toast_settings_import_failed">Error when importing settings: %1$s</string>
+    <string name="toast_settings_imported">All settings have been imported</string>
+
 
     <string name="notification_channel">Breath Training</string>
     <string name="notification_title_exercise">Breath Training Exercise</string>

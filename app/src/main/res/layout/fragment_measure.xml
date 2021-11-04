@@ -7,37 +7,43 @@
     android:padding="@dimen/fragment_padding"
     tools:context=".measure.MeasureFragment">
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:height="@dimen/button_height"
         android:text="@string/button_start"
+        android:textColor="@color/color_button_text"
+        app:iconTint="@color/color_button_text"
         android:textSize="@dimen/text_normal"
         app:icon="@drawable/ic_button_start_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_stop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:height="@dimen/button_height"
         android:text="@string/button_stop"
         android:textSize="@dimen/text_normal"
+        android:textColor="@color/color_button_text"
+        app:iconTint="@color/color_button_text"
         android:visibility="invisible"
         app:icon="@drawable/ic_button_stop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_breathe"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:text="@string/text_inhale"
         android:textSize="@dimen/text_xxlarge"
+        android:textColor="@color/color_button_text"
+        app:iconTint="@color/color_button_text"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/button_start"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--    <ListPreference
+            android:defaultValue="@string/pref_default_language"
+            android:entries="@array/pref_list_titles_language"
+            android:entryValues="@array/pref_list_values_language"
+            android:key="@string/key_pref_language"
+            android:title="@string/pref_title_language"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" /> -->
+    <ListPreference
+        android:defaultValue="@string/pref_default_night_mode"
+        android:entries="@array/pref_list_titles_night_mode"
+        android:entryValues="@array/pref_list_values_night_mode"
+        android:key="@string/key_pref_night_mode"
+        android:title="@string/pref_title_night_mode"
+        app:iconSpaceReserved="false"
+        app:useSimpleSummaryProvider="true" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/key_pref_use_wakelock"
+        android:title="@string/pref_title_use_wakelock"
+        app:iconSpaceReserved="false" />
+    <Preference
+        android:key="@string/key_pref_dummy_setting_battery_optimizations"
+        android:title="@string/pref_title_dummy_setting_battery_optimizations"
+        app:iconSpaceReserved="false" />
+    <Preference
+        android:key="@string/key_pref_dummy_export"
+        android:title="@string/pref_title_dummy_export"
+        app:iconSpaceReserved="false" />
+    <Preference
+        android:key="@string/key_pref_dummy_import"
+        android:title="@string/pref_title_dummy_import"
+        app:iconSpaceReserved="false" />
+</PreferenceScreen>

@@ -2,11 +2,17 @@ package de.jeisfeld.breathtraining;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.LocaleList;
 import android.util.Log;
 
 import java.util.Locale;
+
+import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
 /**
  * Utility class to retrieve base application resources.
@@ -31,6 +37,7 @@ public class Application extends android.app.Application {
 	public final void onCreate() {
 		super.onCreate();
 		Application.mContext = getApplicationContext();
+		Application.mContext = Application.createContextWrapperForLocale(getApplicationContext());
 	}
 
 	/**
@@ -68,5 +75,47 @@ public class Application extends android.app.Application {
 			Log.e(Application.TAG, "Did not find application version", e);
 			return 0;
 		}
+	}
+
+	/**
+	 * Get the configured application locale.
+	 *
+	 * @return The configured application locale.
+	 */
+	private static Locale getApplicationLocale() {
+		String languageString = PreferenceUtil.getSharedPreferenceString(R.string.key_pref_language);
+		if (languageString == null || languageString.length() == 0) {
+			languageString = "0";
+			PreferenceUtil.setSharedPreferenceString(R.string.key_pref_language, "0");
+		}
+
+		int languageSetting = Integer.parseInt(languageString);
+		switch (languageSetting) {
+		case 0:
+			return Application.DEFAULT_LOCALE;
+		case 1:
+			return Locale.ENGLISH;
+		default:
+			return Application.DEFAULT_LOCALE;
+		}
+	}
+
+	/**
+	 * Create a ContextWrapper, wrapping the context with a specific locale.
+	 *
+	 * @param context The original context.
+	 * @return The context wrapper.
+	 */
+	public static ContextWrapper createContextWrapperForLocale(final Context context) {
+		Resources res = context.getResources();
+		Configuration configuration = res.getConfiguration();
+		Locale newLocale = Application.getApplicationLocale();
+		configuration.setLocale(newLocale);
+
+		LocaleList localeList = new LocaleList(newLocale);
+		LocaleList.setDefault(localeList);
+		configuration.setLocales(localeList);
+
+		return new ContextWrapper(context.createConfigurationContext(configuration));
 	}
 }

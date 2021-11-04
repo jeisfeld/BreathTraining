@@ -7,11 +7,13 @@
     android:padding="@dimen/fragment_padding"
     tools:context=".exercise.ExerciseFragment">
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:height="@dimen/button_height"
+        android:textColor="@color/color_button_text"
+        app:iconTint="@color/color_button_text"
         android:text="@string/button_start"
         android:textSize="@dimen/text_normal"
         app:icon="@drawable/ic_button_start_light"
@@ -19,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_stop"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -27,6 +29,8 @@
         android:height="@dimen/button_height"
         android:text="@string/button_stop"
         android:textSize="@dimen/text_normal"
+        android:textColor="@color/color_button_text"
+        app:iconTint="@color/color_button_text"
         android:visibility="invisible"
         app:icon="@drawable/ic_button_stop"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,10 +38,12 @@
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_pause"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:textColor="@color/color_button_text"
+        app:iconTint="@color/color_button_text"
         android:layout_marginStart="4dp"
         android:height="@dimen/button_height"
         android:text="@string/button_pause"
@@ -49,12 +55,14 @@
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/button_stop" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_resume"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:height="@dimen/button_height"
         android:text="@string/button_resume"
+        android:textColor="@color/color_button_text"
+        app:iconTint="@color/color_button_text"
         android:textSize="@dimen/text_normal"
         android:visibility="invisible"
         app:icon="@drawable/ic_button_start_light"
@@ -62,7 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/button_pause" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_breathe"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -70,6 +78,8 @@
         android:text=""
         android:textSize="@dimen/text_xxlarge"
         android:visibility="invisible"
+        android:textColor="@color/color_button_text"
+        app:iconTint="@color/color_button_text"
         app:layout_constraintBottom_toTopOf="@id/button_start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_nav_exercise_to_nav_measure"
             app:destination="@id/nav_measure" />
+        <action
+            android:id="@+id/action_nav_exercise_to_nav_settings"
+            app:destination="@id/nav_settings" />
     </fragment>
 
     <fragment
@@ -33,6 +36,11 @@
             android:id="@+id/action_nav_stored_exercises_to_nav_exercise_2"
             app:destination="@id/nav_edit_exercise" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="de.jeisfeld.breathtraining.settings.SettingsFragment"
+        android:label="@string/menu_settings" />
 
     <fragment
         android:id="@+id/nav_edit_exercise"

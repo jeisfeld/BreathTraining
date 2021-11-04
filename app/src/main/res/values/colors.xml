@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_primary_night">#FF5CCCCC</color>
+    <color name="color_primary_night">#FF188888</color>
     <color name="color_primary">#FF3AAAAA</color>
     <color name="color_primary_variant">#FF188888</color>
     <color name="color_secondary">#FFBB86FC</color>
     <color name="color_secondary_variant">#FF6200EE</color>
+    <color name="color_button_text">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

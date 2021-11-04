@@ -33,6 +33,7 @@ import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
 import de.jeisfeld.breathtraining.exercise.data.StepType;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
 import de.jeisfeld.breathtraining.sound.SoundPlayer;
+import de.jeisfeld.breathtraining.util.PreferenceUtil;
 
 /**
  * A service handling Exercises in the background.
@@ -207,11 +208,16 @@ public class ExerciseService extends Service {
 	 */
 	@SuppressLint("WakelockTimeout")
 	private WakeLock acquireWakelock(final Thread thread) {
-		PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-		assert powerManager != null;
-		WakeLock wakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "de.jeisfeld.breathtraining:" + thread.hashCode());
-		wakelock.acquire();
-		return wakelock;
+		if (PreferenceUtil.getSharedPreferenceBoolean(R.string.key_pref_use_wakelock, true)) {
+			PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+			assert powerManager != null;
+			WakeLock wakelock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "de.jeisfeld.breathtraining:" + thread.hashCode());
+			wakelock.acquire();
+			return wakelock;
+		}
+		else {
+			return null;
+		}
 	}
 
 	/**

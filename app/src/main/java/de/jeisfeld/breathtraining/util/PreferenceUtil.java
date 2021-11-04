@@ -3,12 +3,20 @@ package de.jeisfeld.breathtraining.util;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import androidx.preference.PreferenceManager;
 import de.jeisfeld.breathtraining.Application;
+import de.jeisfeld.breathtraining.repository.StoredExercisesRegistry;
 
 /**
  * Utility class for handling the shared preferences.
@@ -620,4 +628,56 @@ public final class PreferenceUtil {
 		return PreferenceUtil.getSharedPreferences().contains(PreferenceUtil.getIndexedPreferenceKey(preferenceId, index));
 	}
 
+	/**
+	 * Get a String containing representation of all shared preferences.
+	 *
+	 * @return A String containing representation of all shared preferences.
+	 */
+	public static byte[] getPreferencesExportByteArray() throws IOException {
+		Map<String, ?> preferenceMap = getSharedPreferences().getAll();
+		ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+		ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream);
+		objectOutputStream.writeObject(preferenceMap);
+		objectOutputStream.close();
+		byteOutputStream.close();
+		return byteOutputStream.toByteArray();
+	}
+
+	/**
+	 * Import preferences from a byte array.
+	 *
+	 * @param byteArray The byte array.
+	 */
+	public static void importFromByteArray(final byte[] byteArray) throws IOException, ClassNotFoundException {
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
+		ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+
+		@SuppressWarnings("unchecked")
+		Map<String, ?> preferences = (Map<String, ?>) objectInputStream.readObject();
+
+		Editor editor = PreferenceUtil.getSharedPreferences().edit();
+		for (String key : getSharedPreferences().getAll().keySet()) {
+			editor.remove(key);
+		}
+		for (Entry<String, ?> entry : preferences.entrySet()) {
+			if (entry.getValue() instanceof Boolean) {
+				editor.putBoolean(entry.getKey(), (Boolean) entry.getValue());
+			}
+			else if (entry.getValue() instanceof Integer) {
+				editor.putInt(entry.getKey(), (Integer) entry.getValue());
+			}
+			else if (entry.getValue() instanceof Long) {
+				editor.putLong(entry.getKey(), (Long) entry.getValue());
+			}
+			else if (entry.getValue() instanceof Float) {
+				editor.putFloat(entry.getKey(), (Float) entry.getValue());
+			}
+			else if (entry.getValue() instanceof String) {
+				editor.putString(entry.getKey(), (String) entry.getValue());
+			}
+		}
+		editor.apply();
+
+		StoredExercisesRegistry.cleanUp();
+	}
 }

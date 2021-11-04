@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="preference_file_key" translatable="false">default</string>
+
+    <!-- Keys for app settings -->
+    <string name="key_pref_language" translatable="false">pref_language</string>
+    <string name="key_pref_use_wakelock" translatable="false">pref_use_wakelock</string>
+    <string name="key_pref_night_mode" translatable="false">pref_night_mode</string>
+    <string name="key_pref_dummy_setting_battery_optimizations" translatable="false">pref_dummy_setting_battery_optimizations</string>
+    <string name="key_pref_dummy_export" translatable="false">pref_dummy_export</string>
+    <string name="key_pref_dummy_import" translatable="false">pref_dummy_import</string>
+
+    <!-- Keys for last exercise settings -->
+    <string name="key_exercise_name">exercise_name</string>
+    <string name="key_exercise_type">exercise_type</string>
+    <string name="key_repetitions">repetitions</string>
+    <string name="key_breath_start_duration">breath_start_duration</string>
+    <string name="key_breath_end_duration">breath_end_duration</string>
+    <string name="key_in_out_relation">in_out_relation</string>
+    <string name="key_hold_breath_in">hold_breath_in</string>
+    <string name="key_hold_in_start_duration">hold_in_start_duration</string>
+    <string name="key_hold_in_end_duration">hold_in_end_duration</string>
+    <string name="key_hold_in_position">hold_in_position</string>
+    <string name="key_hold_breath_out">hold_breath_out</string>
+    <string name="key_hold_out_start_duration">hold_out_start_duration</string>
+    <string name="key_hold_out_end_duration">hold_out_end_duration</string>
+    <string name="key_hold_out_position">hold_out_position</string>
+    <string name="key_hold_variation">hold_variation</string>
+    <string name="key_sound_type">sound_type</string>
+
+    <!-- Keys for stored exercise settings -->
+    <string name="key_stored_exercise_max_id">stored_exercise_max_id</string>
+    <string name="key_stored_exercise_ids">stored_exercise_ids</string>
+    <string name="key_stored_exercise_name">stored_exercise_name</string>
+    <string name="key_stored_exercise_type">stored_exercise_type</string>
+    <string name="key_stored_repetitions">stored_repetitions</string>
+    <string name="key_stored_breath_start_duration">stored_breath_start_duration</string>
+    <string name="key_stored_breath_end_duration">stored_breath_end_duration</string>
+    <string name="key_stored_in_out_relation">stored_in_out_relation</string>
+    <string name="key_stored_hold_breath_in">stored_hold_breath_in</string>
+    <string name="key_stored_hold_in_start_duration">stored_hold_in_start_duration</string>
+    <string name="key_stored_hold_in_end_duration">stored_hold_in_end_duration</string>
+    <string name="key_stored_hold_in_position">stored_hold_in_position</string>
+    <string name="key_stored_hold_breath_out">stored_hold_breath_out</string>
+    <string name="key_stored_hold_out_start_duration">stored_hold_out_start_duration</string>
+    <string name="key_stored_hold_out_end_duration">stored_hold_out_end_duration</string>
+    <string name="key_stored_hold_out_position">stored_hold_out_position</string>
+    <string name="key_stored_hold_variation">stored_hold_variation</string>
+    <string name="key_stored_sound_type">stored_sound_type</string>
+
+
+    <!-- Titles and defaults of preferences -->
+    <string name="pref_title_language">Language</string>
+    <string name="pref_default_language" translatable="false">0</string>
+    <string name="pref_title_use_wakelock">Keep awake on animation</string>
+    <string name="pref_title_night_mode">Dark Mode</string>
+    <string name="pref_default_night_mode" translatable="false">-1</string>
+    <string name="pref_title_dummy_setting_battery_optimizations">Configure battery optimizations</string>
+    <string name="pref_title_dummy_export">Export all settings</string>
+    <string name="pref_title_dummy_import">Import all settings</string>
+
+    <!-- Arrays for list preferences -->
+    <string-array name="pref_list_titles_language">
+        <item>System language</item>
+        <item>English</item>
+    </string-array>
+    <string-array name="pref_list_values_language" translatable="false">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string-array name="pref_list_titles_night_mode">
+        <item>Follow System</item>
+        <item>Bright</item>
+        <item>Dark</item>
+    </string-array>
+    <string-array name="pref_list_values_night_mode" translatable="false">
+        <item>-1</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+</resources>
