@@ -54,7 +54,7 @@ public enum HoldPosition {
 		List<ExerciseStep> result = new ArrayList<>();
 		long stepDuration;
 		long breakDuration;
-		int repetition = originalStep.getRepetition();
+		RepetitionData repetition = originalStep.getRepetition();
 		StepType originalType = originalStep.getStepType();
 		StepType continueType = originalType.getContinueType();
 

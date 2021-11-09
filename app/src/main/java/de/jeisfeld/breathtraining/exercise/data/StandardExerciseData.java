@@ -243,7 +243,8 @@ public class StandardExerciseData extends SingleExerciseData {
 		long currentBreathDuration = calculateDuration(getBreathStartDuration(), mBreathEndDuration, repetition);
 		List<ExerciseStep> exerciseSteps = new ArrayList<>();
 
-		ExerciseStep inhaleStep = new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()), repetition);
+		ExerciseStep inhaleStep = new ExerciseStep(StepType.INHALE, (long) (currentBreathDuration * getInOutRelation()),
+				new RepetitionData(repetition, getRepetitions()));
 		if (mHoldBreathIn) {
 			long holdInDuration = calculateDuration(mHoldInStartDuration, mHoldInEndDuration, repetition);
 			exerciseSteps.addAll(mHoldInPosition.applyHold(inhaleStep, holdInDuration, mHoldVariation));
@@ -252,7 +253,8 @@ public class StandardExerciseData extends SingleExerciseData {
 			exerciseSteps.add(inhaleStep);
 		}
 
-		ExerciseStep exhaleStep = new ExerciseStep(StepType.EXHALE, (long) (currentBreathDuration * (1 - getInOutRelation())), repetition);
+		ExerciseStep exhaleStep = new ExerciseStep(StepType.EXHALE, (long) (currentBreathDuration * (1 - getInOutRelation())),
+				new RepetitionData(repetition, getRepetitions()));
 		if (mHoldBreathOut) {
 			long holdOutDuration = calculateDuration(mHoldOutStartDuration, mHoldOutEndDuration, repetition);
 			exerciseSteps.addAll(mHoldOutPosition.applyHold(exhaleStep, holdOutDuration, mHoldVariation));

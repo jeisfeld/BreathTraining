@@ -59,9 +59,18 @@ public class CombinedExerciseData extends ExerciseData {
 	@Override
 	protected final ExerciseStep[] getStepsForRepetition(final int repetition) {
 		int partialRepetition = repetition;
+		int partCount = 0;
 		for (SingleExerciseData singleExerciseData : mSingleExerciseData) {
+			partCount++;
 			if (partialRepetition <= singleExerciseData.getRepetitions()) {
-				return singleExerciseData.getStepsForRepetition(partialRepetition);
+				ExerciseStep[] exerciseSteps = singleExerciseData.getStepsForRepetition(partialRepetition);
+				for (int i = 0; i < exerciseSteps.length; i++) {
+					ExerciseStep exerciseStep = exerciseSteps[i];
+					exerciseSteps[i] = new ExerciseStep(exerciseStep.getStepType(), exerciseStep.getDuration(), exerciseStep.getSoundDuration(),
+							new RepetitionData(repetition, getRepetitions(), exerciseStep.getRepetition().getCurrentRepetition(),
+									exerciseStep.getRepetition().getTotalRepetitions(), partCount));
+				}
+				return exerciseSteps;
 			}
 			else {
 				partialRepetition -= singleExerciseData.getRepetitions();

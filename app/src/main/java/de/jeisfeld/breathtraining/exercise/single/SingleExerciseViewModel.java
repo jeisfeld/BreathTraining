@@ -13,6 +13,7 @@ import de.jeisfeld.breathtraining.exercise.data.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseType;
 import de.jeisfeld.breathtraining.exercise.data.HoldPosition;
 import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
+import de.jeisfeld.breathtraining.exercise.data.RepetitionData;
 import de.jeisfeld.breathtraining.exercise.data.SingleExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.StandardExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.StepType;
@@ -130,7 +131,7 @@ public class SingleExerciseViewModel extends ViewModel {
 	/**
 	 * The current exercise step.
 	 */
-	private final MutableLiveData<ExerciseStep> mExerciseStep = new MutableLiveData<>(new ExerciseStep(null, 0, 0));
+	private final MutableLiveData<ExerciseStep> mExerciseStep = new MutableLiveData<>(new ExerciseStep(null, 0, new RepetitionData()));
 
 	/**
 	 * Get the exercise type.
@@ -500,7 +501,7 @@ public class SingleExerciseViewModel extends ViewModel {
 	public void updatePlayStatus(final PlayStatus playStatus) {
 		mPlayStatus.setValue(playStatus);
 		if (playStatus == PlayStatus.STOPPED) {
-			mExerciseStep.setValue(new ExerciseStep(null, 0, 0));
+			mExerciseStep.setValue(new ExerciseStep(null, 0, new RepetitionData()));
 		}
 	}
 
@@ -518,13 +519,13 @@ public class SingleExerciseViewModel extends ViewModel {
 	 *
 	 * @return The display string for the number of repetitions.
 	 */
-	protected String getRepetitionString() {
+	protected final String getRepetitionString() {
 		ExerciseStep exerciseStep = mExerciseStep.getValue();
 		if (exerciseStep == null || exerciseStep.getStepType() == StepType.RELAX) {
 			return "";
 		}
 		else {
-			return "(" + exerciseStep.getRepetition() + "/" + mRepetitions.getValue() + ")";
+			return exerciseStep.getRepetition().toString();
 		}
 	}
 
@@ -685,7 +686,7 @@ public class SingleExerciseViewModel extends ViewModel {
 		if (exerciseType == null) {
 			return null;
 		}
-		int repetition = mExerciseStep.getValue() == null ? 0 : mExerciseStep.getValue().getRepetition();
+		int repetition = mExerciseStep.getValue() == null ? 0 : mExerciseStep.getValue().getRepetition().getCurrentRepetition();
 		return new StandardExerciseData(mExerciseName.getValue(), mRepetitions.getValue(), mBreathStartDuration.getValue(),
 				mBreathEndDuration.getValue(), mInOutRelation.getValue(), mHoldBreathIn.getValue(), mHoldInStartDuration.getValue(),
 				mHoldInEndDuration.getValue(), mHoldInPosition.getValue(), mHoldBreathOut.getValue(), mHoldOutStartDuration.getValue(),

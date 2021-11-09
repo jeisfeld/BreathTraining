@@ -30,6 +30,7 @@ import de.jeisfeld.breathtraining.R;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
+import de.jeisfeld.breathtraining.exercise.data.RepetitionData;
 import de.jeisfeld.breathtraining.exercise.data.StepType;
 import de.jeisfeld.breathtraining.sound.MediaTrigger;
 import de.jeisfeld.breathtraining.sound.SoundPlayer;
@@ -255,7 +256,7 @@ public class ExerciseService extends Service {
 		RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.notification);
 		remoteViews.setTextViewText(R.id.text_step_name, getString(contentTextResource));
 		remoteViews.setTextViewText(R.id.text_step_number,
-				exerciseStep == null || exerciseStep.getRepetition() == 0 ? "" : exerciseStep.getRepetition() + "/" + exerciseData.getRepetitions());
+				exerciseStep == null || exerciseStep.getRepetition() == null ? "" : exerciseStep.getRepetition().toString());
 		remoteViews.setViewVisibility(R.id.button_resume, isPausing ? View.VISIBLE : View.INVISIBLE);
 		remoteViews.setViewVisibility(R.id.button_pause, isPausing ? View.INVISIBLE : View.VISIBLE);
 
@@ -522,7 +523,7 @@ public class ExerciseService extends Service {
 
 			try {
 				SoundPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE, mExerciseData.getSoundType(), StepType.RELAX);
-				mExerciseStep = new ExerciseStep(StepType.RELAX, 0, 0);
+				mExerciseStep = new ExerciseStep(StepType.RELAX, 0, new RepetitionData());
 				sendBroadcast(ServiceReceiver.createIntent(PlayStatus.PLAYING, mExerciseStep, mExerciseData));
 				startNotification(mExerciseData, mExerciseStep, null, mIsPausing);
 				Thread.sleep(mExerciseData.getSoundType().getRelaxDuration());

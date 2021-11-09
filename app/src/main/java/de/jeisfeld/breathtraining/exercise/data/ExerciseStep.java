@@ -23,9 +23,9 @@ public class ExerciseStep implements Serializable {
 	 */
 	private final long mSoundDuration;
 	/**
-	 * The repetition number.
+	 * The repetition data.
 	 */
-	private final int mRepetition;
+	private final RepetitionData mRepetition;
 
 	/**
 	 * Constructor.
@@ -33,9 +33,9 @@ public class ExerciseStep implements Serializable {
 	 * @param stepType      The step type.
 	 * @param duration      The duration.
 	 * @param soundDuration The sound duration.
-	 * @param repetition    The repetition number.
+	 * @param repetition    The repetition data.
 	 */
-	public ExerciseStep(final StepType stepType, final long duration, final long soundDuration, final int repetition) {
+	public ExerciseStep(final StepType stepType, final long duration, final long soundDuration, final RepetitionData repetition) {
 		mStepType = stepType;
 		mDuration = duration;
 		mSoundDuration = soundDuration;
@@ -45,11 +45,11 @@ public class ExerciseStep implements Serializable {
 	/**
 	 * Constructor.
 	 *
-	 * @param stepType The step type.
-	 * @param duration The duration.
-	 * @param repetition The repetition number.
+	 * @param stepType   The step type.
+	 * @param duration   The duration.
+	 * @param repetition The repetition data.
 	 */
-	public ExerciseStep(final StepType stepType, final long duration, final int repetition) {
+	public ExerciseStep(final StepType stepType, final long duration, final RepetitionData repetition) {
 		this(stepType, duration, duration, repetition);
 	}
 
@@ -85,7 +85,8 @@ public class ExerciseStep implements Serializable {
 	 *
 	 * @return The repetition number.
 	 */
-	public int getRepetition() {
+	public RepetitionData getRepetition() {
 		return mRepetition;
 	}
+
 }

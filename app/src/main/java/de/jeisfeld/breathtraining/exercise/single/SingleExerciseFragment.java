@@ -534,19 +534,20 @@ public class SingleExerciseFragment extends Fragment {
 		mSingleExerciseViewModel.getRepetitions().observe(getViewLifecycleOwner(), repetitions -> {
 			mBinding.seekBarCurrentRepetition.setMax(repetitions - 1);
 			ExerciseStep exerciseStep = mSingleExerciseViewModel.getExerciseStep().getValue();
-			int currentRepetition = exerciseStep == null ? 0 : exerciseStep.getRepetition();
+			int currentRepetition = exerciseStep == null ? 0 : exerciseStep.getRepetition().getCurrentRepetition();
 			mBinding.seekBarCurrentRepetition.setProgress(Math.max(0, Math.min(currentRepetition - 1, repetitions - 1)));
 		});
 		mSingleExerciseViewModel.getExerciseStep().observe(getViewLifecycleOwner(), exerciseStep -> {
-			mBinding.seekBarCurrentRepetition.setProgress(Math.max(0, exerciseStep.getRepetition() - 1));
-			mBinding.textViewCurrentRepetition.setText(String.format(Locale.getDefault(), "%d", exerciseStep.getRepetition()));
+			mBinding.seekBarCurrentRepetition.setProgress(Math.max(0, exerciseStep.getRepetition().getCurrentRepetition() - 1));
+			mBinding.textViewCurrentRepetition.setText(String.format(Locale.getDefault(), "%d", exerciseStep.getRepetition().getCurrentRepetition()));
 		});
 		mBinding.seekBarCurrentRepetition.setOnSeekBarChangeListener(
 				(OnSeekBarProgressChangedListener) progress -> {
 					ExerciseStep exerciseStep = mSingleExerciseViewModel.getExerciseStep().getValue();
 					if (exerciseStep != null) {
 						mSingleExerciseViewModel.updateExerciseStep(
-								new ExerciseStep(exerciseStep.getStepType(), exerciseStep.getDuration(), progress + 1));
+								new ExerciseStep(exerciseStep.getStepType(), exerciseStep.getDuration(),
+										exerciseStep.getRepetition().updateRepetition(progress + 1)));
 					}
 				});
 	}

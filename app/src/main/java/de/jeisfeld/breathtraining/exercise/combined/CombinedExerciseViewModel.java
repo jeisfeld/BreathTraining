@@ -13,6 +13,7 @@ import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseType;
 import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
+import de.jeisfeld.breathtraining.exercise.data.RepetitionData;
 import de.jeisfeld.breathtraining.exercise.data.StepType;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService.ServiceCommand;
@@ -43,7 +44,7 @@ public class CombinedExerciseViewModel extends ViewModel {
 	/**
 	 * The current exercise step.
 	 */
-	private final MutableLiveData<ExerciseStep> mExerciseStep = new MutableLiveData<>(new ExerciseStep(null, 0, 0));
+	private final MutableLiveData<ExerciseStep> mExerciseStep = new MutableLiveData<>(new ExerciseStep(null, 0, new RepetitionData()));
 
 	/**
 	 * Get the exercise type.
@@ -53,11 +54,6 @@ public class CombinedExerciseViewModel extends ViewModel {
 	protected LiveData<String> getExerciseName() {
 		return mExerciseName;
 	}
-
-	/**
-	 * The number of repetitions in the exercise.
-	 */
-	private int mRepetitions;
 
 	/**
 	 * Set the exercise name.
@@ -109,7 +105,7 @@ public class CombinedExerciseViewModel extends ViewModel {
 	public void updatePlayStatus(final PlayStatus playStatus) {
 		mPlayStatus.setValue(playStatus);
 		if (playStatus == PlayStatus.STOPPED) {
-			mExerciseStep.setValue(new ExerciseStep(null, 0, 0));
+			mExerciseStep.setValue(new ExerciseStep(null, 0, new RepetitionData()));
 		}
 	}
 
@@ -209,8 +205,6 @@ public class CombinedExerciseViewModel extends ViewModel {
 		}
 		updateExerciseName(exerciseData.getName());
 		updatePlayStatus(exerciseData.getPlayStatus());
-		mRepetitions = exerciseData.getRepetitions();
-
 	}
 
 	/**
@@ -224,7 +218,7 @@ public class CombinedExerciseViewModel extends ViewModel {
 			return "";
 		}
 		else {
-			return "(" + exerciseStep.getRepetition() + "/" + mRepetitions + ")";
+			return exerciseStep.getRepetition().toString();
 		}
 	}
 
@@ -234,7 +228,7 @@ public class CombinedExerciseViewModel extends ViewModel {
 	 * @return the exercise data.
 	 */
 	public ExerciseData getExerciseData() {
-		int repetition = mExerciseStep.getValue() == null ? 0 : mExerciseStep.getValue().getRepetition();
+		int repetition = mExerciseStep.getValue() == null ? 0 : mExerciseStep.getValue().getRepetition().getCurrentRepetition();
 		List<Integer> singleExercises = PreferenceUtil.getSharedPreferenceIntList(R.string.key_single_exercise_ids);
 		return new CombinedExerciseData(mExerciseName.getValue(), singleExercises, mSoundType.getValue(), mPlayStatus.getValue(), repetition);
 	}
