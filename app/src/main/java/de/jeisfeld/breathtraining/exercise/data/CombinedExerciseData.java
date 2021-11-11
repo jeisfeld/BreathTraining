@@ -110,13 +110,31 @@ public class CombinedExerciseData extends ExerciseData {
 		return mSingleExerciseData;
 	}
 
+	/**
+	 * Remove a single child exercise.
+	 *
+	 * @param singleExerciseId The id of the child to be removed.
+	 */
+	public void removeSingleExerciseOfId(int singleExerciseId) {
+		SingleExerciseData foundSingleExerciseData = null;
+		for (SingleExerciseData singleExerciseData : mSingleExerciseData) {
+			if (singleExerciseData.getId() == singleExerciseId) {
+				foundSingleExerciseData = singleExerciseData;
+			}
+		}
+		if (foundSingleExerciseData != null) {
+			mSingleExerciseData.remove(foundSingleExerciseData);
+		}
+	}
+
+
 	@Override
 	public final boolean store(final String name) {
 		boolean isNew = super.store(name);
 		if (isNew) {
 			for (SingleExerciseData singleExerciseData : mSingleExerciseData) {
 				// Store fresh copies
-				StoredExercisesRegistry.getInstance().storeAsChild(singleExerciseData, 0, getId());
+				StoredExercisesRegistry.getInstance().storeAsChild(singleExerciseData, 0, false, getId());
 			}
 		}
 		PreferenceUtil.setIndexedSharedPreferenceIntList(R.string.key_stored_single_exercise_ids, getId(), getSingleExerciseIds());

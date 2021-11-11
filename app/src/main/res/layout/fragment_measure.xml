@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:text="@string/text_inhale"
-        android:textSize="@dimen/text_xxlarge"
+        android:textSize="@dimen/text_xlarge"
         android:textColor="@color/color_button_text"
         app:iconTint="@color/color_button_text"
         android:visibility="invisible"

@@ -123,7 +123,7 @@ public class CombinedExerciseViewAdapter extends RecyclerView.Adapter<CombinedEx
 		holder.mDeleteButton.setOnClickListener(v -> {
 			if (fragment.getActivity() != null) {
 				DialogUtil.displayConfirmationMessage(fragment.getActivity(), dialog -> {
-					StoredExercisesRegistry.getInstance().removeExerciseOfId(mSingleExercises.get(position).getId(), true);
+					StoredExercisesRegistry.getInstance().removeExerciseOfId(mSingleExercises.get(position).getId(), true, mExerciseId);
 					mSingleExercises.remove(position);
 					mExerciseIds.remove(position);
 					notifyItemRemoved(position);

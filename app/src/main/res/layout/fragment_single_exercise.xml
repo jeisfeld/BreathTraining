@@ -108,7 +108,7 @@
         android:height="@dimen/button_height"
         android:text=""
         android:textColor="@color/color_button_text"
-        android:textSize="@dimen/text_xxlarge"
+        android:textSize="@dimen/text_xlarge"
         android:visibility="invisible"
         app:iconTint="@color/color_button_text"
         app:layout_constraintBottom_toTopOf="@id/button_start"

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.jeisfeld.breathtraining.R;
+import de.jeisfeld.breathtraining.exercise.data.CombinedExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.SingleExerciseData;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
@@ -114,9 +115,10 @@ public final class StoredExercisesRegistry {
 	 *
 	 * @param exerciseData     The exercise data.
 	 * @param exerciseId       The exercise id.
+	 * @param updateParent     Flag indicating if the child should be added to the parent.
 	 * @param parentExerciseId The parent exercise id.
 	 */
-	public void storeAsChild(final SingleExerciseData exerciseData, final int exerciseId, final int parentExerciseId) {
+	public void storeAsChild(final SingleExerciseData exerciseData, final int exerciseId, final boolean updateParent, final int parentExerciseId) {
 		exerciseData.setId(exerciseId);
 		exerciseData.store(exerciseData.getName());
 		int newExerciseId = exerciseData.getId();
@@ -127,6 +129,7 @@ public final class StoredExercisesRegistry {
 				singleExerciseIds.add(newExerciseId);
 				PreferenceUtil.setSharedPreferenceIntList(R.string.key_single_exercise_ids, singleExerciseIds);
 			}
+			mSingleExercises.put(newExerciseId, exerciseData);
 		}
 		else {
 			List<Integer> singleExerciseIds =
@@ -134,6 +137,12 @@ public final class StoredExercisesRegistry {
 			if (!singleExerciseIds.contains(newExerciseId)) {
 				singleExerciseIds.add(newExerciseId);
 				PreferenceUtil.setIndexedSharedPreferenceIntList(R.string.key_stored_single_exercise_ids, parentExerciseId, singleExerciseIds);
+				if (updateParent) {
+					CombinedExerciseData parentExercise = (CombinedExerciseData) getStoredExercise(parentExerciseId);
+					if (parentExercise != null) {
+						parentExercise.getSingleExerciseData().add(exerciseData);
+					}
+				}
 			}
 		}
 
@@ -142,8 +151,6 @@ public final class StoredExercisesRegistry {
 			storedExerciseIds.remove((Integer) newExerciseId);
 			PreferenceUtil.setSharedPreferenceIntList(R.string.key_stored_exercise_ids, storedExerciseIds);
 		}
-
-		mSingleExercises.put(newExerciseId, exerciseData);
 	}
 
 
@@ -165,23 +172,46 @@ public final class StoredExercisesRegistry {
 	}
 
 	/**
+	 * Clean the current combined exercise.
+	 */
+	public void cleanCurrentCombinedExercise() {
+		List<Integer> singleExerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_single_exercise_ids);
+		for (int exerciseId : singleExerciseIds) {
+			removeExerciseOfId(exerciseId, true, 0);
+		}
+	}
+
+	/**
 	 * Remove the exercise of a certain id.
 	 *
-	 * @param exerciseId The id.
-	 * @param isChild    Flag indicating if this is child exercise.
+	 * @param exerciseId       The id.
+	 * @param isChild          Flag indicating if this is child exercise.
+	 * @param parentExerciseId The exercise id of the parent.
 	 */
-	public void removeExerciseOfId(final int exerciseId, final boolean isChild) {
-		mStoredExercises.remove(exerciseId);
-
+	public void removeExerciseOfId(final int exerciseId, final boolean isChild, final int parentExerciseId) {
 		if (isChild) {
-			List<Integer> exerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_single_exercise_ids);
-			exerciseIds.remove((Integer) exerciseId);
-			PreferenceUtil.setSharedPreferenceIntList(R.string.key_single_exercise_ids, exerciseIds);
+			if (parentExerciseId > 0) {
+				List<Integer> exerciseIds =
+						PreferenceUtil.getIndexedSharedPreferenceIntList(R.string.key_stored_single_exercise_ids, parentExerciseId);
+				exerciseIds.remove((Integer) exerciseId);
+				PreferenceUtil.setIndexedSharedPreferenceIntList(R.string.key_stored_single_exercise_ids, parentExerciseId, exerciseIds);
+				CombinedExerciseData parentExercise = (CombinedExerciseData) getStoredExercise(parentExerciseId);
+				if (parentExercise != null) {
+					parentExercise.removeSingleExerciseOfId(exerciseId);
+				}
+			}
+			else {
+				List<Integer> exerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_single_exercise_ids);
+				exerciseIds.remove((Integer) exerciseId);
+				PreferenceUtil.setSharedPreferenceIntList(R.string.key_single_exercise_ids, exerciseIds);
+				mSingleExercises.remove(exerciseId);
+			}
 		}
 		else {
 			List<Integer> exerciseIds = PreferenceUtil.getSharedPreferenceIntList(R.string.key_stored_exercise_ids);
 			exerciseIds.remove((Integer) exerciseId);
 			PreferenceUtil.setSharedPreferenceIntList(R.string.key_stored_exercise_ids, exerciseIds);
+			mStoredExercises.remove(exerciseId);
 		}
 
 		PreferenceUtil.removeIndexedSharedPreference(R.string.key_stored_exercise_name, exerciseId);
@@ -204,7 +234,7 @@ public final class StoredExercisesRegistry {
 		List<Integer> childIds = PreferenceUtil.getIndexedSharedPreferenceIntList(R.string.key_stored_single_exercise_ids, exerciseId);
 		for (Integer childId : childIds) {
 			if (childId != null) {
-				removeExerciseOfId(childId, true);
+				removeExerciseOfId(childId, true, exerciseId);
 			}
 		}
 		PreferenceUtil.removeIndexedSharedPreference(R.string.key_stored_single_exercise_ids, exerciseId);
@@ -216,7 +246,7 @@ public final class StoredExercisesRegistry {
 	 * @param exerciseData The stored exercise to be deleted.
 	 */
 	public void remove(final ExerciseData exerciseData) {
-		removeExerciseOfId(exerciseData.getId(), false);
+		removeExerciseOfId(exerciseData.getId(), false, 0);
 		mExerciseNameMap.remove(exerciseData.getName());
 	}
 

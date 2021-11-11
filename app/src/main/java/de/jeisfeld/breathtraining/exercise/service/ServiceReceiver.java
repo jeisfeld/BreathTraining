@@ -102,7 +102,7 @@ public class ServiceReceiver extends BroadcastReceiver {
 			exerciseData.updatePlayStatus(playStatus);
 			mHandler.post(() -> {
 				mSingleExerciseViewModel.updateFromExerciseData(exerciseData);
-				mCombinedExerciseViewModel.updateFromExerciseData(exerciseData);
+				mCombinedExerciseViewModel.updateFromExerciseData(exerciseData, false);
 			});
 		}
 

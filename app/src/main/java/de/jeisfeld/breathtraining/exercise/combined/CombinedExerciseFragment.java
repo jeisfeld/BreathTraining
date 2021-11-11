@@ -151,15 +151,6 @@ public class CombinedExerciseFragment extends Fragment {
 	}
 
 	/**
-	 * Get the exercise id.
-	 *
-	 * @return The exercise id.
-	 */
-	protected int getExerciseId() {
-		return 0;
-	}
-
-	/**
 	 * Prepare the spinner for sound type.
 	 */
 	private void prepareSpinnerSoundType() {

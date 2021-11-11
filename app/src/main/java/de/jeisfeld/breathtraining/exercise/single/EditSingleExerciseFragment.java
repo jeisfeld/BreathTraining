@@ -73,7 +73,7 @@ public class EditSingleExerciseFragment extends SingleExerciseFragment {
 			getBinding().buttonSave.setOnClickListener(v -> {
 				NavController navController = Navigation.findNavController(v);
 				navController.popBackStack();
-				StoredExercisesRegistry.getInstance().storeAsChild(getViewModel().getExerciseData(), mExerciseId, mParentExerciseId);
+				StoredExercisesRegistry.getInstance().storeAsChild(getViewModel().getExerciseData(), mExerciseId, true, mParentExerciseId);
 			});
 			getBinding().buttonCancel.setVisibility(View.VISIBLE);
 			getBinding().buttonCancel.setOnClickListener(v -> {

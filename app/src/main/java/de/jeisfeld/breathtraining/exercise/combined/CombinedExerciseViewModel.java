@@ -14,6 +14,7 @@ import de.jeisfeld.breathtraining.exercise.data.ExerciseStep;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseType;
 import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
 import de.jeisfeld.breathtraining.exercise.data.RepetitionData;
+import de.jeisfeld.breathtraining.exercise.data.SingleExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.StepType;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService.ServiceCommand;
@@ -193,9 +194,10 @@ public class CombinedExerciseViewModel extends ViewModel {
 	/**
 	 * Update the model from exercise data.
 	 *
-	 * @param exerciseData The exercise data.
+	 * @param exerciseData   The exercise data.
+	 * @param updateChildren Flag indicating if children should be updated.
 	 */
-	public void updateFromExerciseData(final ExerciseData exerciseData) {
+	public void updateFromExerciseData(final ExerciseData exerciseData, final boolean updateChildren) {
 		if (exerciseData == null) {
 			return;
 		}
@@ -205,6 +207,14 @@ public class CombinedExerciseViewModel extends ViewModel {
 		}
 		updateExerciseName(exerciseData.getName());
 		updatePlayStatus(exerciseData.getPlayStatus());
+
+		if (updateChildren) {
+			// After pressing "play", need to update single exercise data with clones of parent, so that started exercise is now the current one
+			StoredExercisesRegistry.getInstance().cleanCurrentCombinedExercise();
+			for (SingleExerciseData singleExerciseData : ((CombinedExerciseData) exerciseData).getSingleExerciseData()) {
+				StoredExercisesRegistry.getInstance().storeAsChild(singleExerciseData, 0, false, 0);
+			}
+		}
 	}
 
 	/**

@@ -149,19 +149,17 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 					exerciseData.updatePlayStatus(PlayStatus.STOPPED);
 
 					if (exerciseData.getType() == ExerciseType.COMBINED) {
-						EditCombinedExerciseFragment.navigate(v, exerciseData.getId());
 						CombinedExerciseViewModel combinedExerciseViewModel =
 								new ViewModelProvider((MainActivity) activity).get(EditCombinedExerciseViewModel.class);
-						combinedExerciseViewModel.updateFromExerciseData(exerciseData);
+						combinedExerciseViewModel.updateFromExerciseData(exerciseData, false);
+						EditCombinedExerciseFragment.navigate(v, exerciseData.getId());
 					}
 					else {
-						EditSingleExerciseFragment.navigate(v, false, exerciseData.getId(), 0);
 						SingleExerciseViewModel singleExerciseViewModel =
 								new ViewModelProvider((MainActivity) activity).get(EditSingleExerciseViewModel.class);
 						singleExerciseViewModel.updateFromExerciseData(exerciseData);
+						EditSingleExerciseFragment.navigate(v, false, exerciseData.getId(), 0);
 					}
-
-
 				}
 			}
 		});
@@ -176,20 +174,20 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 					exerciseData.updatePlayStatus(PlayStatus.PLAYING);
 
 					if (exerciseData.getType() == ExerciseType.COMBINED) {
+						CombinedExerciseViewModel combinedExerciseViewModel =
+								new ViewModelProvider((MainActivity) activity).get(CombinedExerciseViewModel.class);
+						combinedExerciseViewModel.updateFromExerciseData(exerciseData, true);
 						navController.popBackStack(R.id.nav_combined_exercise, true);
 						Bundle bundle = new Bundle();
 						bundle.putInt(EXTRA_EXERCISE_ID, exerciseData.getId());
 						navController.navigate(R.id.nav_combined_exercise, bundle);
-						CombinedExerciseViewModel combinedExerciseViewModel =
-								new ViewModelProvider((MainActivity) activity).get(CombinedExerciseViewModel.class);
-						combinedExerciseViewModel.updateFromExerciseData(exerciseData);
 					}
 					else {
-						navController.popBackStack(R.id.nav_single_exercise, true);
-						navController.navigate(R.id.nav_single_exercise);
 						SingleExerciseViewModel singleExerciseViewModel =
 								new ViewModelProvider((MainActivity) activity).get(SingleExerciseViewModel.class);
 						singleExerciseViewModel.updateFromExerciseData(exerciseData);
+						navController.popBackStack(R.id.nav_single_exercise, true);
+						navController.navigate(R.id.nav_single_exercise);
 					}
 
 					ExerciseService.triggerExerciseService(v.getContext(), ServiceCommand.START, exerciseData);

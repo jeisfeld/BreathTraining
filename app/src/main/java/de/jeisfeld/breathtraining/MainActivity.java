@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 			ExerciseStep exerciseStep = (ExerciseStep) getIntent().getSerializableExtra(ServiceReceiver.EXTRA_EXERCISE_STEP);
 			singleExerciseViewModel.updateFromExerciseData(exerciseData);
 			singleExerciseViewModel.updateExerciseStep(exerciseStep);
-			combinedExerciseViewModel.updateFromExerciseData(exerciseData);
+			combinedExerciseViewModel.updateFromExerciseData(exerciseData, false);
 			combinedExerciseViewModel.updateExerciseStep(exerciseStep);
 		}
 
