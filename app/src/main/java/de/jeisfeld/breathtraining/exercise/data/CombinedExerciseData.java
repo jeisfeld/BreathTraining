@@ -115,7 +115,7 @@ public class CombinedExerciseData extends ExerciseData {
 	 *
 	 * @param singleExerciseId The id of the child to be removed.
 	 */
-	public void removeSingleExerciseOfId(int singleExerciseId) {
+	public void removeSingleExerciseOfId(final int singleExerciseId) {
 		SingleExerciseData foundSingleExerciseData = null;
 		for (SingleExerciseData singleExerciseData : mSingleExerciseData) {
 			if (singleExerciseData.getId() == singleExerciseId) {
@@ -126,7 +126,6 @@ public class CombinedExerciseData extends ExerciseData {
 			mSingleExerciseData.remove(foundSingleExerciseData);
 		}
 	}
-
 
 	@Override
 	public final boolean store(final String name) {

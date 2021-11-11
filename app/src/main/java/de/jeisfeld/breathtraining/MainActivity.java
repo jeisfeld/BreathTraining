@@ -22,7 +22,6 @@ import de.jeisfeld.breathtraining.databinding.ActivityMainBinding;
 import de.jeisfeld.breathtraining.exercise.combined.CombinedExerciseViewModel;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseData;
 import de.jeisfeld.breathtraining.exercise.data.ExerciseStep;
-import de.jeisfeld.breathtraining.exercise.data.PlayStatus;
 import de.jeisfeld.breathtraining.exercise.service.ExerciseService.ServiceQueryReceiver;
 import de.jeisfeld.breathtraining.exercise.service.ServiceReceiver;
 import de.jeisfeld.breathtraining.exercise.single.SingleExerciseViewModel;
@@ -85,24 +84,44 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	public final boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
-		SingleExerciseViewModel singleExerciseViewModel = new ViewModelProvider(this).get(SingleExerciseViewModel.class);
+		final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 
-		MenuItem menuItemPlay = menu.findItem(R.id.action_play);
-		MenuItem menuItemPause = menu.findItem(R.id.action_pause);
+		final MenuItem itemSingleExercise = menu.findItem(R.id.action_single_exercise);
+		final MenuItem itemCombinedExercise = menu.findItem(R.id.action_combined_exercise);
+		final MenuItem itemStoredExercises = menu.findItem(R.id.action_stored_exercises);
 
-		menuItemPlay.setOnMenuItemClickListener(item -> {
-			singleExerciseViewModel.play(MainActivity.this);
+		itemSingleExercise.setOnMenuItemClickListener(item -> {
+			navController.navigate(R.id.nav_single_exercise);
 			return true;
 		});
 
-		menuItemPause.setOnMenuItemClickListener(item -> {
-			singleExerciseViewModel.pause(MainActivity.this);
+		itemCombinedExercise.setOnMenuItemClickListener(item -> {
+			navController.navigate(R.id.nav_combined_exercise);
 			return true;
 		});
 
-		singleExerciseViewModel.getPlayStatus().observe(MainActivity.this, playStatus -> {
-			menuItemPause.setVisible(playStatus == PlayStatus.PLAYING);
-			menuItemPlay.setVisible(playStatus != PlayStatus.PLAYING);
+		itemStoredExercises.setOnMenuItemClickListener(item -> {
+			navController.navigate(R.id.nav_stored_exercises);
+			return true;
+		});
+
+		navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+			int destinationId = destination.getId();
+			if (destinationId == R.id.nav_single_exercise) {
+				itemSingleExercise.setVisible(false);
+				itemCombinedExercise.setVisible(true);
+				itemStoredExercises.setVisible(true);
+			}
+			else if (destinationId == R.id.nav_combined_exercise) {
+				itemSingleExercise.setVisible(true);
+				itemCombinedExercise.setVisible(false);
+				itemStoredExercises.setVisible(true);
+			}
+			else {
+				itemSingleExercise.setVisible(false);
+				itemCombinedExercise.setVisible(false);
+				itemStoredExercises.setVisible(false);
+			}
 		});
 
 		return true;

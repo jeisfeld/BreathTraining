@@ -3,18 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/action_play"
-        android:icon="@drawable/ic_button_start"
+        android:id="@+id/action_single_exercise"
+        android:icon="@drawable/ic_menu_single_exercise"
         android:orderInCategory="100"
-        android:title="@string/button_start"
+        android:title="@string/menu_single_exercise"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
     <item
-        android:id="@+id/action_pause"
-        android:icon="@drawable/ic_button_pause"
+        android:id="@+id/action_combined_exercise"
+        android:icon="@drawable/ic_menu_combined_exercise"
         android:orderInCategory="100"
-        android:title="@string/button_pause"
-        android:visible="false"
+        android:title="@string/menu_combined_exercise"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+    <item
+        android:id="@+id/action_stored_exercises"
+        android:icon="@drawable/ic_menu_stored_exercises"
+        android:orderInCategory="100"
+        android:title="@string/menu_stored_exercises"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
 </menu>
