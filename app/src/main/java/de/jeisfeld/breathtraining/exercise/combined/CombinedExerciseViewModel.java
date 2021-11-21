@@ -2,6 +2,7 @@ package de.jeisfeld.breathtraining.exercise.combined;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
@@ -211,9 +212,16 @@ public class CombinedExerciseViewModel extends ViewModel {
 		if (updateChildren) {
 			// After pressing "play", need to update single exercise data with clones of parent, so that started exercise is now the current one
 			StoredExercisesRegistry.getInstance().cleanCurrentCombinedExercise();
+			List<Integer> newSingleExerciseIds = new ArrayList<>();
 			for (SingleExerciseData singleExerciseData : ((CombinedExerciseData) exerciseData).getSingleExerciseData()) {
-				StoredExercisesRegistry.getInstance().storeAsChild(singleExerciseData, 0, false, 0);
+				SingleExerciseData clonedSingleExerciseData = (SingleExerciseData) ExerciseData.fromId(singleExerciseData.getId());
+				if (clonedSingleExerciseData != null) {
+					clonedSingleExerciseData.setId(0);
+					StoredExercisesRegistry.getInstance().storeAsChild(clonedSingleExerciseData, 0, false, 0);
+					newSingleExerciseIds.add(clonedSingleExerciseData.getId());
+				}
 			}
+			PreferenceUtil.setSharedPreferenceIntList(R.string.key_single_exercise_ids, newSingleExerciseIds);
 		}
 	}
 

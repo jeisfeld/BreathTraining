@@ -2,7 +2,6 @@ package de.jeisfeld.breathtraining.repository;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -38,8 +37,6 @@ import de.jeisfeld.breathtraining.exercise.single.EditSingleExerciseViewModel;
 import de.jeisfeld.breathtraining.exercise.single.SingleExerciseViewModel;
 import de.jeisfeld.breathtraining.util.DialogUtil;
 import de.jeisfeld.breathtraining.util.PreferenceUtil;
-
-import static de.jeisfeld.breathtraining.exercise.single.EditSingleExerciseFragment.EXTRA_EXERCISE_ID;
 
 /**
  * Adapter for the RecyclerView that allows to sort stored exercises.
@@ -178,9 +175,7 @@ public class StoredExercisesViewAdapter extends RecyclerView.Adapter<StoredExerc
 								new ViewModelProvider((MainActivity) activity).get(CombinedExerciseViewModel.class);
 						combinedExerciseViewModel.updateFromExerciseData(exerciseData, true);
 						navController.popBackStack(R.id.nav_combined_exercise, true);
-						Bundle bundle = new Bundle();
-						bundle.putInt(EXTRA_EXERCISE_ID, exerciseData.getId());
-						navController.navigate(R.id.nav_combined_exercise, bundle);
+						navController.navigate(R.id.nav_combined_exercise);
 					}
 					else {
 						SingleExerciseViewModel singleExerciseViewModel =

@@ -134,7 +134,21 @@ public final class StoredExercisesRegistry {
 		else {
 			List<Integer> singleExerciseIds =
 					PreferenceUtil.getIndexedSharedPreferenceIntList(R.string.key_stored_single_exercise_ids, parentExerciseId);
-			if (!singleExerciseIds.contains(newExerciseId)) {
+			if (singleExerciseIds.contains(newExerciseId)) {
+				if (updateParent) {
+					CombinedExerciseData parentExercise = (CombinedExerciseData) getStoredExercise(parentExerciseId);
+					if (parentExercise != null) {
+						List<SingleExerciseData> siblingExercises = parentExercise.getSingleExerciseData();
+						for (int i = 0; i < siblingExercises.size(); i++) {
+							SingleExerciseData sibling = siblingExercises.get(i);
+							if (sibling.getId() == exerciseId) {
+								siblingExercises.set(i, exerciseData);
+							}
+						}
+					}
+				}
+			}
+			else {
 				singleExerciseIds.add(newExerciseId);
 				PreferenceUtil.setIndexedSharedPreferenceIntList(R.string.key_stored_single_exercise_ids, parentExerciseId, singleExerciseIds);
 				if (updateParent) {
