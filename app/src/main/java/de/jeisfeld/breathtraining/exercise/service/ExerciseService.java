@@ -316,7 +316,7 @@ public class ExerciseService extends Service {
 			if (RUNNING_THREADS.size() == 0) {
 				SoundPlayer.releaseInstance(MediaTrigger.SERVICE);
 				stopService(new Intent(this, ExerciseService.class));
-				sendBroadcast(ServiceReceiver.createIntent(PlayStatus.STOPPED, null, null));
+				sendBroadcasts(PlayStatus.STOPPED, null, null);
 			}
 		}
 	}
@@ -386,6 +386,25 @@ public class ExerciseService extends Service {
 		else {
 			return 100; // MAGIC_NUMBER
 		}
+	}
+
+	/**
+	 * Send broadcasts for change of service status.
+	 *
+	 * @param playStatus   The play status.
+	 * @param exerciseStep The exercise step.
+	 * @param exerciseData The exercise data.
+	 */
+	public void sendBroadcasts(final PlayStatus playStatus, final ExerciseStep exerciseStep, final ExerciseData exerciseData) {
+		sendBroadcast(ServiceReceiver.createIntent(playStatus, exerciseStep, exerciseData));
+
+		Intent intent = new Intent("de.jeisfeld.breathtraining.BREATH_EXERCISE");
+		intent.putExtra("de.jeisfeld.breathTraining.playStatus", playStatus.name());
+		if (exerciseStep != null) {
+			intent.putExtra("de.jeisfeld.breathTraining.stepType", exerciseStep.getStepType().name());
+			intent.putExtra("de.jeisfeld.breathTraining.duration", exerciseStep.getDuration());
+		}
+		sendBroadcast(intent);
 	}
 
 	/**
@@ -465,7 +484,7 @@ public class ExerciseService extends Service {
 			mIsSkipping = true;
 			interrupt();
 			updateExerciseData(exerciseData, PlayStatus.PAUSED, false);
-			sendBroadcast(ServiceReceiver.createIntent(PlayStatus.PAUSED, mExerciseStep, exerciseData));
+			sendBroadcasts(PlayStatus.PAUSED, mExerciseStep, exerciseData);
 		}
 
 		/**
@@ -477,7 +496,7 @@ public class ExerciseService extends Service {
 			interrupt();
 			updateExerciseData(exerciseData, PlayStatus.PLAYING, true);
 			mIsPausing = false;
-			sendBroadcast(ServiceReceiver.createIntent(PlayStatus.PLAYING, mExerciseStep, exerciseData));
+			sendBroadcasts(PlayStatus.PLAYING, mExerciseStep, exerciseData);
 		}
 
 		@Override
@@ -492,7 +511,7 @@ public class ExerciseService extends Service {
 					try {
 						SoundPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE, mExerciseData.getSoundType(),
 								mExerciseStep.getStepType(), getDelay(mExerciseStep), mExerciseStep.getSoundDuration());
-						sendBroadcast(ServiceReceiver.createIntent(PlayStatus.PLAYING, mExerciseStep, mExerciseData));
+						sendBroadcasts(PlayStatus.PLAYING, mExerciseStep, mExerciseData);
 						startNotification(mExerciseData, mExerciseStep, null, mIsPausing);
 						// noinspection BusyWait
 						Thread.sleep(mExerciseStep.getDuration() - getDelay(mExerciseStep));
@@ -524,7 +543,7 @@ public class ExerciseService extends Service {
 			try {
 				SoundPlayer.getInstance().play(ExerciseService.this, MediaTrigger.SERVICE, mExerciseData.getSoundType(), StepType.RELAX);
 				mExerciseStep = new ExerciseStep(StepType.RELAX, 0, new RepetitionData());
-				sendBroadcast(ServiceReceiver.createIntent(PlayStatus.PLAYING, mExerciseStep, mExerciseData));
+				sendBroadcasts(PlayStatus.PLAYING, mExerciseStep, mExerciseData);
 				startNotification(mExerciseData, mExerciseStep, null, mIsPausing);
 				Thread.sleep(mExerciseData.getSoundType().getRelaxDuration());
 			}
@@ -575,9 +594,7 @@ public class ExerciseService extends Service {
 					if (RUNNING_THREADS.size() > 0) {
 						ExerciseData exerciseData = RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).mExerciseData;
 						ExerciseStep exerciseStep = RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).mExerciseStep;
-						Intent serviceIntent = ServiceReceiver.createIntent(exerciseData.getPlayStatus(), exerciseStep, exerciseData);
-						serviceIntent.putExtra(ServiceReceiver.EXTRA_EXERCISE_DATA, exerciseData);
-						exerciseService.sendBroadcast(serviceIntent);
+						exerciseService.sendBroadcast(ServiceReceiver.createIntent(exerciseData.getPlayStatus(), exerciseStep, exerciseData));
 					}
 				}
 			}
