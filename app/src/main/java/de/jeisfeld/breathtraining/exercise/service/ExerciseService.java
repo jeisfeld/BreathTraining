@@ -255,8 +255,6 @@ public class ExerciseService extends Service {
 
 		RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.notification);
 		remoteViews.setTextViewText(R.id.text_step_name, getString(contentTextResource));
-		remoteViews.setTextViewText(R.id.text_step_number,
-				exerciseStep == null || exerciseStep.getRepetition() == null ? "" : exerciseStep.getRepetition().toString());
 		remoteViews.setViewVisibility(R.id.button_resume, isPausing ? View.VISIBLE : View.INVISIBLE);
 		remoteViews.setViewVisibility(R.id.button_pause, isPausing ? View.INVISIBLE : View.VISIBLE);
 
