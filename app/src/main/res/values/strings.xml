@@ -97,7 +97,7 @@
     <string name="title_dialog_delete_stored_settings">Delete stored settings</string>
     <string name="message_dialog_delete_stored_settings">Do you really want to delete stored settings from %1$s?</string>
     <string name="title_dialog_select_date_for_import">Select date of settings for import</string>
-    <string name="toast_settings_exported">All settings have been exported to file %1$s</string>
+    <string name="toast_settings_exported">Settings exported to file %1$s</string>
     <string name="toast_settings_export_canceled">The export of settings was canceled</string>
     <string name="toast_settings_import_canceled">The import of settings was canceled</string>
     <string name="toast_settings_import_failed">Error when importing settings: %1$s</string>
