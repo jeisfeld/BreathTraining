@@ -1,8 +1,12 @@
 package de.jeisfeld.breathtraining;
 
+import android.Manifest.permission;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
@@ -12,6 +16,8 @@ import com.google.android.material.navigation.NavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -33,6 +39,10 @@ import de.jeisfeld.breathtraining.util.PreferenceUtil;
  * Main activity of the app.
  */
 public class MainActivity extends AppCompatActivity {
+	/**
+	 * The request code used to query for permission.
+	 */
+	protected static final int REQUEST_CODE_PERMISSION = 1;
 	/**
 	 * The navigation bar configuration.
 	 */
@@ -65,6 +75,12 @@ public class MainActivity extends AppCompatActivity {
 
 		mServiceReceiver = new ServiceReceiver(new Handler(), singleExerciseViewModel, combinedExerciseViewModel);
 		registerReceiver(mServiceReceiver, new IntentFilter(ServiceReceiver.RECEIVER_ACTION));
+
+		if (Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
+			if (ContextCompat.checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+				ActivityCompat.requestPermissions(this, new String[]{permission.POST_NOTIFICATIONS}, REQUEST_CODE_PERMISSION);
+			}
+		}
 
 		ExerciseData exerciseData = (ExerciseData) getIntent().getSerializableExtra(ServiceReceiver.EXTRA_EXERCISE_DATA);
 		if (exerciseData != null) {
