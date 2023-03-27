@@ -37,7 +37,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 	/**
 	 * The filename prefix of the file for export/import preferences.
 	 */
-	private static final String EXPORT_FILENAME_PREFIX = "LifxPreferences-";
+	private static final String EXPORT_FILENAME_PREFIX = "BreathTraining-";
 	/**
 	 * The date format used within export file names.
 	 */
