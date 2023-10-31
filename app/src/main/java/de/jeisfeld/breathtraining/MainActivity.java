@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 		CombinedExerciseViewModel combinedExerciseViewModel = new ViewModelProvider(this).get(CombinedExerciseViewModel.class);
 
 		mServiceReceiver = new ServiceReceiver(new Handler(), singleExerciseViewModel, combinedExerciseViewModel);
-		registerReceiver(mServiceReceiver, new IntentFilter(ServiceReceiver.RECEIVER_ACTION));
+		ContextCompat.registerReceiver(this, mServiceReceiver, new IntentFilter(ServiceReceiver.RECEIVER_ACTION), ContextCompat.RECEIVER_EXPORTED);
 
 		if (Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU) {
 			if (ContextCompat.checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {

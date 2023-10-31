@@ -124,7 +124,7 @@ public class ExerciseService extends Service {
 	public final void onCreate() {
 		super.onCreate();
 		mServiceQueryReceiver = new ServiceQueryReceiver(this);
-		registerReceiver(mServiceQueryReceiver, new IntentFilter(ServiceQueryReceiver.RECEIVER_ACTION));
+		ContextCompat.registerReceiver(this, mServiceQueryReceiver, new IntentFilter(ServiceQueryReceiver.RECEIVER_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED);
 		createNotificationChannel();
 	}
 
