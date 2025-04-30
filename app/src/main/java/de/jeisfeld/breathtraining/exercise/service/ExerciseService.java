@@ -142,7 +142,7 @@ public class ExerciseService extends Service {
 			ExerciseAnimationThread newThread = new ExerciseAnimationThread(exerciseData);
 			synchronized (RUNNING_THREADS) {
 				RUNNING_THREADS.notifyAll();
-				if (RUNNING_THREADS.size() > 0) {
+				if (!RUNNING_THREADS.isEmpty()) {
 					RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).stopExercise();
 				}
 				RUNNING_THREADS.add(newThread);
@@ -152,14 +152,14 @@ public class ExerciseService extends Service {
 		case STOP:
 			synchronized (RUNNING_THREADS) {
 				RUNNING_THREADS.notifyAll();
-				if (RUNNING_THREADS.size() > 0) {
+				if (!RUNNING_THREADS.isEmpty()) {
 					RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).stopExercise();
 				}
 			}
 			break;
 		case PAUSE:
 			synchronized (RUNNING_THREADS) {
-				if (RUNNING_THREADS.size() > 0) {
+				if (!RUNNING_THREADS.isEmpty()) {
 					RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).pause(exerciseData);
 					RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).updateExerciseData(exerciseData, PlayStatus.PAUSED, false);
 				}
@@ -167,7 +167,7 @@ public class ExerciseService extends Service {
 			break;
 		case RESUME:
 			synchronized (RUNNING_THREADS) {
-				if (RUNNING_THREADS.size() > 0) {
+				if (!RUNNING_THREADS.isEmpty()) {
 					RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).resume(exerciseData);
 				}
 				RUNNING_THREADS.notifyAll();
@@ -175,7 +175,7 @@ public class ExerciseService extends Service {
 			break;
 		case SKIP:
 			synchronized (RUNNING_THREADS) {
-				if (RUNNING_THREADS.size() > 0) {
+				if (!RUNNING_THREADS.isEmpty()) {
 					RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).skipStep();
 				}
 			}
@@ -241,7 +241,7 @@ public class ExerciseService extends Service {
 	private void startNotification(final ExerciseData exerciseData, final ExerciseStep exerciseStep,
 								   final ServiceCommand serviceCommand, final boolean isPausing) {
 		Intent notificationIntent = new Intent(this, MainActivity.class);
-		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		notificationIntent.putExtra(ServiceReceiver.EXTRA_EXERCISE_DATA, exerciseData);
 		notificationIntent.putExtra(ServiceReceiver.EXTRA_EXERCISE_STEP, exerciseStep);
 
@@ -253,7 +253,8 @@ public class ExerciseService extends Service {
 			contentTextResource = serviceCommand.getDisplayResource();
 		}
 
-		RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.notification);
+		RemoteViews remoteViews = new RemoteViews(getPackageName(), Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+				? R.layout.notification_android15 : R.layout.notification);
 		remoteViews.setTextViewText(R.id.text_step_name, getString(contentTextResource));
 		remoteViews.setViewVisibility(R.id.button_resume, isPausing ? View.VISIBLE : View.INVISIBLE);
 		remoteViews.setViewVisibility(R.id.button_pause, isPausing ? View.INVISIBLE : View.VISIBLE);
@@ -291,6 +292,7 @@ public class ExerciseService extends Service {
 				REQUEST_CODE_START_APP, notificationIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
 		Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
 				.setCustomContentView(remoteViews)
+				.setCustomBigContentView(remoteViews)
 				.setContentIntent(pendingIntent)
 				.setSmallIcon(R.drawable.ic_notification)
 				.build();
@@ -311,7 +313,7 @@ public class ExerciseService extends Service {
 		synchronized (RUNNING_THREADS) {
 			// noinspection SuspiciousMethodCalls
 			RUNNING_THREADS.remove(thread);
-			if (RUNNING_THREADS.size() == 0) {
+			if (RUNNING_THREADS.isEmpty()) {
 				SoundPlayer.releaseInstance(MediaTrigger.SERVICE);
 				stopService(new Intent(this, ExerciseService.class));
 				sendBroadcasts(PlayStatus.STOPPED, null, null);
@@ -589,7 +591,7 @@ public class ExerciseService extends Service {
 			ExerciseService exerciseService = mExerciseService.get();
 			if (exerciseService != null) {
 				synchronized (RUNNING_THREADS) {
-					if (RUNNING_THREADS.size() > 0) {
+					if (!RUNNING_THREADS.isEmpty()) {
 						ExerciseData exerciseData = RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).mExerciseData;
 						ExerciseStep exerciseStep = RUNNING_THREADS.get(RUNNING_THREADS.size() - 1).mExerciseStep;
 						exerciseService.sendBroadcast(ServiceReceiver.createIntent(exerciseData.getPlayStatus(), exerciseStep, exerciseData));
