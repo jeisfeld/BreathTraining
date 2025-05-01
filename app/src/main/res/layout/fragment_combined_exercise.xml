@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/fragment_padding"
+    android:paddingHorizontal="@dimen/fragment_padding"
+    android:paddingTop="@dimen/fragment_padding"
     tools:ignore="RtlSymmetry">
 
     <com.google.android.material.button.MaterialButton

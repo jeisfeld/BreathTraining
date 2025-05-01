@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/fragment_padding"
+    android:paddingHorizontal="@dimen/fragment_padding"
+    android:paddingTop="@dimen/fragment_padding"
     tools:context=".measure.MeasureFragment">
 
     <com.google.android.material.button.MaterialButton
@@ -81,6 +82,7 @@
                 android:id="@+id/buttonUseValues"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/activity_vertical_margin"
                 android:height="@dimen/button_height"
                 android:text="@string/button_user_measured_values"
                 android:textSize="@dimen/text_normal"
